@@ -1,4 +1,5 @@
-<h1>About</h1>
+<h1>Still in development... (28/01/25)</h1>
+<h2>About</h2>
 Second portfolio project. This time, it's my final project of my "CFGS" in spanish (I think it's "ASVL" in english). I almost finish it in that time but it's so outdated, so I will create it again from scratch.
 
 The project is called "MyMovieList". It's based in the famous anime/manga web page [MyAnimeList](https://myanimelist.net). The application consists in let their users to
@@ -13,4 +14,10 @@ In this project I will create a client-server application, use of a DB (MySQL) w
   <li>Login GUI</li>
   <li>Database creation and communication (JDBC)</li>
   <li>...</li>
+</ul>
+
+<h2>Credits:</h2>
+<ul>
+  <li>TMDB API. This is [their site](https://themoviedb.org).</li> 
+  <li>MigLayout. GitHub [repository](https://github.com/mikaelgrev/miglayout).</li>
 </ul>
