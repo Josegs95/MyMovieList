@@ -9,15 +9,14 @@ tv shows obviosly.
 In this project I will create a client-server application, use of a DB (MySQL) where save users and all their data. The application uses concurrency, user interfaces and API usage too. For the API, the application will work with JSON files.
 
 <h2>To-Do:</h2>
-<ul>
-  <li>Register GUI</li>
-  <li>Login GUI</li>
-  <li>Database creation and communication (JDBC)</li>
-  <li>...</li>
-</ul>
+
+- Register GUI
+- Login GUI
+- Database creation and communication (JDBC)
+- ...
+
 
 <h2>Credits:</h2>
-<ul>
-  <li>TMDB API. This is [their site](https://themoviedb.org).</li> 
-  <li>MigLayout. GitHub [repository](https://github.com/mikaelgrev/miglayout).</li>
-</ul>
+
+- TMDB API. This is [their site](https://themoviedb.org).
+- MigLayout. GitHub [repository](https://github.com/mikaelgrev/miglayout).
