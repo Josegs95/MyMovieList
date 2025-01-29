@@ -2,6 +2,7 @@ import io.SocketCommunication;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientHandler implements Runnable{
     final private Socket SOCKET;
@@ -23,7 +24,8 @@ public class ClientHandler implements Runnable{
                 System.out.println("Cliente " + id + ": " + clientMessage);
                 socketCommunication.writeStringToSocket("Recibido");
             }
-        } catch (IOException e) {
+        } catch (SocketException e){}
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

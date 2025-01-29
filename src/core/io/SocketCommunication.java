@@ -23,20 +23,12 @@ public class SocketCommunication implements AutoCloseable{
         }
     }
 
-    public void writeStringToSocket(String message){
-        try{
-            dos.writeUTF(message);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void writeStringToSocket(String message) throws IOException {
+        dos.writeUTF(message);
     }
 
-    public String readStringFromSocket(){
-        try{
-            return dis.readUTF();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public String readStringFromSocket() throws IOException {
+        return dis.readUTF();
     }
 
     @Override

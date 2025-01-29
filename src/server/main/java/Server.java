@@ -1,21 +1,33 @@
+import file.ApplicationProperty;
 import io.SocketCommunication;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Path;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
-    final private Integer PORT = 7776;
+    final private Map<String, String> PROPERTIES;
+
+    public Server(){
+        PROPERTIES = ApplicationProperty.readPropertiesFromFile(Path.of("properties.txt"));
+    }
 
     public static void main(String[] args) {
         new Server().init();
     }
 
     private void init(){
-        try (ServerSocket serverSocket = new ServerSocket(PORT)){
+        if (PROPERTIES == null)
+            return;
+        int port = Integer.valueOf(PROPERTIES.get("PORT"));
+        try (ServerSocket serverSocket = new ServerSocket(port)){
             ExecutorService executor = Executors.newCachedThreadPool();
+
+            System.out.println("Listening on port: " + port);
             boolean endApp = false;
             while(!endApp){
                 Socket clientSocket = serverSocket.accept();
