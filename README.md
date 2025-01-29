@@ -13,6 +13,7 @@ In this project I will create a client-server application, use of a DB (MySQL) w
 - Register GUI
 - Login GUI
 - Database creation and communication (JDBC)
+- Add Guest session compatibility for the API: [Link](https://developer.themoviedb.org/docs/authentication-guest-sessions)(Optional)
 - ...
 
 
