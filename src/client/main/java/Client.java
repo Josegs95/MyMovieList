@@ -1,4 +1,3 @@
-import controller.MainFrameController;
 import file.ApplicationProperty;
 import view.MainFrameView;
 
@@ -10,7 +9,7 @@ public class Client {
     final private Map<String, String> PROPERTIES;
 
     public Client() {
-        PROPERTIES = ApplicationProperty.readPropertiesFromFile(Path.of("properties.txt"));
+        PROPERTIES = ApplicationProperty.getProperties();
     }
 
     public static void main(String[] args) {
@@ -23,8 +22,6 @@ public class Client {
 
         SwingUtilities.invokeLater(() -> {
             MainFrameView view = new MainFrameView();
-            MainFrameController controller = new MainFrameController(view);
-            view.setController(controller);
         });
     }
 }

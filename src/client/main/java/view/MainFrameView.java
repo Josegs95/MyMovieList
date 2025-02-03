@@ -1,25 +1,20 @@
 package view;
 
-import controller.MainFrameController;
+import controller.SearchController;
 import net.miginfocom.swing.MigLayout;
-import view.component.SearchFeaturePanel;
+import view.component.SearchPanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainFrameView {
-    private MainFrameController controller;
     private JFrame frame;
     private JPanel pnlCentral;
 
     final private String APP_TITLE = "MyMovieList";
-
-    private List<JPanel> centralPanelList = new ArrayList<>();
 
     public MainFrameView(){
         init();
@@ -33,7 +28,7 @@ public class MainFrameView {
         frame.getContentPane().setBackground(new Color(192, 192, 192));
         frame.getContentPane().setLayout(new MigLayout(
                 "fill",
-                "[fill, grow 15]5[fill, grow 85]",
+                "[fill, 22%]5[fill, 78%]",
                 "[fill]"
         ));
 
@@ -45,7 +40,9 @@ public class MainFrameView {
         pnlLateral.setBackground(new Color(224, 224,224));
         pnlLateral.setBorder(new LineBorder(Color.BLACK, 1, false));
 
-        pnlCentral = SearchFeaturePanel.getInstance();
+        SearchPanel searchPanel = SearchPanel.getInstance();
+        searchPanel.setController(new SearchController(searchPanel));
+        pnlCentral = searchPanel;
 
         //Lateral panel's components
 
@@ -55,12 +52,16 @@ public class MainFrameView {
         //Listeners
 
         btnLateralSearch.addActionListener(e -> {
-            if (pnlCentral != SearchFeaturePanel.getInstance())
-                changeCentralPanel(SearchFeaturePanel.getInstance());
+            if (pnlCentral != SearchPanel.getInstance())
+                changeCentralPanel(SearchPanel.getInstance());
         });
 
         btnLateralLists.addActionListener(e -> {
-            changeCentralPanel(new JPanel());
+            JPanel panel = new JPanel();
+            panel.setBackground(new Color(224, 224,224));
+            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false));
+
+            changeCentralPanel(panel);
         });
 
         //Adds
@@ -76,15 +77,12 @@ public class MainFrameView {
         frame.setVisible(true);
     }
 
-    public void setController (MainFrameController controller){
-        this.controller = controller;
-    }
-
     public void changeCentralPanel(JPanel panel){
-        frame.remove(pnlCentral);
+        frame.getContentPane().remove(pnlCentral);
         pnlCentral = panel;
-        frame.add(pnlCentral);
+        frame.getContentPane().add(pnlCentral);
 
+        frame.revalidate();
         frame.repaint();
     }
 

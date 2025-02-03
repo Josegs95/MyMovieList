@@ -13,7 +13,7 @@ public class Server {
     final private Map<String, String> PROPERTIES;
 
     public Server(){
-        PROPERTIES = ApplicationProperty.readPropertiesFromFile(Path.of("properties.txt"));
+        PROPERTIES = ApplicationProperty.getProperties();
     }
 
     public static void main(String[] args) {

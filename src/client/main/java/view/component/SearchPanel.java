@@ -1,26 +1,30 @@
 package view.component;
 
+import controller.SearchController;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class SearchFeaturePanel extends JPanel {
+public class SearchPanel extends JPanel {
 
-    static private SearchFeaturePanel panel;
+    static private SearchPanel panel;
 
-    private SearchFeaturePanel(){
+    private SearchController controller;
+
+    private SearchPanel() {
         super(new MigLayout(
                 "ins 20",
                 "[fill][fill]",
                 "[]"
         ));
+
         init();
     }
 
     private void init() {
-        setBackground(new Color(224, 224,224));
+        setBackground(new Color(224, 224, 224));
         setBorder(new LineBorder(Color.BLACK, 1, false));
 
         //Components
@@ -35,6 +39,11 @@ public class SearchFeaturePanel extends JPanel {
 
         //Listeners
 
+        btnCentralSearch.addActionListener(e -> {
+            String userSearch = txfCentralSearch.getText();
+            controller.searchMultimedia(userSearch);
+        });
+
         //Adds
 
         add(txfCentralSearch, "push, sg group1");
@@ -42,10 +51,14 @@ public class SearchFeaturePanel extends JPanel {
 
     }
 
-    public static SearchFeaturePanel getInstance(){
+    public static SearchPanel getInstance() {
         if (panel == null)
-            panel = new SearchFeaturePanel();
+            panel = new SearchPanel();
 
         return panel;
+    }
+
+    public void setController(SearchController controller) {
+        this.controller = controller;
     }
 }
