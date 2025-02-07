@@ -15,6 +15,8 @@ In this project I will create a client-server application, use of a DB (MySQL) w
 - Database creation and communication (JDBC)
 - Add Guest session compatibility for the API: [Link](https://developer.themoviedb.org/docs/authentication-guest-sessions)(Optional)
 - ...
+- (Optional):
+  - Proccess all pages of each API request
 
 
 <h2>Credits:</h2>
