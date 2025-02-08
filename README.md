@@ -23,3 +23,4 @@ In this project I will create a client-server application, use of a DB (MySQL) w
 
 - TMDB API. This is [their site](https://themoviedb.org).
 - MigLayout. GitHub [repository](https://github.com/mikaelgrev/miglayout).
+- StretchIcon from tips4java. GitHub [repository](https://github.com/tips4java/tips4java/blob/main/source/StretchIcon.java).
