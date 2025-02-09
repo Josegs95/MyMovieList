@@ -44,6 +44,8 @@ public class MainFrameView {
         searchPanel.setController(new SearchController(searchPanel));
         pnlCentral = searchPanel;
 
+        frame.getRootPane().setDefaultButton(searchPanel.getDefaultButton());
+
         //Lateral panel's components
 
         JButton btnLateralSearch = new MyLateralButton("Search");

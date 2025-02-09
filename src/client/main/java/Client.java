@@ -1,15 +1,14 @@
+import controller.APIController;
 import file.ApplicationProperty;
 import view.MainFrameView;
 
 import javax.swing.*;
-import java.nio.file.Path;
-import java.util.Map;
+import java.io.IOException;
 
 public class Client {
-    final private Map<String, String> PROPERTIES;
 
     public Client() {
-        PROPERTIES = ApplicationProperty.getProperties();
+        ApplicationProperty.getProperties();
     }
 
     public static void main(String[] args) {
@@ -17,11 +16,15 @@ public class Client {
     }
 
     private void init() {
-        if (PROPERTIES == null)
-            return;
-
         SwingUtilities.invokeLater(() -> {
-            MainFrameView view = new MainFrameView();
+            new MainFrameView();
+            new Thread(() -> {
+                try {
+                    APIController.setUpConfigurationDetails();
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
         });
     }
 }

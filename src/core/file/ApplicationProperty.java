@@ -7,7 +7,9 @@ import java.util.HashMap;
 
 public class ApplicationProperty {
 
+    // Keys: API_KEY, API_READ_ACCESS_TOKEN, PORT, HOST
     private static HashMap<String, String> properties;
+
     final static private String PROPERTIES_FILENAME = "properties.txt";
 
     public static HashMap<String, String> getProperties(){
