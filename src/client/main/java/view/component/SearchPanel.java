@@ -11,47 +11,63 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 
 public class SearchPanel extends JPanel {
 
-    static private SearchPanel panel;
-    private ScrollablePanel pnlResults;
+    static private SearchPanel instance;
+
+    private JPanel pnlResultList;
+
+    private ScrollablePanel pnlInnerResultList;
+    private JScrollPane scrollPaneResult;
     private JButton btnSearch;
 
     private SearchController controller;
 
     private SearchPanel() {
         super(new MigLayout(
-                "ins 20, fillx, aligny 50%, flowy",
+                "ins 0, fill",
                 "[fill]",
-                "[fill]20[fill]"
+                "[fill]"
         ));
 
         init();
     }
 
     private void init() {
-        setBackground(new Color(224, 224, 224));
         setBorder(new LineBorder(Color.BLACK, 1, false));
 
         //Components
+
+        pnlResultList = new JPanel(new MigLayout(
+                "ins 20, fillx, aligny 50%, flowy",
+                "[fill]",
+                "[fill]20[fill]"
+        ));
+        pnlResultList.setBackground(new Color(224, 224, 224));
 
         JPanel pnlSearch = new JPanel(new MigLayout(
                 "",
                 "[fill]",
                 "[]"
         ));
-        pnlSearch.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false));
-        pnlResults = new ScrollablePanel(new MigLayout(
+        pnlSearch.setOpaque(false);
+        pnlInnerResultList = new ScrollablePanel(new MigLayout(
                 "ins 0, fill, flowy",
                 "[fill]",
                 "[fill, 100!]0[fill, 100!]"
         ));
-        pnlResults.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
-        pnlResults.setBorder(new LineBorder(Color.BLACK, 1, false));
+        pnlInnerResultList.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
+        pnlInnerResultList.setBorder(new LineBorder(Color.BLACK, 1, false));
+
+        scrollPaneResult = new JScrollPane(pnlInnerResultList);
+        scrollPaneResult.getVerticalScrollBar().setUnitIncrement(20);
 
         MySearchTextField txfCentralSearch = new MySearchTextField();
         txfCentralSearch.setBorder(BorderFactory.createCompoundBorder(
@@ -67,7 +83,13 @@ public class SearchPanel extends JPanel {
             if (txfCentralSearch.getText().isEmpty())
                 return;
             List<Multimedia> multiList = controller.searchMultimedia(txfCentralSearch.getText().strip());
-            addResultPanel(multiList);
+            if (multiList.isEmpty())
+                JOptionPane.showMessageDialog(SearchPanel.this.getParent(),
+                        "No se ha encontrado resultados",
+                        "No hay resultados",
+                        JOptionPane.INFORMATION_MESSAGE);
+            else
+                addResultPanel(multiList);
         });
 
         //Adds
@@ -75,16 +97,16 @@ public class SearchPanel extends JPanel {
         pnlSearch.add(txfCentralSearch, "push, sg group1");
         pnlSearch.add(btnSearch, "sg group1");
 
-        add(pnlSearch);
-        //add(scrollPane, "pushy");
-        //add(pnlResults, "push");
+        pnlResultList.add(pnlSearch);
+
+        add(pnlResultList);
     }
 
     public static SearchPanel getInstance() {
-        if (panel == null)
-            panel = new SearchPanel();
+        if (instance == null)
+            instance = new SearchPanel();
 
-        return panel;
+        return instance;
     }
 
     public void setController(SearchController controller) {
@@ -97,51 +119,78 @@ public class SearchPanel extends JPanel {
 
     private void addResultPanel(List<Multimedia> multiList) {
         String baseURLForPosters = APIController.getBaseURLForPosters();
+        if (!multiList.isEmpty())
+            pnlInnerResultList.removeAll();
         try {
             for (Multimedia multi : multiList) {
-                JPanel panel = new JPanel(new MigLayout(
-                        "fill",
-                        "[fill, 15%][fill, 70%][fill, 15%]",
-                        "[fill]"
-                ));
-
-                Color backgroundColor;
-                if (multi instanceof Movie)
-                    backgroundColor = new Color(250, 219, 111);
-                else
-                    backgroundColor = new Color(255, 204, 203);
-                panel.setBackground(backgroundColor);
-
-                JLabel lblPoster;
-                if (multi.getPosterURL() == null)
-                    lblPoster = new JLabel("No Image");
-                else {
-
-                    StretchIcon multiPoster = new StretchIcon(
-                            URI.create(baseURLForPosters + multi.getPosterURL()).toURL(),
-                            true);
-                    lblPoster = new JLabel(multiPoster);
-                }
-                JLabel lblTitle = new JLabel("<html>" + multi.getTitle() + "</html>");
-                JLabel lblScore = new JLabel(multi.getScore());
-                lblScore.setHorizontalAlignment(SwingConstants.CENTER);
-
-                panel.add(lblPoster);
-                panel.add(lblTitle);
-                panel.add(lblScore);
-                pnlResults.add(panel);
+                JPanel panel = createListItem(multi, baseURLForPosters);
+                panel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        showDetailPanel(new DetailMultimediaPanel(multi, controller));
+                    }
+                });
+                pnlInnerResultList.add(panel);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        JScrollPane scrollPane = new JScrollPane(pnlResults);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-
-        if (getComponentCount() < 2)
-            add(scrollPane, "push");
+        if (getComponentZOrder(scrollPaneResult) == -1)
+            pnlResultList.add(scrollPaneResult, "push");
 
         revalidate();
         repaint();
     }
+
+    private void showDetailPanel(DetailMultimediaPanel panel) {
+        remove(pnlResultList);
+        add(panel);
+
+        revalidate();
+        repaint();
+    }
+
+    public void deleteDetailPanel() {
+        remove(0);
+        add(pnlResultList);
+
+        revalidate();
+        repaint();
+    }
+
+    private JPanel createListItem(Multimedia multi, String baseURLForPosters) throws MalformedURLException {
+        JPanel panel = new JPanel(new MigLayout(
+                "fill",
+                "[fill, 15%][fill, 70%][fill, 15%]",
+                "[fill]"
+        ));
+
+        Color backgroundColor;
+        if (multi instanceof Movie)
+            backgroundColor = new Color(250, 219, 111);
+        else
+            backgroundColor = new Color(255, 204, 203);
+        panel.setBackground(backgroundColor);
+
+        JLabel lblPoster;
+        if (multi.getPosterURL() == null)
+            lblPoster = new JLabel("No Image");
+        else {
+            StretchIcon multiPoster = new StretchIcon(
+                    URI.create(baseURLForPosters + multi.getPosterURL()).toURL(),
+                    true);
+            lblPoster = new JLabel(multiPoster);
+        }
+        JLabel lblTitle = new JLabel("<html>" + multi.getTitle() + "</html>");
+        JLabel lblScore = new JLabel(multi.getScore());
+        lblScore.setHorizontalAlignment(SwingConstants.CENTER);
+
+        panel.add(lblPoster);
+        panel.add(lblTitle);
+        panel.add(lblScore);
+
+        return panel;
+    }
+
 }

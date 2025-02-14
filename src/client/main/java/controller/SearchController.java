@@ -25,12 +25,13 @@ public class SearchController {
                     .sorted((a, b) -> (int) ((a.getPopularity() - b.getPopularity()) * -1))
                     .toList();
 
-            for (Multimedia multi : multiList)
-                System.out.println(multi);
-
             return multiList;
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void backButtonFromDetailPanel() {
+        VIEW.deleteDetailPanel();
     }
 }

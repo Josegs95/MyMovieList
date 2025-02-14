@@ -12,6 +12,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class APIController {
@@ -58,7 +59,14 @@ public class APIController {
 
         String baseURL = API_CONFIGURATION.get("secure_base_url").getAsString();
         JsonArray sizeArray = API_CONFIGURATION.get("poster_sizes").getAsJsonArray();
-        String posterSize = sizeArray.get(0).getAsString();
+        List<String> sizeList = sizeArray.asList().stream()
+                .map(JsonElement::getAsString)
+                .toList();
+        String posterSize;
+        if (sizeList.size() > 1)
+            posterSize = sizeList.get(1);
+        else
+            posterSize = sizeList.get(0);
 
         return baseURL + posterSize;
     }
@@ -70,7 +78,7 @@ public class APIController {
                 .header("Authorization", "Bearer " + API_TOKEN)
                 .GET()
                 .build();
-        try (HttpClient client = HttpClient.newHttpClient()){
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
                 System.out.println("Se ha producido un error desconocido");
