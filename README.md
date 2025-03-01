@@ -10,13 +10,13 @@ In this project I will create a client-server application, use of a DB (MySQL) w
 
 <h2>To-Do:</h2>
 
-- Register GUI
-- Login GUI
-- Database creation and communication (JDBC)
-- Add Guest session compatibility for the API: [Link](https://developer.themoviedb.org/docs/authentication-guest-sessions)(Optional)
-- ...
+- Database creation
+- Client-Server communications
+- Register GUI & Login GUI
+- Lists creation
 - (Optional):
   - Proccess all pages of each API request
+  - Add Guest session compatibility for the API: [Link](https://developer.themoviedb.org/docs/authentication-guest-sessions)
 
 
 <h2>Credits:</h2>
