@@ -1,23 +1,31 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class TVShow implements Multimedia {
+    private int id;
     private String title;
     private String posterURL;
     private LocalDate releaseDate;
     private String score;
     private Double popularity;
 
+    private String synopsis;
+    private List<String> genreList;
+    private String country;
+
+    private String status;
+    private int episodeCount;
+    private int seasonCount;
+    private String episodeDuration;
+
     public TVShow() {
     }
 
-    public TVShow(String title, String posterURL, LocalDate releaseDate, String score, Double popularity) {
-        this.title = title;
-        this.posterURL = posterURL;
-        this.releaseDate = releaseDate;
-        this.score = score;
-        this.popularity = popularity;
+    @Override
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -38,6 +46,39 @@ public class TVShow implements Multimedia {
 
     public Double getPopularity() {
         return popularity;
+    }
+
+    @Override
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    @Override
+    public List<String> getGenreList() {
+        return genreList;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public int getEpisodeCount() {
+        return episodeCount;
+    }
+
+    public int getSeasonCount() {
+        return seasonCount;
+    }
+
+    public String getEpisodeDuration() {
+        if (episodeDuration == null)
+            return "Unknown";
+        return episodeDuration;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -63,6 +104,42 @@ public class TVShow implements Multimedia {
     @Override
     public void setPopularity(Double popularity) {
         this.popularity = popularity;
+    }
+
+    @Override
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
+    }
+
+    @Override
+    public void setGenreList(List<String> genreList) {
+        this.genreList = genreList;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setEpisodeCount(int episodeCount) {
+        this.episodeCount = episodeCount;
+    }
+
+    public void setSeasonCount(int seasonCount) {
+        this.seasonCount = seasonCount;
+    }
+
+    public void setEpisodeDuration(String episodeDuration) {
+        this.episodeDuration = episodeDuration + " minutes per ep.";
+    }
+
+    @Override
+    public String getCountry() {
+        return country;
+    }
+
+    @Override
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     @Override

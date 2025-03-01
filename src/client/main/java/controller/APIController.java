@@ -5,6 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import file.ApplicationProperty;
+import model.Movie;
+import model.Multimedia;
+import model.TVShow;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,21 +20,41 @@ import java.util.Map;
 
 public class APIController {
     final private static String API_TOKEN;
+    final private static String LANGUAGE;
+
+    final private static String BASE_URL = "https://api.themoviedb.org/3/";
 
     // Keys: base_url, secure_base_url, backdrop_sizes, logo_sizes, poster_sizes, profile_sizes, still_sizes
     private static Map<String, JsonElement> API_CONFIGURATION;
 
     static {
-        if (ApplicationProperty.getProperties() != null)
+        if (ApplicationProperty.getProperties() != null) {
             API_TOKEN = ApplicationProperty.getProperties().get("API_READ_ACCESS_TOKEN");
-        else
+            LANGUAGE = ApplicationProperty.getProperties().getOrDefault("LANGUAGE", "en-GB");
+        } else {
             API_TOKEN = "";
+            LANGUAGE = "en-GB";
+        }
     }
 
     public static JsonObject searchMultimedia(String multiName) throws IOException, InterruptedException {
-        URI uri = URI.create(String.format("https://api.themoviedb.org/3/search/multi?query=%s",
-                multiName.replace(' ', '+')));
-        return makeGetRequest(uri);
+        String urlString = BASE_URL + "search/multi?query=" + multiName.replace(" ", "%20");
+        urlString += "&language=" + LANGUAGE;
+
+        return makeGetRequest(URI.create(urlString));
+    }
+
+    public static JsonObject searchMultimediaDetail(Multimedia multimedia) throws IOException, InterruptedException {
+        String urlString = BASE_URL;
+        urlString += switch (multimedia) {
+            case Movie _ -> "movie/";
+            case TVShow _ -> "tv/";
+            default -> "";
+        };
+        urlString += multimedia.getId();
+        urlString += "&language=" + LANGUAGE;
+
+        return makeGetRequest(URI.create(urlString));
     }
 
     public static void setUpConfigurationDetails() throws IOException, InterruptedException {
@@ -53,7 +76,7 @@ public class APIController {
         }
     }
 
-    public static String getBaseURLForPosters() {
+    public static String getBaseURLForPosters(boolean fullSize) {
         if (API_CONFIGURATION == null)
             return null;
 
@@ -63,7 +86,9 @@ public class APIController {
                 .map(JsonElement::getAsString)
                 .toList();
         String posterSize;
-        if (sizeList.size() > 1)
+        if (fullSize)
+            posterSize = "original";
+        else if (sizeList.size() > 1)
             posterSize = sizeList.get(1);
         else
             posterSize = sizeList.get(0);

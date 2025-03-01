@@ -16,7 +16,7 @@ public class MainFrameView {
 
     final private String APP_TITLE = "MyMovieList";
 
-    public MainFrameView(){
+    public MainFrameView() {
         init();
     }
 
@@ -37,14 +37,12 @@ public class MainFrameView {
                 "[grow]",
                 "[50]"
         ));
-        pnlLateral.setBackground(new Color(224, 224,224));
+        pnlLateral.setBackground(new Color(224, 224, 224));
         pnlLateral.setBorder(new LineBorder(Color.BLACK, 1, false));
 
         SearchPanel searchPanel = SearchPanel.getInstance();
         searchPanel.setController(new SearchController(searchPanel));
         pnlCentral = searchPanel;
-
-        frame.getRootPane().setDefaultButton(searchPanel.getDefaultButton());
 
         //Lateral panel's components
 
@@ -53,14 +51,14 @@ public class MainFrameView {
 
         //Listeners
 
-        btnLateralSearch.addActionListener(e -> {
+        btnLateralSearch.addActionListener(_ -> {
             if (pnlCentral != SearchPanel.getInstance())
                 changeCentralPanel(SearchPanel.getInstance());
         });
 
-        btnLateralLists.addActionListener(e -> {
+        btnLateralLists.addActionListener(_ -> {
             JPanel panel = new JPanel();
-            panel.setBackground(new Color(224, 224,224));
+            panel.setBackground(new Color(224, 224, 224));
             panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false));
 
             changeCentralPanel(panel);
@@ -79,7 +77,7 @@ public class MainFrameView {
         frame.setVisible(true);
     }
 
-    public void changeCentralPanel(JPanel panel){
+    public void changeCentralPanel(JPanel panel) {
         frame.getContentPane().remove(pnlCentral);
         pnlCentral = panel;
         frame.getContentPane().add(pnlCentral);
@@ -88,10 +86,10 @@ public class MainFrameView {
         frame.repaint();
     }
 
-    private class MainWindowListener extends WindowAdapter{
+    private class MainWindowListener extends WindowAdapter {
         final private JFrame FRAME;
 
-        public MainWindowListener(JFrame frame){
+        public MainWindowListener(JFrame frame) {
             this.FRAME = frame;
         }
 
@@ -101,9 +99,9 @@ public class MainFrameView {
         }
     }
 
-    private class MyLateralButton extends JButton{
+    private class MyLateralButton extends JButton {
 
-        MyLateralButton(String text){
+        MyLateralButton(String text) {
             super(text);
             setContentAreaFilled(false);
             setFocusPainted(false);

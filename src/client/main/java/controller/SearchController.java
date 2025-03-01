@@ -3,6 +3,7 @@ package controller;
 import com.google.gson.JsonObject;
 import json.Parser;
 import model.Multimedia;
+import thread.FetchDataFromAPI;
 import view.component.SearchPanel;
 
 import java.io.IOException;
@@ -15,15 +16,13 @@ public class SearchController {
         this.VIEW = view;
     }
 
-    public List<Multimedia> searchMultimedia(String name) {
+    public List<Multimedia> searchMultimediaByKeyword(String name) {
         try {
             JsonObject data = APIController.searchMultimedia(name);
             System.out.println("Data: " + data);
             List<Multimedia> multiList = Parser.parseJSONFromAPI(data.get("results").getAsJsonArray());
 
-            multiList = multiList.stream()
-                    .sorted((a, b) -> (int) ((a.getPopularity() - b.getPopularity()) * -1))
-                    .toList();
+            new Thread(new FetchDataFromAPI(multiList)).start();
 
             return multiList;
         } catch (IOException | InterruptedException e) {

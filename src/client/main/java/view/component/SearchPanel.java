@@ -11,6 +11,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -26,7 +28,7 @@ public class SearchPanel extends JPanel {
 
     private ScrollablePanel pnlInnerResultList;
     private JScrollPane scrollPaneResult;
-    private JButton btnSearch;
+    private MySearchTextField txfCentralSearch;
 
     private SearchController controller;
 
@@ -69,20 +71,20 @@ public class SearchPanel extends JPanel {
         scrollPaneResult = new JScrollPane(pnlInnerResultList);
         scrollPaneResult.getVerticalScrollBar().setUnitIncrement(20);
 
-        MySearchTextField txfCentralSearch = new MySearchTextField();
+        txfCentralSearch = new MySearchTextField();
         txfCentralSearch.setBorder(BorderFactory.createCompoundBorder(
                 txfCentralSearch.getBorder(),
                 BorderFactory.createEmptyBorder(0, 20, 0, 0)
         ));
 
-        btnSearch = new JButton("Search");
+        JButton btnSearch = new JButton("Search");
 
         //Listeners
 
         btnSearch.addActionListener(e -> {
             if (txfCentralSearch.getText().isEmpty())
                 return;
-            List<Multimedia> multiList = controller.searchMultimedia(txfCentralSearch.getText().strip());
+            List<Multimedia> multiList = controller.searchMultimediaByKeyword(txfCentralSearch.getText().strip());
             if (multiList.isEmpty())
                 JOptionPane.showMessageDialog(SearchPanel.this.getParent(),
                         "No se ha encontrado resultados",
@@ -91,6 +93,8 @@ public class SearchPanel extends JPanel {
             else
                 addResultPanel(multiList);
         });
+
+        txfCentralSearch.addActionListener(_ -> btnSearch.doClick());
 
         //Adds
 
@@ -113,12 +117,8 @@ public class SearchPanel extends JPanel {
         this.controller = controller;
     }
 
-    public JButton getDefaultButton() {
-        return btnSearch;
-    }
-
     private void addResultPanel(List<Multimedia> multiList) {
-        String baseURLForPosters = APIController.getBaseURLForPosters();
+        String baseURLForPosters = APIController.getBaseURLForPosters(false);
         if (!multiList.isEmpty())
             pnlInnerResultList.removeAll();
         try {
@@ -154,6 +154,7 @@ public class SearchPanel extends JPanel {
     public void deleteDetailPanel() {
         remove(0);
         add(pnlResultList);
+        txfCentralSearch.requestFocusInWindow();
 
         revalidate();
         repaint();
@@ -170,7 +171,7 @@ public class SearchPanel extends JPanel {
         if (multi instanceof Movie)
             backgroundColor = new Color(250, 219, 111);
         else
-            backgroundColor = new Color(255, 204, 203);
+            backgroundColor = new Color(132, 182, 244);
         panel.setBackground(backgroundColor);
 
         JLabel lblPoster;
