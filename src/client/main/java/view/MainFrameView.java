@@ -2,6 +2,7 @@ package view;
 
 import controller.SearchController;
 import net.miginfocom.swing.MigLayout;
+import view.component.LoginDialog;
 import view.component.SearchPanel;
 
 import javax.swing.*;
@@ -17,15 +18,24 @@ public class MainFrameView {
     final private String APP_TITLE = "MyMovieList";
 
     public MainFrameView() {
-        init();
+        initFrame();
+
+        LoginDialog loginDialog = new LoginDialog(frame, true);
+
+        finishInit();
     }
 
-    private void init() {
+    private void initFrame() {
         frame = new JFrame(APP_TITLE);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
         frame.getContentPane().setBackground(new Color(192, 192, 192));
+
+        frame.setVisible(true);
+    }
+
+    private void finishInit() {
         frame.getContentPane().setLayout(new MigLayout(
                 "fill",
                 "[fill, 22%]5[fill, 78%]",
@@ -74,7 +84,8 @@ public class MainFrameView {
 
         frame.addWindowListener(new MainWindowListener(frame));
 
-        frame.setVisible(true);
+        frame.revalidate();
+        frame.repaint();
     }
 
     public void changeCentralPanel(JPanel panel) {

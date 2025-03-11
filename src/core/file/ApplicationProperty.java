@@ -11,6 +11,7 @@ public class ApplicationProperty {
     private static HashMap<String, String> properties;
 
     final static private String PROPERTIES_FILENAME = "properties.txt";
+    final static private String APPLICATION_NAME = "MyMovieList v1.0";
 
     public static HashMap<String, String> getProperties(){
         if (properties == null){
