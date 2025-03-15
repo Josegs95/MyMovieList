@@ -1,75 +1,31 @@
 package view.component;
 
+import controller.AuthenticationController;
+import model.ServerResponse;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Map;
 
-public class LoginDialog extends JDialog {
+public class LoginDialog extends AuthenticationDialog {
 
-    final private JFrame PARENT;
+    final private AuthenticationController CONTROLLER;
 
-    public LoginDialog(JFrame parent, boolean modal) {
-        super(parent, modal);
+    public LoginDialog(JFrame parent, boolean modal, AuthenticationController controller) {
+        super(parent, modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
 
-        this.PARENT = parent;
-
+        this.CONTROLLER = controller;
         init();
     }
 
     private void init() {
-        setLayout(new MigLayout(
-                "align 50% 50%, flowy",
-                "[align center, fill]",
-                "[][]30[]"
-        ));
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(400, 300);
-        setLocationRelativeTo(PARENT);
-        setResizable(false);
-        getContentPane().setBackground(new Color(223, 223, 223));
-        setTitle("Login");
-
         //Components
-
-            //Username
-        JPanel pnlUsername = new JPanel(new MigLayout(
-                "fill, flowy",
-                "[fill]",
-                "[]0[]"
-        ));
-        pnlUsername.setOpaque(false);
-
-        JLabel lblUsername = new JLabel("Username");
-
-        JTextField txfUsername = new JTextField(null, 20);
-
-        pnlUsername.add(lblUsername);
-        pnlUsername.add(txfUsername);
-
-            //Password
-        JPanel pnlPassword = new JPanel(new MigLayout(
-                "fill, flowy",
-                "[fill]",
-                "[]0[]"
-        ));
-        pnlPassword.setOpaque(false);
-
-        JLabel lblPassword = new JLabel("Password");
-
-        JPasswordField psfPassword = new JPasswordField(null, 20);
-
-        pnlPassword.add(lblPassword);
-        pnlPassword.add(psfPassword);
 
             //Buttons
         JPanel pnlButtons = new JPanel(new MigLayout(
                 "fill",
-                "[]15[]15[]",
+                "[center]15[center]15[center]",
                 "[]"
         ));
         pnlButtons.setOpaque(false);
@@ -77,60 +33,60 @@ public class LoginDialog extends JDialog {
         JButton btnLogin = new JButton("Login");
         JButton btnRegister = new JButton("Register");
         JButton btnCancel = new JButton("Cancel");
+        setDefaultButton(btnLogin);
 
         pnlButtons.add(btnCancel, "sg button");
         pnlButtons.add(btnRegister, "sg button");
         pnlButtons.add(btnLogin, "sg button");
 
-
         //Listeners
 
-        addWindowListener(new LoginWindowListener(PARENT, this));
+        Map<String, JTextField> textFieldMap = getTextFieldMap();
+        btnLogin.addActionListener(_ ->{
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("username", textFieldMap.get("Username").getText());
+            userData.put("password", textFieldMap.get("Password").getText());
+            ServerResponse serverResponse = CONTROLLER.loginUser(userData);
 
-        txfUsername.addActionListener(_ -> btnLogin.doClick());
-        txfUsername.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                txfUsername.selectAll();
-            }
-        });
-        psfPassword.addActionListener(_ -> btnLogin.doClick());
-        psfPassword.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                psfPassword.selectAll();
-            }
-        });
+            if (serverResponse.getStatus() != 200)
+                JOptionPane.showMessageDialog(
+                        LoginDialog.this,
+                        serverResponse.getMessageError(),
+                        "Error al registrarse",
+                        JOptionPane.ERROR_MESSAGE);
 
+
+            if ((boolean) serverResponse.getData().get("login"))
+                JOptionPane.showMessageDialog(
+                        LoginDialog.this,
+                        "Usuario logueado correctamente",
+                        "Login",
+                        JOptionPane.INFORMATION_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(
+                        LoginDialog.this,
+                        "Credenciales de usuario incorrectas. Reviselas e intentelo de nuevo",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+
+        });
+        btnRegister.addActionListener(_ -> {
+            for (JTextField textField : textFieldMap.values())
+                textField.setText("");
+            new RegisterDialog(LoginDialog.this, true, CONTROLLER);
+        });
         btnCancel.addActionListener(_ -> LoginDialog.this.dispose());
+
+        setTextFieldListeners(textFieldMap);
 
         //Adds
 
-        add(pnlUsername);
-        add(pnlPassword);
         add(pnlButtons);
 
         setVisible(true);
     }
 
-    public class LoginWindowListener extends WindowAdapter{
-
-        final private JFrame PARENT;
-        final private JDialog INSTANCE;
-
-        public LoginWindowListener(JFrame parent, JDialog instance){
-            this.PARENT = parent;
-            this.INSTANCE = instance;
-        }
-
-        @Override
-        public void windowClosing(WindowEvent e) {
-            INSTANCE.dispose();
-        }
-
-        @Override
-        public void windowClosed(WindowEvent e) {
-            PARENT.dispose();
-        }
+    protected void setUsername(String username){
+        getTextFieldMap().get("Username").setText(username);
     }
 }

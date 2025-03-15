@@ -1,10 +1,11 @@
+import database.Database;
+import exception.DatabaseException;
 import io.MessageType;
 import io.SocketCommunication;
 import json.JSONMessageProtocol;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,30 +21,50 @@ public class ClientHandler implements Runnable{
 
     @Override
     public void run() {
-        try(SocketCommunication socketCommunication = new SocketCommunication(SOCKET)){
+        SocketCommunication socketCommunication = new SocketCommunication(SOCKET);
+        MessageType messageType = null;
+        Map<String, Object> serverResponseData = new HashMap<>();
+        try{
             String clientMessage = socketCommunication.readStringFromSocket();
-            Map<String, Object> data = JSONMessageProtocol.createMapFromJSONString(clientMessage);
-            if (data.get("message_type").equals(MessageType.KNOCK)){
+            Map<String, Object> messageData = JSONMessageProtocol.createMapFromJSONString(clientMessage);
+            if (messageData.get("message_type").equals(MessageType.KNOCK)){
                 return;
             }
 
-            Map<String, Object> response = new HashMap<>();
-            socketCommunication.writeToClient(response, 200);
+            socketCommunication.writeToClient(200, MessageType.KNOCK);
 
             clientMessage = socketCommunication.readStringFromSocket();
-            data = JSONMessageProtocol.createMapFromJSONString(clientMessage);
-            MessageType messageType = MessageType.valueOf(data.get("message_type").toString());
+            messageData = JSONMessageProtocol.createMapFromJSONString(clientMessage);
+            messageType = MessageType.valueOf(messageData.get("message_type").toString());
+            Map<String, Object> clientData = (Map<String, Object>) messageData.get("data");
             switch (messageType){
                 case TEST -> System.out.println("Es un mensaje de tipo Test");
-                case LOGIN -> System.out.println("Es un mensaje de tipo Login");
-                case REGISTER -> System.out.println("Es un mensaje de tipo Register");
+                case LOGIN -> {
+                    System.out.println("Un usuario quiere identificarse");
+                    serverResponseData.put("login", Database.loginUser(clientData));
+                }
+                case REGISTER -> {
+                    System.out.println("Un usuario se quiere registrar");
+                    if (Database.registerUser(clientData))
+                        System.out.println("Un usuario se ha registrado exitosamente");
+                }
                 default -> System.out.println("Tipo de mensaje desconocido: " + messageType);
             }
 
-            socketCommunication.writeToClient(response, 200);
-        } catch (SocketException _){}
-        catch (IOException e) {
+            socketCommunication.writeToClient(serverResponseData, 200, messageType);
+        } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (DatabaseException e) {
+            try {
+                serverResponseData.put("error_message", "Error relacionado con la base de datos del servidor. " +
+                        "Intentelo de nuevo mas tarde.");
+                socketCommunication.writeToClient(serverResponseData,500, messageType);
+                socketCommunication.close();
+
+                throw new RuntimeException(e);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package view;
 
+import controller.AuthenticationController;
 import controller.SearchController;
 import net.miginfocom.swing.MigLayout;
 import view.component.LoginDialog;
@@ -20,7 +21,7 @@ public class MainFrameView {
     public MainFrameView() {
         initFrame();
 
-        LoginDialog loginDialog = new LoginDialog(frame, true);
+        LoginDialog loginDialog = new LoginDialog(frame, true, new AuthenticationController());
 
         finishInit();
     }
@@ -97,7 +98,7 @@ public class MainFrameView {
         frame.repaint();
     }
 
-    private class MainWindowListener extends WindowAdapter {
+    private static class MainWindowListener extends WindowAdapter {
         final private JFrame FRAME;
 
         public MainWindowListener(JFrame frame) {
@@ -110,7 +111,7 @@ public class MainFrameView {
         }
     }
 
-    private class MyLateralButton extends JButton {
+    private static class MyLateralButton extends JButton {
 
         MyLateralButton(String text) {
             super(text);

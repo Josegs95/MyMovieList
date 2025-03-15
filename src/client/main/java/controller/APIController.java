@@ -28,13 +28,10 @@ public class APIController {
     private static Map<String, JsonElement> API_CONFIGURATION;
 
     static {
-        if (ApplicationProperty.getProperties() != null) {
-            API_TOKEN = ApplicationProperty.getProperties().get("API_READ_ACCESS_TOKEN");
-            LANGUAGE = ApplicationProperty.getProperties().getOrDefault("LANGUAGE", "en-GB");
-        } else {
-            API_TOKEN = "";
-            LANGUAGE = "en-GB";
-        }
+        Map<String, String> properties = ApplicationProperty.getProperties();
+
+        API_TOKEN = properties.getOrDefault("API_READ_ACCESS_TOKEN", "");
+        LANGUAGE = properties.getOrDefault("LANGUAGE", "en-GB");
     }
 
     public static JsonObject searchMultimedia(String multiName) throws IOException, InterruptedException {

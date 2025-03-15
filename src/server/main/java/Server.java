@@ -3,15 +3,13 @@ import file.ApplicationProperty;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
-    final private Map<String, String> PROPERTIES;
 
     public Server(){
-        PROPERTIES = ApplicationProperty.getProperties();
+        ApplicationProperty.getProperties();
     }
 
     public static void main(String[] args) {
@@ -19,9 +17,7 @@ public class Server {
     }
 
     private void init(){
-        if (PROPERTIES == null)
-            return;
-        int port = Integer.parseInt(PROPERTIES.get("PORT"));
+        int port = ApplicationProperty.getPORT();
         try (ServerSocket serverSocket = new ServerSocket(port);
              ExecutorService executor = Executors.newCachedThreadPool()){
 

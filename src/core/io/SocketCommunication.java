@@ -1,6 +1,7 @@
 package io;
 
-import json.JSONMessageProtocol;
+import file.ApplicationProperty;
+import model.ServerResponse;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -29,36 +30,37 @@ public class SocketCommunication implements AutoCloseable {
         }
     }
 
-    public boolean writeToServer(String message) throws IOException {
+    public SocketCommunication() throws IOException {
+        this(new Socket(ApplicationProperty.getHOST(), ApplicationProperty.getPORT()));
+    }
+
+    public ServerResponse writeToServer(Map<String, Object> messageData, MessageType messageType) throws IOException {
         writeStringToSocket(MessageFactory.createMessage(MessageType.KNOCK, new HashMap<>()));
-        String serverMessage = readStringFromSocket();
-        if (getServerStatus(serverMessage) != 200)
-            return false;
+        ServerResponse serverResponse = new ServerResponse(readStringFromSocket());
+        if (serverResponse.getMessageType() != MessageType.KNOCK || serverResponse.getStatus() != 200)
+            return null;
 
-        writeStringToSocket(message);
-        serverMessage = readStringFromSocket();
+        writeStringToSocket(MessageFactory.createMessage(messageType, messageData));
 
-        return getServerStatus(serverMessage) == 200;
+        return new ServerResponse(readStringFromSocket());
     }
 
-    public void writeToClient(Map<String, Object> messageData, int status) throws IOException {
-        writeStringToSocket(MessageFactory.createMessage(MessageType.KNOCK, messageData, status));
+    public void writeToClient(Map<String, Object> messageData, int status, MessageType messageType) throws IOException {
+        writeStringToSocket(MessageFactory.createMessage(messageType, messageData, status));
     }
 
-    private void writeStringToSocket(String message) throws IOException {
-        String encodedMessage = Base64.getEncoder().encodeToString(message.getBytes(StandardCharsets.UTF_8));
-        System.out.println("Escribiendo mensaje encriptado : " + encodedMessage);
-        DOS.writeUTF(encodedMessage);
+    public void writeToClient(int status, MessageType messageType) throws IOException {
+        writeToClient(new HashMap<>(), status, messageType);
     }
 
     public String readStringFromSocket() throws IOException {
         String encodedMessage = DIS.readUTF();
-        System.out.println("Leyendo mensaje encriptado : " + encodedMessage);
         return new String (Base64.getDecoder().decode(encodedMessage), StandardCharsets.UTF_8);
     }
 
-    private int getServerStatus(String serverMessage){
-        return (int) (JSONMessageProtocol.createMapFromJSONString(serverMessage).get("status"));
+    private void writeStringToSocket(String message) throws IOException {
+        String encodedMessage = Base64.getEncoder().encodeToString(message.getBytes(StandardCharsets.UTF_8));
+        DOS.writeUTF(encodedMessage);
     }
 
     @Override

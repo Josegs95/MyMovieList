@@ -17,6 +17,10 @@ public class Security {
         }
     }
 
+    public static String hashString(String s, int salt){
+        return hashString(s + salt);
+    }
+
     private static String toHexString(byte[] bytes){
         StringBuilder sb = new StringBuilder(bytes.length * 2);
         Formatter formatter = new Formatter(sb);
