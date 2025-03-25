@@ -55,7 +55,7 @@ public class Database {
         }
     }
 
-    public static boolean loginUser(Map<String, Object> userData) throws DatabaseException {
+    public static Integer loginUser(Map<String, Object> userData) throws DatabaseException {
         String sqlStatement = "SELECT password_salt FROM user WHERE name = ? AND password = ?";
 
         try(Connection connection = getConnection();
@@ -64,13 +64,13 @@ public class Database {
             String username = userData.get("username").toString();
             Integer passwordSalt = getUserPasswordSalt(username);
             if (passwordSalt == null)
-                return false;
+                return null;
 
             String hashedPassword = Security.hashString(userData.get("password").toString(), passwordSalt);
             statement.setString(1, username);
             statement.setString(2, hashedPassword);
 
-            return statement.executeQuery().next();
+            return statement.executeQuery().next() ? passwordSalt : null;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }

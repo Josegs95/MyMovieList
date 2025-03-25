@@ -43,7 +43,13 @@ public class ClientHandler implements Runnable{
                 case TEST -> System.out.println("Es un mensaje de tipo Test");
                 case LOGIN -> {
                     System.out.println("Un usuario quiere identificarse");
-                    serverResponseData.put("login", Database.loginUser(clientData));
+                    Integer salt = Database.loginUser(clientData);
+                    if (salt == null)
+                        serverResponseData.put("login", false);
+                    else {
+                        serverResponseData.put("login", true);
+                        serverResponseData.put("token", salt);
+                    }
                 }
                 case REGISTER -> {
                     System.out.println("Un usuario se quiere registrar");
