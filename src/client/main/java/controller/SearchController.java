@@ -4,17 +4,14 @@ import com.google.gson.JsonObject;
 import json.Parser;
 import model.Multimedia;
 import thread.FetchDataFromAPI;
-import view.component.SearchPanel;
+import view.component.panel.SearchPanel;
 
 import java.io.IOException;
 import java.util.List;
 
 public class SearchController {
-    final private SearchPanel VIEW;
 
-    public SearchController(SearchPanel view) {
-        this.VIEW = view;
-    }
+    public SearchController() {}
 
     public List<Multimedia> searchMultimediaByKeyword(String name) {
         try {
@@ -30,7 +27,7 @@ public class SearchController {
         }
     }
 
-    public void backButtonFromDetailPanel() {
-        VIEW.deleteDetailPanel();
+    public void backButtonFromDetailPanel(SearchPanel view) {
+        view.deleteDetailPanel();
     }
 }

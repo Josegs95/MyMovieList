@@ -1,4 +1,4 @@
-package view.component;
+package view.component.dialog;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -17,6 +17,7 @@ public abstract class AuthenticationDialog extends JDialog{
 
     private Map<String, JTextField> textFieldMap;
     private JButton btnDefault;
+    private boolean loginSuccess = false;
 
     AuthenticationDialog(Window owner, Dialog.ModalityType modalityType){
         super(owner, modalityType);
@@ -88,6 +89,14 @@ public abstract class AuthenticationDialog extends JDialog{
         return textFieldMap;
     }
 
+    protected void setLoginSuccess(){
+        loginSuccess = true;
+    }
+
+    protected boolean isLoginSuccess(){
+        return loginSuccess;
+    }
+
     protected void setDefaultButton(JButton button){
         btnDefault = button;
     }
@@ -122,8 +131,11 @@ public abstract class AuthenticationDialog extends JDialog{
 
         @Override
         public void windowClosed(WindowEvent e) {
-            if (PARENT instanceof JFrame)
-                PARENT.dispose();
+            if (PARENT instanceof JFrame){
+                if (INSTANCE instanceof LoginDialog && !((LoginDialog) INSTANCE).isLoginSuccess())
+                    PARENT.dispose();
+            }
+
         }
     }
 }

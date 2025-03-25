@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class AuthenticationController{
-    public ServerResponse registerUser(Map<String, Object> userData) throws RegisterValidationException {
+    public static ServerResponse registerUser(Map<String, Object> userData) throws RegisterValidationException {
         if (!checkRegisterFields(userData))
             return null;
 
@@ -33,7 +33,7 @@ public class AuthenticationController{
         }
     }
 
-    public ServerResponse loginUser(Map<String, Object> userData){
+    public static ServerResponse loginUser(Map<String, Object> userData){
         try(SocketCommunication socketCommunication = new SocketCommunication()){
             userData.put("password", Security.hashString(userData.get("password").toString()));
 
@@ -49,7 +49,7 @@ public class AuthenticationController{
         }
     }
 
-    private boolean checkRegisterFields(Map<String, Object> userData) throws RegisterValidationException {
+    private static boolean checkRegisterFields(Map<String, Object> userData) throws RegisterValidationException {
         //Checks
         String username = userData.get("username").toString();
         String password = userData.get("password").toString();

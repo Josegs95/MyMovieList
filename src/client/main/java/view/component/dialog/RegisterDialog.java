@@ -1,4 +1,4 @@
-package view.component;
+package view.component.dialog;
 
 import controller.AuthenticationController;
 import exception.RegisterValidationException;
@@ -12,13 +12,11 @@ import java.util.Map;
 public class RegisterDialog extends AuthenticationDialog{
 
     final private JDialog PARENT;
-    final private AuthenticationController CONTROLLER;
 
-    protected RegisterDialog(JDialog parent, boolean modal, AuthenticationController controller) {
+    protected RegisterDialog(JDialog parent, boolean modal) {
         super(parent, modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
 
         this.PARENT = parent;
-        this.CONTROLLER = controller;
         init();
     }
 
@@ -95,7 +93,7 @@ public class RegisterDialog extends AuthenticationDialog{
                 for (Map.Entry<String, JTextField> entry : textFieldMap.entrySet()){
                     userData.put(entry.getKey().toLowerCase(), entry.getValue().getText());
                 }
-                ServerResponse serverResponse = CONTROLLER.registerUser(userData);
+                ServerResponse serverResponse = AuthenticationController.registerUser(userData);
 
                 if (serverResponse.getStatus() == 200) {
                     if (PARENT instanceof LoginDialog) {

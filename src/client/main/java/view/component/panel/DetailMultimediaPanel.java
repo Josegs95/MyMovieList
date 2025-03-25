@@ -1,4 +1,4 @@
-package view.component;
+package view.component.panel;
 
 import controller.APIController;
 import controller.SearchController;
@@ -17,16 +17,18 @@ import java.net.URI;
 
 public class DetailMultimediaPanel extends JPanel {
 
+    final private SearchPanel PARENT;
     final private Multimedia MULTIMEDIA;
     final private SearchController CONTROLLER;
     private String BASE_URL_POSTER;
 
-    public DetailMultimediaPanel(Multimedia multimedia, SearchController controller) {
+    public DetailMultimediaPanel(SearchPanel parent, Multimedia multimedia, SearchController controller) {
         super(new MigLayout(
                 "fill, ins 0",
                 "[fill, 40%][fill, 60%]",
                 "[fill]"));
 
+        this.PARENT = parent;
         this.MULTIMEDIA = multimedia;
         this.CONTROLLER = controller;
 
@@ -172,7 +174,7 @@ public class DetailMultimediaPanel extends JPanel {
 
         //Listeners
 
-        btnBack.addActionListener(_ -> CONTROLLER.backButtonFromDetailPanel());
+        btnBack.addActionListener(_ -> CONTROLLER.backButtonFromDetailPanel(PARENT));
 
         //Adds
 

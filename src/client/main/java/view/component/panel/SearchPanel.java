@@ -1,4 +1,4 @@
-package view.component;
+package view.component.panel;
 
 import controller.APIController;
 import controller.SearchController;
@@ -7,12 +7,11 @@ import lib.StretchIcon;
 import model.Movie;
 import model.Multimedia;
 import net.miginfocom.swing.MigLayout;
+import view.component.MySearchTextField;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -127,7 +126,7 @@ public class SearchPanel extends JPanel {
                 panel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        showDetailPanel(new DetailMultimediaPanel(multi, controller));
+                        showDetailPanel(new DetailMultimediaPanel(SearchPanel.this, multi, controller));
                     }
                 });
                 pnlInnerResultList.add(panel);

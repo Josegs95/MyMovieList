@@ -28,7 +28,7 @@ public class Database {
 
     private Database(){}
 
-    public static boolean registerUser(Map<String, Object> userData) throws DatabaseException {
+    public static boolean registerUser(Map<String, Object> userData) throws DatabaseException, SQLException {
         String sqlStatement = "INSERT INTO user (name, password, password_salt, email) VALUES (?, ?, ?, ?)";
 
         try(Connection connection = getConnection();
@@ -49,7 +49,9 @@ public class Database {
             return statement.executeUpdate() != 0;
 
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
+            if (e.getMessage().contains("user.name_UNIQUE"))
+                throw new DatabaseException("Ya existe un usuario con ese nombre de usuario");
+            throw new SQLException(e);
         }
     }
 

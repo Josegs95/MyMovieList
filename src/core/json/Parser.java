@@ -19,14 +19,18 @@ public class Parser {
             JsonObject multiAsJson = element.getAsJsonObject();
             Multimedia multi;
             String releaseDateKey, titleKey;
+
+            //Id
+            int id = multiAsJson.get("id").getAsInt();
+
             switch (multiAsJson.get("media_type").getAsString()) {
                 case "movie" -> {
-                    multi = new Movie();
+                    multi = new Movie(id);
                     titleKey = "title";
                     releaseDateKey = "release_date";
                 }
                 case "tv" -> {
-                    multi = new TVShow();
+                    multi = new TVShow(id);
                     titleKey = "name";
                     releaseDateKey = "first_air_date";
                 }
@@ -34,9 +38,6 @@ public class Parser {
                     continue;
                 }
             }
-
-            //Id
-            multi.setId(multiAsJson.get("id").getAsInt());
 
             //Title
             multi.setTitle(multiAsJson.get(titleKey).getAsString());

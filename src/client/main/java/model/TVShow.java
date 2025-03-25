@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class TVShow implements Multimedia {
-    private int id;
+    final private int ID;
     private String title;
     private String posterURL;
     private LocalDate releaseDate;
@@ -20,12 +20,13 @@ public class TVShow implements Multimedia {
     private int seasonCount;
     private String episodeDuration;
 
-    public TVShow() {
+    public TVShow(int id) {
+        this.ID = id;
     }
 
     @Override
     public int getId() {
-        return id;
+        return ID;
     }
 
     public String getTitle() {
@@ -74,11 +75,6 @@ public class TVShow implements Multimedia {
         if (episodeDuration == null)
             return "Unknown";
         return episodeDuration;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override

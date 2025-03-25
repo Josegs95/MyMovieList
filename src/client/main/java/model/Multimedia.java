@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface Multimedia {
+
     String getTitle();
 
     String getPosterURL();
@@ -31,8 +32,6 @@ public interface Multimedia {
     void setScore(String score);
 
     void setPopularity(Double popularity);
-
-    void setId(int Id);
 
     void setSynopsis(String synopsis);
 

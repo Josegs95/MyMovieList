@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Movie implements Multimedia {
-    private int id;
+    final private int ID;
     private String title;
     private String posterURL;
     private LocalDate releaseDate;
@@ -16,11 +16,12 @@ public class Movie implements Multimedia {
     private String duration;
     private String country;
 
-    public Movie() {
+    public Movie(int id) {
+        this.ID = id;
     }
 
     public int getId() {
-        return id;
+        return ID;
     }
 
     public String getTitle() {
@@ -55,11 +56,6 @@ public class Movie implements Multimedia {
 
     public String getDuration() {
         return duration;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override

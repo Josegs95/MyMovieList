@@ -1,6 +1,6 @@
 import controller.APIController;
 import file.ApplicationProperty;
-import view.MainFrameView;
+import view.MainFrame;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class Client {
 
     private void init() {
         SwingUtilities.invokeLater(() -> {
-            new MainFrameView();
+            new MainFrame();
             new Thread(() -> {
                 try {
                     APIController.setUpConfigurationDetails();

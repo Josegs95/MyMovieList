@@ -6,6 +6,7 @@ import json.JSONMessageProtocol;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class ClientHandler implements Runnable{
     public void run() {
         SocketCommunication socketCommunication = new SocketCommunication(SOCKET);
         MessageType messageType = null;
+        int status = 0;
         Map<String, Object> serverResponseData = new HashMap<>();
         try{
             String clientMessage = socketCommunication.readStringFromSocket();
@@ -51,17 +53,20 @@ public class ClientHandler implements Runnable{
                 default -> System.out.println("Tipo de mensaje desconocido: " + messageType);
             }
 
-            socketCommunication.writeToClient(serverResponseData, 200, messageType);
+            status = 200;
         } catch (IOException e) {
+            status = 500;
             throw new RuntimeException(e);
         } catch (DatabaseException e) {
+            serverResponseData.put("error_message", e.getMessage());
+            status = 500;
+        } catch (SQLException e) {
+            serverResponseData.put("error_message", "Error desconocido en la base de datos del servidor.");
+            status = 500;
+        } finally {
             try {
-                serverResponseData.put("error_message", "Error relacionado con la base de datos del servidor. " +
-                        "Intentelo de nuevo mas tarde.");
-                socketCommunication.writeToClient(serverResponseData,500, messageType);
+                socketCommunication.writeToClient(serverResponseData, status, messageType);
                 socketCommunication.close();
-
-                throw new RuntimeException(e);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
