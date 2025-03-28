@@ -7,15 +7,18 @@ import java.util.Map;
 
 public class ServerResponse {
     final private MessageType MESSAGE_TYPE;
-    final private int status;
-    final private Map<String, Object> data;
+    final private int STATUS;
+    final private Map<String, Object> DATA;
+
+    final private String JSON_STRING;
 
     public ServerResponse(String serverMessage){
         Map<String, Object> messageData = JSONMessageProtocol.createMapFromJSONString(serverMessage);
 
         MESSAGE_TYPE = MessageType.valueOf(messageData.get("message_type").toString());
-        status = Integer.parseInt(messageData.get("status").toString());
-        data = (Map<String, Object>) messageData.get("data");
+        STATUS = Integer.parseInt(messageData.get("status").toString());
+        DATA = (Map<String, Object>) messageData.get("data");
+        JSON_STRING = serverMessage;
     }
 
     public MessageType getMessageType() {
@@ -23,17 +26,21 @@ public class ServerResponse {
     }
 
     public int getStatus() {
-        return status;
+        return STATUS;
     }
 
     public Map<String, Object> getData() {
-        return data;
+        return DATA;
     }
 
     public String getMessageError(){
-        if (status == 200)
+        if (STATUS == 200)
             return null;
 
-        return data.get("error_message").toString();
+        return DATA.get("error_message").toString();
+    }
+
+    public String getDataAsJsonString() {
+        return JSON_STRING;
     }
 }

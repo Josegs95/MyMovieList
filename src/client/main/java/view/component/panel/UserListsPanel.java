@@ -1,20 +1,24 @@
 package view.component.panel;
 
+import controller.UserListController;
 import lib.ScrollablePanel;
-import model.MultimediaList;
+import model.ServerResponse;
+import model.UserList;
 import net.miginfocom.swing.MigLayout;
 import view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import java.util.HashMap;
+import java.util.HashSet;
 
 public class UserListsPanel extends JPanel {
 
     final private MainFrame PARENT;
+    final private UserListController CONTROLLER;
 
     public UserListsPanel(MainFrame frame){
         this.PARENT = frame;
+        this.CONTROLLER = new UserListController();
 
         init();
     }
@@ -61,7 +65,7 @@ public class UserListsPanel extends JPanel {
             // Enviar informacion al server
             //
 
-            CollapsablePanel newUserList = new CollapsablePanel(new MultimediaList(listName, new HashMap<>()));
+            CollapsablePanel newUserList = new CollapsablePanel(new UserList(listName, new HashSet<>()));
             pnlMultimediaLists.add(newUserList);
             UserListsPanel.this.revalidate();
             UserListsPanel.this.repaint();

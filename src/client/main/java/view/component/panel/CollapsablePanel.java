@@ -1,6 +1,6 @@
 package view.component.panel;
 
-import model.MultimediaList;
+import model.UserList;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -11,10 +11,10 @@ import java.awt.*;
 public class CollapsablePanel extends JPanel {
 
     private boolean isCollapsed = true;
-    final private MultimediaList MULTIMEDIA_LIST;
+    final private UserList MULTIMEDIA_LIST;
 
-    public CollapsablePanel(MultimediaList multimediaList){
-        this.MULTIMEDIA_LIST = multimediaList;
+    public CollapsablePanel(UserList userList){
+        this.MULTIMEDIA_LIST = userList;
 
         init();
     }

@@ -2,12 +2,22 @@ package json;
 
 import com.google.gson.*;
 
+import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class JSONMessageProtocol {
+
+    final private static Gson GSON;
+
+    static {
+        GSON = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter()).create();
+    }
+
 
     public static String createJSONFromMap(Map<String, Object> map){
         return new Gson().toJsonTree(map).getAsJsonObject().toString();
@@ -21,6 +31,10 @@ public class JSONMessageProtocol {
         }
 
         return resultMap;
+    }
+
+    public static JsonElement serializeObject(Object object){
+        return GSON.toJsonTree(object);
     }
 
     private static List<Object> createListFromJSONArray(JsonArray jsonArray){
@@ -53,6 +67,23 @@ public class JSONMessageProtocol {
                 System.out.println("Valor no soportado: " + element);
                 return null;
             }
+        }
+    }
+
+    private static class LocalDateTypeAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+
+        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        @Override
+        public JsonElement serialize(final LocalDate date, final Type typeOfSrc,
+                                     final JsonSerializationContext context) {
+            return new JsonPrimitive(date.format(formatter));
+        }
+
+        @Override
+        public LocalDate deserialize(final JsonElement json, final Type typeOfT,
+                                     final JsonDeserializationContext context) throws JsonParseException {
+            return LocalDate.parse(json.getAsString(), formatter);
         }
     }
 }

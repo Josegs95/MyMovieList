@@ -3,15 +3,20 @@ import exception.DatabaseException;
 import io.MessageType;
 import io.SocketCommunication;
 import json.JSONMessageProtocol;
+import model.UserList;
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ClientHandler implements Runnable{
     final private Socket SOCKET;
+
+    private Map<String, Object> clientData;
 
     public ClientHandler(Socket socket){
         if (socket == null)
@@ -24,7 +29,7 @@ public class ClientHandler implements Runnable{
     public void run() {
         SocketCommunication socketCommunication = new SocketCommunication(SOCKET);
         MessageType messageType = null;
-        int status = 0;
+        int status;
         Map<String, Object> serverResponseData = new HashMap<>();
         try{
             String clientMessage = socketCommunication.readStringFromSocket();
@@ -38,44 +43,77 @@ public class ClientHandler implements Runnable{
             clientMessage = socketCommunication.readStringFromSocket();
             messageData = JSONMessageProtocol.createMapFromJSONString(clientMessage);
             messageType = MessageType.valueOf(messageData.get("message_type").toString());
-            Map<String, Object> clientData = (Map<String, Object>) messageData.get("data");
+            clientData = (Map<String, Object>) messageData.get("data");
+
             switch (messageType){
                 case TEST -> System.out.println("Es un mensaje de tipo Test");
                 case LOGIN -> {
-                    System.out.println("Un usuario quiere identificarse");
-                    Integer salt = Database.loginUser(clientData);
-                    if (salt == null)
+                    Integer sessionToken = loginUser();
+                    if (sessionToken == null)
                         serverResponseData.put("login", false);
                     else {
                         serverResponseData.put("login", true);
-                        serverResponseData.put("token", salt);
+                        serverResponseData.put("token", sessionToken);
                     }
                 }
                 case REGISTER -> {
-                    System.out.println("Un usuario se quiere registrar");
-                    if (Database.registerUser(clientData))
+                    if (registerUser())
                         System.out.println("Un usuario se ha registrado exitosamente");
+                }
+                case GET_USER_LISTS -> {
+                    List<UserList> userLists = getUserLists();
+                    serverResponseData.put("lists", JSONMessageProtocol.serializeObject(userLists));
+
                 }
                 default -> System.out.println("Tipo de mensaje desconocido: " + messageType);
             }
 
             status = 200;
-        } catch (IOException e) {
-            status = 500;
+            socketCommunication.writeToClient(serverResponseData, status, messageType);
+        } catch (AuthenticationException | IOException e) {
             throw new RuntimeException(e);
-        } catch (DatabaseException e) {
-            serverResponseData.put("error_message", e.getMessage());
+        } catch (DatabaseException | SQLException e) {
+            serverResponseData.put("error_message",
+                    e instanceof DatabaseException ? e.getMessage() : "Unknown error in the server database");
             status = 500;
-        } catch (SQLException e) {
-            serverResponseData.put("error_message", "Error desconocido en la base de datos del servidor.");
-            status = 500;
-        } finally {
             try {
                 socketCommunication.writeToClient(serverResponseData, status, messageType);
-                socketCommunication.close();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
+//        finally {
+//            try {
+//                socketCommunication.writeToClient(serverResponseData, status, messageType);
+//                socketCommunication.close();
+//            } catch (IOException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        }
+    }
+
+    private boolean registerUser() throws SQLException, DatabaseException {
+        String username = clientData.get("username").toString();
+        String password = clientData.get("password").toString();
+        String email = clientData.get("email").toString();
+        System.out.println("Un usuario se quiere registrar");
+
+        return Database.registerUser(username, password, email);
+    }
+
+    private Integer loginUser() throws DatabaseException {
+        String username = clientData.get("username").toString();
+        String password = clientData.get("password").toString();
+        System.out.printf("El usuario '%s' quiere identificarse", username);
+
+        return Database.loginUser(username, password);
+    }
+
+    private List<UserList> getUserLists() throws DatabaseException, AuthenticationException {
+        String username = clientData.get("username").toString();
+        Integer token = (Integer) clientData.get("token");
+        Database.validateUser(username, token);
+
+        return Database.getUserLists(username);
     }
 }

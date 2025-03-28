@@ -24,7 +24,7 @@ public class MainFrame extends JFrame{
     public MainFrame() {
         initFrame();
 
-        //LoginDialog loginDialog = new LoginDialog(this, true);
+        LoginDialog loginDialog = new LoginDialog(this, true);
 
         finishInit();
     }

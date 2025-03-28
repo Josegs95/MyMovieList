@@ -6,14 +6,14 @@ public class User {
     final private String USERNAME;
     final private Integer SESSION_TOKEN;
 
-    private List<MultimediaList> lists;
+    private List<UserList> lists;
 
     public User(String username, Integer sessionToken) {
         this.USERNAME = username;
         this.SESSION_TOKEN = sessionToken;
     }
 
-    public void setLists(List<MultimediaList> lists) {
+    public void setLists(List<UserList> lists) {
         this.lists = lists;
     }
 
@@ -21,7 +21,11 @@ public class User {
         return USERNAME;
     }
 
-    public List<MultimediaList> getLists() {
+    public List<UserList> getLists() {
         return lists;
+    }
+
+    public Integer getSessionToken() {
+        return SESSION_TOKEN;
     }
 }

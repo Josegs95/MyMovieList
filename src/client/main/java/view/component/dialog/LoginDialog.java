@@ -59,7 +59,7 @@ public class LoginDialog extends AuthenticationDialog {
 
             System.out.println(serverResponse.getData());
             if ((boolean) serverResponse.getData().get("login")) {
-                User user = new User(userData.get("username").toString(), (Integer) userData.get("token"));
+                User user = new User(userData.get("username").toString(), (Integer) serverResponse.getData().get("token"));
                 FRAME.setUser(user);
                 setLoginSuccess();
                 dispose();
