@@ -16,9 +16,10 @@ public class ServerResponse {
         Map<String, Object> messageData = JSONMessageProtocol.createMapFromJSONString(serverMessage);
 
         MESSAGE_TYPE = MessageType.valueOf(messageData.get("message_type").toString());
-        STATUS = Integer.parseInt(messageData.get("status").toString());
+        STATUS = (int) messageData.getOrDefault("status", 0);
         DATA = (Map<String, Object>) messageData.get("data");
         JSON_STRING = serverMessage;
+        System.out.println("From server: " + serverMessage);
     }
 
     public MessageType getMessageType() {
@@ -33,11 +34,18 @@ public class ServerResponse {
         return DATA;
     }
 
-    public String getMessageError(){
+    public String getErrorMessage(){
         if (STATUS == 200)
             return null;
 
         return DATA.get("error_message").toString();
+    }
+
+    public int getErrorCode(){
+        if (STATUS == 200)
+            return -1;
+
+        return (int) DATA.getOrDefault("error_code", -1);
     }
 
     public String getDataAsJsonString() {

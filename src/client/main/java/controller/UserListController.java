@@ -17,7 +17,7 @@ public class UserListController {
     public UserListController(){
     }
 
-    public ServerResponse fetchUserList(User user){
+    public static ServerResponse fetchUserList(User user){
         Map<String, Object> userData = new HashMap<>();
         userData.put("username", user.getUsername());
         userData.put("token", user.getSessionToken());

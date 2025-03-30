@@ -1,5 +1,6 @@
 package database;
 
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import exception.DatabaseException;
 import file.ApplicationProperty;
 import model.*;
@@ -45,8 +46,8 @@ public class Database {
             return statement.executeUpdate() != 0;
 
         } catch (SQLException e) {
-            if (e.getMessage().contains("user.name_UNIQUE"))
-                throw new DatabaseException("Ya existe un usuario con ese nombre de usuario");
+            if (e.getSQLState().equals("23000"))
+                throw new DatabaseException(23);
             throw new SQLException(e);
         }
     }
@@ -110,7 +111,7 @@ public class Database {
     }
 
     private static UserList getListItems(int idList, String listName){
-        String sqlStatement = "SELECT mt.name, m.title, lhm.current_episode, m.total_episodes, m.api_id, s.name " +
+        String sqlStatement = "SELECT mt.name, m.title, m.api_id, s.name, lhm.current_episode, m.total_episodes " +
                 "FROM multimedia_type AS mt " +
                 "INNER JOIN multimedia AS m ON m.multimedia_type_id = mt.id " +
                 "INNER JOIN list_has_multimedia AS lhm ON lhm.multimedia_id = m.id " +
@@ -128,10 +129,13 @@ public class Database {
                 Multimedia multi;
                 String multimediaType = resultSet.getString(1);
                 String multimediaTitle = resultSet.getString(2);
-                int current_episode = resultSet.getInt(3);
-                int total_episodes = resultSet.getInt(4);
-                int apiID = resultSet.getInt(5);
-                String statusName = resultSet.getString(6);
+                int apiID = resultSet.getInt(3);
+                String statusName = resultSet.getString(4);
+                int current_episode = resultSet.getInt(5);
+                int total_episodes = resultSet.getInt(6);
+
+                if (resultSet.wasNull())
+                    current_episode = -1;
 
                 if (multimediaType.equalsIgnoreCase("movie"))
                     multi = new Movie(apiID);
@@ -169,12 +173,20 @@ public class Database {
         }
     }
 
-    private static Connection getConnection() throws SQLException{
-
-        return DriverManager.getConnection(
-                "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME,
-                DB_USER,
-                DB_PASS
-        );
+    private static Connection getConnection(){
+        try {
+            return DriverManager.getConnection(
+                    "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME,
+                    DB_USER,
+                    DB_PASS
+            );
+        } catch (SQLException e) {
+            if (e instanceof CommunicationsException){
+                RuntimeException ex =new RuntimeException("MySQL service might be down");
+                ex.setStackTrace(new StackTraceElement[]{});
+                throw ex;
+            }
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class RegisterDialog extends AuthenticationDialog{
 
-    final private JDialog PARENT;
+    final private LoginDialog PARENT;
 
-    protected RegisterDialog(JDialog parent, boolean modal) {
+    protected RegisterDialog(LoginDialog parent, boolean modal) {
         super(parent, modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
 
         this.PARENT = parent;
@@ -91,22 +91,27 @@ public class RegisterDialog extends AuthenticationDialog{
             try{
                 Map<String, Object> userData = new HashMap<>();
                 for (Map.Entry<String, JTextField> entry : textFieldMap.entrySet()){
-                    userData.put(entry.getKey().toLowerCase(), entry.getValue().getText());
+                    userData.put(entry.getKey().toLowerCase(), entry.getValue().getText().strip());
                 }
                 ServerResponse serverResponse = AuthenticationController.registerUser(userData);
 
-                if (serverResponse.getStatus() == 200) {
-                    if (PARENT instanceof LoginDialog) {
-                        ((LoginDialog) PARENT).setUsername(textFieldMap.get("Username").getText());
-                    }
-                    dispose();
-                } else
+                if (serverResponse.getStatus() != 200) {
+                    String errorMessage = serverResponse.getErrorCode() == 23
+                            ? "Ya existe alguien con ese nombre de usuario"
+                            : serverResponse.getErrorMessage();
+
                     JOptionPane.showMessageDialog(
                             RegisterDialog.this,
-                            serverResponse.getMessageError(),
+                            errorMessage,
                             "Error al registrarse",
                             JOptionPane.ERROR_MESSAGE
                     );
+                    return;
+                }
+
+                PARENT.setUsername(textFieldMap.get("Username").getText().strip());
+                dispose();
+
             } catch (RegisterValidationException e) {
                 JOptionPane.showMessageDialog(
                         RegisterDialog.this,

@@ -46,14 +46,14 @@ public class LoginDialog extends AuthenticationDialog {
         Map<String, JTextField> textFieldMap = getTextFieldMap();
         btnLogin.addActionListener(_ ->{
             Map<String, Object> userData = new HashMap<>();
-            userData.put("username", textFieldMap.get("Username").getText());
-            userData.put("password", textFieldMap.get("Password").getText());
+            userData.put("username", textFieldMap.get("Username").getText().strip());
+            userData.put("password", textFieldMap.get("Password").getText().strip());
             ServerResponse serverResponse = AuthenticationController.loginUser(userData);
 
             if (serverResponse.getStatus() != 200)
                 JOptionPane.showMessageDialog(
                         LoginDialog.this,
-                        serverResponse.getMessageError(),
+                        serverResponse.getErrorMessage(),
                         "Error al registrarse",
                         JOptionPane.ERROR_MESSAGE);
 

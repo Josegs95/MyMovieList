@@ -2,7 +2,6 @@ package view.component.panel;
 
 import controller.UserListController;
 import lib.ScrollablePanel;
-import model.ServerResponse;
 import model.UserList;
 import net.miginfocom.swing.MigLayout;
 import view.MainFrame;
@@ -16,16 +15,19 @@ public class UserListsPanel extends JPanel {
     final private MainFrame PARENT;
     final private UserListController CONTROLLER;
 
+    private ScrollablePanel pnlMultimediaLists;
+
     public UserListsPanel(MainFrame frame){
         this.PARENT = frame;
         this.CONTROLLER = new UserListController();
 
         init();
+        initUserList();
     }
 
     private void init() {
         setLayout(new MigLayout(
-                "flowy, fill, ins 0, debug",
+                "flowy, fill, ins 0",
                 "[fill]",
                 "[50!, fill]10[fill]"
         ));
@@ -42,7 +44,7 @@ public class UserListsPanel extends JPanel {
 
         pnlButtons.add(btnCreateList);
 
-        ScrollablePanel pnlMultimediaLists = new ScrollablePanel(new MigLayout(
+        pnlMultimediaLists = new ScrollablePanel(new MigLayout(
                 "fillx, flowy, ins 0",
                 "[fill]",
                 "[100::null, fill]0[100::null, fill]"
@@ -65,15 +67,22 @@ public class UserListsPanel extends JPanel {
             // Enviar informacion al server
             //
 
-            CollapsablePanel newUserList = new CollapsablePanel(new UserList(listName, new HashSet<>()));
-            pnlMultimediaLists.add(newUserList);
-            UserListsPanel.this.revalidate();
-            UserListsPanel.this.repaint();
+            createListItemPanel(new UserList(listName, new HashSet<>()));
         });
 
         //Adds
 
         add(pnlButtons);
         add(scrollPane);
+    }
+
+    private void initUserList(){
+        PARENT.getUser().getLists().forEach(this::createListItemPanel);
+    }
+
+    private void createListItemPanel(UserList userList){
+        pnlMultimediaLists.add(new CollapsablePanel(userList));
+        UserListsPanel.this.revalidate();
+        UserListsPanel.this.repaint();
     }
 }

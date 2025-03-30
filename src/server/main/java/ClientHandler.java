@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ClientHandler implements Runnable{
     final private Socket SOCKET;
@@ -45,6 +46,8 @@ public class ClientHandler implements Runnable{
             messageType = MessageType.valueOf(messageData.get("message_type").toString());
             clientData = (Map<String, Object>) messageData.get("data");
 
+            System.out.println("From client: " + clientMessage);
+
             switch (messageType){
                 case TEST -> System.out.println("Es un mensaje de tipo Test");
                 case LOGIN -> {
@@ -72,9 +75,11 @@ public class ClientHandler implements Runnable{
             socketCommunication.writeToClient(serverResponseData, status, messageType);
         } catch (AuthenticationException | IOException e) {
             throw new RuntimeException(e);
-        } catch (DatabaseException | SQLException e) {
-            serverResponseData.put("error_message",
-                    e instanceof DatabaseException ? e.getMessage() : "Unknown error in the server database");
+        } catch (DatabaseException |SQLException e) {
+            if (e instanceof DatabaseException)
+                serverResponseData.put("error_code", ((DatabaseException) e).getErrorCode());
+            else
+                serverResponseData.put("error_message", "Unknown error in the server database");
             status = 500;
             try {
                 socketCommunication.writeToClient(serverResponseData, status, messageType);
@@ -82,20 +87,12 @@ public class ClientHandler implements Runnable{
                 throw new RuntimeException(ex);
             }
         }
-//        finally {
-//            try {
-//                socketCommunication.writeToClient(serverResponseData, status, messageType);
-//                socketCommunication.close();
-//            } catch (IOException ex) {
-//                throw new RuntimeException(ex);
-//            }
-//        }
     }
 
     private boolean registerUser() throws SQLException, DatabaseException {
         String username = clientData.get("username").toString();
         String password = clientData.get("password").toString();
-        String email = clientData.get("email").toString();
+        String email = Optional.ofNullable(clientData.get("email")).map(Object::toString).orElse(null);
         System.out.println("Un usuario se quiere registrar");
 
         return Database.registerUser(username, password, email);
@@ -104,7 +101,7 @@ public class ClientHandler implements Runnable{
     private Integer loginUser() throws DatabaseException {
         String username = clientData.get("username").toString();
         String password = clientData.get("password").toString();
-        System.out.printf("El usuario '%s' quiere identificarse", username);
+        System.out.printf("El usuario '%s' quiere identificarse%n", username);
 
         return Database.loginUser(username, password);
     }

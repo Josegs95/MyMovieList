@@ -4,6 +4,7 @@ import controller.AuthenticationController;
 import controller.SearchController;
 import model.User;
 import net.miginfocom.swing.MigLayout;
+import thread.FetchUserLists;
 import view.component.dialog.LoginDialog;
 import view.component.panel.SearchPanel;
 import view.component.panel.UserListsPanel;
@@ -26,6 +27,7 @@ public class MainFrame extends JFrame{
 
         LoginDialog loginDialog = new LoginDialog(this, true);
 
+        new Thread(new FetchUserLists(this)).start();
         finishInit();
     }
 
