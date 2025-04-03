@@ -11,12 +11,12 @@ import java.util.Map;
 
 public class RegisterDialog extends AuthenticationDialog{
 
-    final private LoginDialog PARENT;
+    private final LoginDialog loginDialog;
 
-    protected RegisterDialog(LoginDialog parent, boolean modal) {
-        super(parent, modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
+    protected RegisterDialog(LoginDialog loginDialog, boolean modal) {
+        super(loginDialog, modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
 
-        this.PARENT = parent;
+        this.loginDialog = loginDialog;
         init();
     }
 
@@ -27,7 +27,7 @@ public class RegisterDialog extends AuthenticationDialog{
                 "[][][][]30[]"
         ));
         setSize(400, 400);
-        setLocationRelativeTo(PARENT);
+        setLocationRelativeTo(loginDialog);
         setTitle("Register");
 
         Map<String, JTextField> textFieldMap = getTextFieldMap();
@@ -109,7 +109,7 @@ public class RegisterDialog extends AuthenticationDialog{
                     return;
                 }
 
-                PARENT.setUsername(textFieldMap.get("Username").getText().strip());
+                loginDialog.setUsername(textFieldMap.get("Username").getText().strip());
                 dispose();
 
             } catch (RegisterValidationException e) {

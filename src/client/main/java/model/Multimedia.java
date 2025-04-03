@@ -7,7 +7,7 @@ public interface Multimedia {
 
     String getTitle();
 
-    String getPosterURL();
+    String getPosterUrl();
 
     LocalDate getReleaseDate();
 
@@ -25,7 +25,7 @@ public interface Multimedia {
 
     void setTitle(String title);
 
-    void setPosterURL(String posterURL);
+    void setPosterUrl(String posterUrl);
 
     void setReleaseDate(LocalDate releaseDate);
 

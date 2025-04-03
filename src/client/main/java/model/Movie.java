@@ -4,9 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Movie implements Multimedia {
-    final private int ID;
+    private final int id;
     private String title;
-    private String posterURL;
+    private String posterUrl;
     private LocalDate releaseDate;
     private String score;
     private Double popularity;
@@ -17,19 +17,19 @@ public class Movie implements Multimedia {
     private String country;
 
     public Movie(int id) {
-        this.ID = id;
+        this.id = id;
     }
 
     public int getId() {
-        return ID;
+        return id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getPosterURL() {
-        return posterURL;
+    public String getPosterUrl() {
+        return posterUrl;
     }
 
     public LocalDate getReleaseDate() {
@@ -64,8 +64,8 @@ public class Movie implements Multimedia {
     }
 
     @Override
-    public void setPosterURL(String posterURL) {
-        this.posterURL = posterURL;
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class Movie implements Multimedia {
     public String toString() {
         return "Movie{" +
                 "title='" + title + '\'' +
-                ", posterURL='" + posterURL + '\'' +
+                ", posterURL='" + posterUrl + '\'' +
                 ", releaseDate=" + releaseDate +
                 ", score='" + score + '\'' +
                 ", popularity=" + popularity +

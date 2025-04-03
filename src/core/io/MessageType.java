@@ -8,14 +8,14 @@ public enum MessageType {
     GET_USER_LISTS("Get user lists"),
     CREATE_USER_LIST("Create user list");
 
-    final private String NAME;
+    final private String name;
 
     MessageType(String name){
-        this.NAME = name;
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return NAME;
+        return name;
     }
 }

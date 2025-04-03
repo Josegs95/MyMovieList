@@ -11,8 +11,8 @@ import java.sql.*;
 import java.util.*;
 
 public class Database {
-    final private static String DB_NAME;
-    final private static String DB_HOST;
+    private static final String DB_NAME;
+    private static final String DB_HOST;
     private static final String DB_PORT;
     private static final String DB_USER;
     private static final String DB_PASS;
@@ -30,8 +30,10 @@ public class Database {
 
     private Database(){}
 
-    public static boolean registerUser(String username, String password, String email) throws DatabaseException, SQLException {
-        String sqlStatement = "INSERT INTO user (name, password, password_salt, email) VALUES (?, ?, ?, ?)";
+    public static boolean registerUser(String username, String password, String email)
+            throws DatabaseException, SQLException {
+        String sqlStatement = "INSERT INTO user (name, password, password_salt, email) " +
+                "VALUES (?, ?, ?, ?)";
 
         try(Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(sqlStatement)){
@@ -101,7 +103,8 @@ public class Database {
             ResultSet resultSet = statement.executeQuery();
             List<UserList> userLists = new ArrayList<>();
             while(resultSet.next()){
-                userLists.add(getListItems(resultSet.getInt(1), resultSet.getString(2)));
+                userLists.add(getListItems(
+                        resultSet.getInt(1), resultSet.getString(2)));
             }
 
             return userLists;
@@ -111,7 +114,8 @@ public class Database {
     }
 
     private static UserList getListItems(int idList, String listName){
-        String sqlStatement = "SELECT mt.name, m.title, m.api_id, s.name, lhm.current_episode, m.total_episodes " +
+        String sqlStatement = "SELECT mt.name, m.title, m.api_id, s.name, " +
+                "lhm.current_episode, m.total_episodes " +
                 "FROM multimedia_type AS mt " +
                 "INNER JOIN multimedia AS m ON m.multimedia_type_id = mt.id " +
                 "INNER JOIN list_has_multimedia AS lhm ON lhm.multimedia_id = m.id " +
@@ -127,7 +131,7 @@ public class Database {
             Set<MultimediaAtList> multimediaSet = new HashSet<>();
             while(resultSet.next()){
                 Multimedia multi;
-                String multimediaType = resultSet.getString(1);
+                String multimediaTypeString = resultSet.getString(1);
                 String multimediaTitle = resultSet.getString(2);
                 int apiID = resultSet.getInt(3);
                 String statusName = resultSet.getString(4);
@@ -137,17 +141,22 @@ public class Database {
                 if (resultSet.wasNull())
                     current_episode = -1;
 
-                if (multimediaType.equalsIgnoreCase("movie"))
+                MultimediaType multimediaType;
+                if (multimediaTypeString.equalsIgnoreCase("movie")) {
                     multi = new Movie(apiID);
-                else if (multimediaType.equalsIgnoreCase("tv_show")) {
-                    multi = new TVShow(apiID);
-                    ((TVShow) multi).setEpisodeCount(total_episodes);
+                    multimediaType = MultimediaType.MOVIE;
+                } else if (multimediaTypeString.equalsIgnoreCase("tv_show")) {
+                    multi = new TvShow(apiID);
+                    ((TvShow) multi).setTotalEpisodes(total_episodes);
+                    multimediaType = MultimediaType.TV_SHOW;
                 } else
-                    throw new SQLException("Unknown multimedia type: " + multimediaType);
+                    throw new SQLException("Unknown multimedia type: " + multimediaTypeString);
 
                 multi.setTitle(multimediaTitle);
 
-                multimediaSet.add(new MultimediaAtList(multi, MultimediaStatus.valueOf(statusName), current_episode));
+                multimediaSet.add(
+                        new MultimediaAtList(multi, MultimediaStatus.valueOf(statusName),
+                                current_episode, multimediaType));
             }
 
             return new UserList(listName, multimediaSet);

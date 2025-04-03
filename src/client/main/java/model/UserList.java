@@ -3,12 +3,12 @@ package model;
 import java.util.Set;
 
 public class UserList {
-    final private String listName;
-    final private Set<MultimediaAtList> multimediaList;
+    private final String listName;
+    private final Set<MultimediaAtList> multimediaList;
 
-    public UserList(String name, Set<MultimediaAtList> multimediaSet){
+    public UserList(String name, Set<MultimediaAtList> multimediaList){
         this.listName = name;
-        this.multimediaList = multimediaSet;
+        this.multimediaList = multimediaList;
     }
 
     public String getListName() {

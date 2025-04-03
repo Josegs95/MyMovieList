@@ -1,21 +1,24 @@
 package model;
 
 public class MultimediaAtList {
-    final private Multimedia multimedia;
-    private MultimediaStatus status;
-    private int current_episode;
-    private String multimediaType;
+    private final Multimedia multimedia;
+    private final MultimediaType multimediaType;
 
-    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status, int current_episode) {
+    private MultimediaStatus status;
+    private int currentEpisode;
+
+    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status, int currentEpisode,
+                            MultimediaType multimediaType) {
         this.multimedia = multimedia;
         this.status = status;
-        this.current_episode = current_episode;
+        this.currentEpisode = currentEpisode;
 
-        multimediaType = multimedia instanceof Movie ? "MOVIE" : "TV_SHOW";
+        this.multimediaType = multimediaType;
     }
 
-    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status) {
-        this(multimedia, status, -1);
+    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status,
+                            MultimediaType multimediaType) {
+        this(multimedia, status, -1, multimediaType);
     }
 
     public Multimedia getMultimedia() {
@@ -30,15 +33,15 @@ public class MultimediaAtList {
         this.status = status;
     }
 
-    public int getCurrent_episode() {
-        return current_episode;
+    public int getCurrentEpisode() {
+        return currentEpisode;
     }
 
-    public void setCurrent_episode(int current_episode) {
-        this.current_episode = current_episode;
+    public void setCurrentEpisode(int currentEpisode) {
+        this.currentEpisode = currentEpisode;
     }
 
-    public String getMultimediaType() {
+    public MultimediaType getMultimediaType() {
         return multimediaType;
     }
 }

@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class JSONMessageProtocol {
 
-    final private static Gson GSON;
+    private static final Gson GSON;
 
     static {
         GSON = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter()).create();
@@ -70,7 +70,8 @@ public class JSONMessageProtocol {
         }
     }
 
-    private static class LocalDateTypeAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+    private static class LocalDateTypeAdapter implements JsonSerializer<LocalDate>,
+            JsonDeserializer<LocalDate> {
 
         private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -82,7 +83,8 @@ public class JSONMessageProtocol {
 
         @Override
         public LocalDate deserialize(final JsonElement json, final Type typeOfT,
-                                     final JsonDeserializationContext context) throws JsonParseException {
+                                     final JsonDeserializationContext context)
+                throws JsonParseException {
             return LocalDate.parse(json.getAsString(), formatter);
         }
     }

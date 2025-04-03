@@ -3,14 +3,14 @@ package model;
 import java.util.List;
 
 public class User {
-    final private String USERNAME;
-    final private Integer SESSION_TOKEN;
+    private final String username;
+    private final Integer sessionToken;
 
     private List<UserList> lists;
 
     public User(String username, Integer sessionToken) {
-        this.USERNAME = username;
-        this.SESSION_TOKEN = sessionToken;
+        this.username = username;
+        this.sessionToken = sessionToken;
     }
 
     public void setLists(List<UserList> lists) {
@@ -18,7 +18,7 @@ public class User {
     }
 
     public String getUsername() {
-        return USERNAME;
+        return username;
     }
 
     public List<UserList> getLists() {
@@ -26,6 +26,6 @@ public class User {
     }
 
     public Integer getSessionToken() {
-        return SESSION_TOKEN;
+        return sessionToken;
     }
 }

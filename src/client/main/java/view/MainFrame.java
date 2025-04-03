@@ -1,6 +1,5 @@
 package view;
 
-import controller.AuthenticationController;
 import controller.SearchController;
 import model.User;
 import net.miginfocom.swing.MigLayout;
@@ -20,12 +19,12 @@ public class MainFrame extends JFrame{
     private JPanel pnlCentral;
     private User user;
 
-    final private String APP_TITLE = "MyMovieList";
+    private static final String APP_TITLE = "MyMovieList";
 
     public MainFrame() {
         initFrame();
 
-        LoginDialog loginDialog = new LoginDialog(this, true);
+        new LoginDialog(this, true);
 
         new Thread(new FetchUserLists(this)).start();
         finishInit();

@@ -1,4 +1,4 @@
-import controller.APIController;
+import controller.ApiController;
 import file.ApplicationProperty;
 import view.MainFrame;
 
@@ -20,7 +20,7 @@ public class Client {
             new MainFrame();
             new Thread(() -> {
                 try {
-                    APIController.setUpConfigurationDetails();
+                    ApiController.setUpConfigurationDetails();
                 } catch (IOException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }

@@ -6,49 +6,51 @@ import json.JSONMessageProtocol;
 import java.util.Map;
 
 public class ServerResponse {
-    final private MessageType MESSAGE_TYPE;
-    final private int STATUS;
-    final private Map<String, Object> DATA;
+    private final MessageType messageType;
+    private final int status;
+    private final Map<String, Object> data;
 
-    final private String JSON_STRING;
+    private final String jsonString;
 
     public ServerResponse(String serverMessage){
         Map<String, Object> messageData = JSONMessageProtocol.createMapFromJSONString(serverMessage);
 
-        MESSAGE_TYPE = MessageType.valueOf(messageData.get("message_type").toString());
-        STATUS = (int) messageData.getOrDefault("status", 0);
-        DATA = (Map<String, Object>) messageData.get("data");
-        JSON_STRING = serverMessage;
+        messageType = MessageType.valueOf(messageData.get("message_type").toString());
+        status = (int) messageData.getOrDefault("status", 0);
+        data = (Map<String, Object>) messageData.get("data");
+        jsonString = serverMessage;
+
+        // Borrar
         System.out.println("From server: " + serverMessage);
     }
 
     public MessageType getMessageType() {
-        return MESSAGE_TYPE;
+        return messageType;
     }
 
     public int getStatus() {
-        return STATUS;
+        return status;
     }
 
     public Map<String, Object> getData() {
-        return DATA;
+        return data;
     }
 
     public String getErrorMessage(){
-        if (STATUS == 200)
+        if (status == 200)
             return null;
 
-        return DATA.get("error_message").toString();
+        return data.get("error_message").toString();
     }
 
     public int getErrorCode(){
-        if (STATUS == 200)
+        if (status == 200)
             return -1;
 
-        return (int) DATA.getOrDefault("error_code", -1);
+        return (int) data.getOrDefault("error_code", -1);
     }
 
     public String getDataAsJsonString() {
-        return JSON_STRING;
+        return jsonString;
     }
 }

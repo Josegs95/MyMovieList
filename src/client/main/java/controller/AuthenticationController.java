@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.util.Map;
 
 public class AuthenticationController{
-    public static ServerResponse registerUser(Map<String, Object> userData) throws RegisterValidationException {
+
+    public static ServerResponse registerUser(Map<String, Object> userData)
+            throws RegisterValidationException {
         if (!checkRegisterFields(userData))
             return null;
 
@@ -49,7 +51,8 @@ public class AuthenticationController{
         }
     }
 
-    private static boolean checkRegisterFields(Map<String, Object> userData) throws RegisterValidationException {
+    private static boolean checkRegisterFields(Map<String, Object> userData)
+            throws RegisterValidationException {
         //Checks
         String username = userData.get("username").toString();
         String password = userData.get("password").toString();
@@ -59,7 +62,8 @@ public class AuthenticationController{
         //Required fields
 
         if (username.isEmpty() || password.isEmpty() || passwordRepeat.isEmpty())
-            throw new RegisterValidationException("Los campos 'Username', 'Password' y 'Repeat Password' son obligatorios");
+            throw new RegisterValidationException(
+                    "Los campos 'Username', 'Password' y 'Repeat Password' son obligatorios");
 
         //Password
 

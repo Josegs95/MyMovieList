@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import json.Parser;
 import model.Multimedia;
@@ -15,9 +16,12 @@ public class SearchController {
 
     public List<Multimedia> searchMultimediaByKeyword(String name) {
         try {
-            JsonObject data = APIController.searchMultimedia(name);
+            JsonObject data = ApiController.searchMultimedia(name);
+            JsonArray results = data.get("results").getAsJsonArray();
+            List<Multimedia> multiList = Parser.parseJSONFromAPI(results);
+
+            // Borrar
             System.out.println("Data: " + data);
-            List<Multimedia> multiList = Parser.parseJSONFromAPI(data.get("results").getAsJsonArray());
 
             new Thread(new FetchDataFromAPI(multiList)).start();
 

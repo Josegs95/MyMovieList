@@ -12,14 +12,14 @@ import java.util.HashSet;
 
 public class UserListsPanel extends JPanel {
 
-    final private MainFrame PARENT;
-    final private UserListController CONTROLLER;
+    private final MainFrame mainFrame;
+    private final UserListController controller;
 
     private ScrollablePanel pnlMultimediaLists;
 
-    public UserListsPanel(MainFrame frame){
-        this.PARENT = frame;
-        this.CONTROLLER = new UserListController();
+    public UserListsPanel(MainFrame mainFrame){
+        this.mainFrame = mainFrame;
+        this.controller = new UserListController();
 
         init();
         initUserList();
@@ -59,7 +59,8 @@ public class UserListsPanel extends JPanel {
         //Listeners
 
         btnCreateList.addActionListener(_->{
-            String listName = JOptionPane.showInputDialog(PARENT, "Write the list's name that you desire.");
+            String listName = JOptionPane.showInputDialog(mainFrame,
+                    "Write the list's name that you desire.");
             if (listName == null)
                 return;
 
@@ -77,11 +78,11 @@ public class UserListsPanel extends JPanel {
     }
 
     private void initUserList(){
-        PARENT.getUser().getLists().forEach(this::createListItemPanel);
+        mainFrame.getUser().getLists().forEach(this::createListItemPanel);
     }
 
     private void createListItemPanel(UserList userList){
-        pnlMultimediaLists.add(new CollapsablePanel(userList));
+        pnlMultimediaLists.add(new UserListCollapsablePanel(userList));
         UserListsPanel.this.revalidate();
         UserListsPanel.this.repaint();
     }

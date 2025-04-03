@@ -3,10 +3,10 @@ package thread;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import controller.APIController;
+import controller.ApiController;
 import model.Movie;
 import model.Multimedia;
-import model.TVShow;
+import model.TvShow;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,16 +16,16 @@ import java.util.concurrent.Executors;
 
 public class FetchDataFromAPI implements Runnable {
 
-    final private List<Multimedia> MULTIMEDIA_LIST;
+    final private List<Multimedia> multimediaList;
 
     public FetchDataFromAPI(List<Multimedia> multimediaList) {
-        this.MULTIMEDIA_LIST = multimediaList;
+        this.multimediaList = multimediaList;
     }
 
     @Override
     public void run() {
         try (ExecutorService executor = Executors.newCachedThreadPool()) {
-            for (Multimedia multimedia : MULTIMEDIA_LIST) {
+            for (Multimedia multimedia : multimediaList) {
                 executor.execute(new FetchMultiData(multimedia));
             }
         }
@@ -33,9 +33,9 @@ public class FetchDataFromAPI implements Runnable {
         System.out.println("Threads done!");
     }
 
-    private class FetchMultiData implements Runnable {
+    private static class FetchMultiData implements Runnable {
 
-        final private Multimedia multimedia;
+        private final Multimedia multimedia;
 
         public FetchMultiData(Multimedia multimedia) {
             this.multimedia = multimedia;
@@ -45,7 +45,7 @@ public class FetchDataFromAPI implements Runnable {
         public void run() {
             JsonObject data;
             try {
-                data = APIController.searchMultimediaDetail(multimedia);
+                data = ApiController.searchMultimediaDetail(multimedia);
                 System.out.println("Details: " + data);
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
@@ -72,16 +72,21 @@ public class FetchDataFromAPI implements Runnable {
 
             switch (multimedia) {
                 case Movie movie -> movie.setDuration(data.get("runtime").getAsString());
-                case TVShow tvShow -> {
-                    tvShow.setEpisodeCount(data.get("number_of_episodes").getAsInt());
-                    tvShow.setSeasonCount(data.get("number_of_seasons").getAsInt());
-                    tvShow.setStatus(data.get("in_production").getAsBoolean() ? "Ongoing" : "Finished");
-                    JsonArray episodesRuntime = data.get("episode_run_time").getAsJsonArray();
-                    if (!episodesRuntime.isEmpty())
-                        tvShow.setEpisodeDuration(episodesRuntime.get(episodesRuntime.size() - 1).getAsString());
+                case TvShow tvShow -> {
+                    boolean inProduction = data.get("in_production").getAsBoolean();
+                    String episodeRuntime = "Unknown";
+                    JsonArray episodeRuntimeList = data.get("episode_run_time").getAsJsonArray();
+                    if (!episodeRuntimeList.isEmpty()) {
+                        episodeRuntime = episodeRuntimeList.get(episodeRuntimeList.size() - 1)
+                                .getAsString();
+                    }
+
+                    tvShow.setStatus(inProduction ? "Ongoing" : "Finished");
+                    tvShow.setTotalEpisodes(data.get("number_of_episodes").getAsInt());
+                    tvShow.setTotalSeasons(data.get("number_of_seasons").getAsInt());
+                    tvShow.setEpisodeDuration(episodeRuntime);
                 }
-                default -> {
-                }
+                default -> {}
             }
         }
     }

@@ -1,6 +1,6 @@
 package view.component.panel;
 
-import controller.APIController;
+import controller.ApiController;
 import controller.SearchController;
 import lib.ScrollablePanel;
 import lib.StretchIcon;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class SearchPanel extends JPanel {
 
-    static private SearchPanel instance;
+    private static SearchPanel instance;
 
     private JPanel pnlResultList;
 
@@ -83,7 +83,8 @@ public class SearchPanel extends JPanel {
         btnSearch.addActionListener(e -> {
             if (txfCentralSearch.getText().isEmpty())
                 return;
-            List<Multimedia> multiList = controller.searchMultimediaByKeyword(txfCentralSearch.getText().strip());
+            String searchString = txfCentralSearch.getText().strip();
+            List<Multimedia> multiList = controller.searchMultimediaByKeyword(searchString);
             if (multiList.isEmpty())
                 JOptionPane.showMessageDialog(SearchPanel.this.getParent(),
                         "No se ha encontrado resultados",
@@ -117,7 +118,7 @@ public class SearchPanel extends JPanel {
     }
 
     private void addResultPanel(List<Multimedia> multiList) {
-        String baseURLForPosters = APIController.getBaseURLForPosters(false);
+        String baseURLForPosters = ApiController.getBaseURLForPosters(false);
         if (!multiList.isEmpty())
             pnlInnerResultList.removeAll();
         try {
@@ -126,7 +127,8 @@ public class SearchPanel extends JPanel {
                 panel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        showDetailPanel(new DetailMultimediaPanel(SearchPanel.this, multi, controller));
+                        showDetailPanel(new DetailMultimediaPanel(
+                                SearchPanel.this, multi, controller));
                     }
                 });
                 pnlInnerResultList.add(panel);
@@ -159,7 +161,8 @@ public class SearchPanel extends JPanel {
         repaint();
     }
 
-    private JPanel createListItem(Multimedia multi, String baseURLForPosters) throws MalformedURLException {
+    private JPanel createListItem(Multimedia multi, String baseURLForPosters)
+            throws MalformedURLException {
         JPanel panel = new JPanel(new MigLayout(
                 "fill",
                 "[fill, 15%][fill, 70%][fill, 15%]",
@@ -174,11 +177,11 @@ public class SearchPanel extends JPanel {
         panel.setBackground(backgroundColor);
 
         JLabel lblPoster;
-        if (multi.getPosterURL() == null)
+        if (multi.getPosterUrl() == null)
             lblPoster = new JLabel("No Image");
         else {
             StretchIcon multiPoster = new StretchIcon(
-                    URI.create(baseURLForPosters + multi.getPosterURL()).toURL(),
+                    URI.create(baseURLForPosters + multi.getPosterUrl()).toURL(),
                     true);
             lblPoster = new JLabel(multiPoster);
         }

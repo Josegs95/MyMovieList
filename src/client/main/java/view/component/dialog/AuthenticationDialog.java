@@ -13,7 +13,7 @@ import java.util.Map;
 
 public abstract class AuthenticationDialog extends JDialog{
 
-    final private Window PARENT;
+    private final Window parentWindow;
 
     private Map<String, JTextField> textFieldMap;
     private JButton btnDefault;
@@ -22,7 +22,7 @@ public abstract class AuthenticationDialog extends JDialog{
     AuthenticationDialog(Window owner, Dialog.ModalityType modalityType){
         super(owner, modalityType);
 
-        PARENT = owner;
+        parentWindow = owner;
         init();
     }
 
@@ -33,7 +33,7 @@ public abstract class AuthenticationDialog extends JDialog{
                 "[][]30[]"
         ));
         setSize(400, 300);
-        setLocationRelativeTo(PARENT);
+        setLocationRelativeTo(parentWindow);
         setResizable(false);
         getContentPane().setBackground(new Color(223, 223, 223));
         setTitle("Login");
@@ -77,7 +77,7 @@ public abstract class AuthenticationDialog extends JDialog{
 
         //Listeners
 
-        addWindowListener(new AuthenticationWindowListener(PARENT, this));
+        addWindowListener(new AuthenticationWindowListener(parentWindow, this));
 
         //Adds
 
@@ -116,24 +116,24 @@ public abstract class AuthenticationDialog extends JDialog{
 
     private static class AuthenticationWindowListener extends WindowAdapter {
 
-        final private Window PARENT;
-        final private Window INSTANCE;
+        private final Window parent;
+        private final Window instance;
 
         public AuthenticationWindowListener(Window parent, Window instance){
-            this.PARENT = parent;
-            this.INSTANCE = instance;
+            this.parent = parent;
+            this.instance = instance;
         }
 
         @Override
         public void windowClosing(WindowEvent e) {
-            INSTANCE.dispose();
+            instance.dispose();
         }
 
         @Override
         public void windowClosed(WindowEvent e) {
-            if (PARENT instanceof JFrame){
-                if (INSTANCE instanceof LoginDialog && !((LoginDialog) INSTANCE).isLoginSuccess())
-                    PARENT.dispose();
+            if (parent instanceof JFrame){
+                if (instance instanceof LoginDialog && !((LoginDialog) instance).isLoginSuccess())
+                    parent.dispose();
             }
 
         }

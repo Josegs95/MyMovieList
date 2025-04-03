@@ -12,12 +12,12 @@ import java.util.Map;
 
 public class LoginDialog extends AuthenticationDialog {
 
-    final private MainFrame FRAME;
+    private final MainFrame mainFrame;
 
-    public LoginDialog(MainFrame parent, boolean modal) {
-        super(parent, modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
+    public LoginDialog(MainFrame mainFrame, boolean modal) {
+        super(mainFrame, modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
 
-        this.FRAME = parent;
+        this.mainFrame = mainFrame;
         init();
     }
 
@@ -57,10 +57,14 @@ public class LoginDialog extends AuthenticationDialog {
                         "Error al registrarse",
                         JOptionPane.ERROR_MESSAGE);
 
+            // Borrar
             System.out.println(serverResponse.getData());
+
             if ((boolean) serverResponse.getData().get("login")) {
-                User user = new User(userData.get("username").toString(), (Integer) serverResponse.getData().get("token"));
-                FRAME.setUser(user);
+                String username = userData.get("username").toString();
+                Integer token = (Integer) (serverResponse.getData().get("token"));
+                User user = new User(username, token);
+                mainFrame.setUser(user);
                 setLoginSuccess();
                 dispose();
             } else

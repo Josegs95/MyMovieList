@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import model.Movie;
 import model.Multimedia;
-import model.TVShow;
+import model.TvShow;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class Parser {
                     releaseDateKey = "release_date";
                 }
                 case "tv" -> {
-                    multi = new TVShow(id);
+                    multi = new TvShow(id);
                     titleKey = "name";
                     releaseDateKey = "first_air_date";
                 }
@@ -43,12 +43,13 @@ public class Parser {
             multi.setTitle(multiAsJson.get(titleKey).getAsString());
 
             //Release Date
-            if (!multiAsJson.get(releaseDateKey).isJsonNull() && !multiAsJson.get(releaseDateKey).getAsString().isEmpty())
+            if (!multiAsJson.get(releaseDateKey).isJsonNull()
+                    && !multiAsJson.get(releaseDateKey).getAsString().isEmpty())
                 multi.setReleaseDate(LocalDate.parse(multiAsJson.get(releaseDateKey).getAsString()));
 
             //Poster
             if (!multiAsJson.get("poster_path").isJsonNull())
-                multi.setPosterURL(multiAsJson.get("poster_path").getAsString());
+                multi.setPosterUrl(multiAsJson.get("poster_path").getAsString());
 
             //Score
             if (Double.parseDouble(multiAsJson.get("vote_average").getAsString()) == 0.0)

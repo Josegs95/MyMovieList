@@ -34,7 +34,8 @@ public class ClientHandler implements Runnable{
         Map<String, Object> serverResponseData = new HashMap<>();
         try{
             String clientMessage = socketCommunication.readStringFromSocket();
-            Map<String, Object> messageData = JSONMessageProtocol.createMapFromJSONString(clientMessage);
+            Map<String, Object> messageData =
+                    JSONMessageProtocol.createMapFromJSONString(clientMessage);
             if (messageData.get("message_type").equals(MessageType.KNOCK)){
                 return;
             }
@@ -92,7 +93,9 @@ public class ClientHandler implements Runnable{
     private boolean registerUser() throws SQLException, DatabaseException {
         String username = clientData.get("username").toString();
         String password = clientData.get("password").toString();
-        String email = Optional.ofNullable(clientData.get("email")).map(Object::toString).orElse(null);
+        String email = Optional.ofNullable(clientData.get("email"))
+                .map(Object::toString)
+                .orElse(null);
         System.out.println("Un usuario se quiere registrar");
 
         return Database.registerUser(username, password, email);

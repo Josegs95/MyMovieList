@@ -1,12 +1,12 @@
 package view.component.panel;
 
-import controller.APIController;
+import controller.ApiController;
 import controller.SearchController;
 import lib.ScrollablePanel;
 import lib.StretchIcon;
 import model.Movie;
 import model.Multimedia;
-import model.TVShow;
+import model.TvShow;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -17,33 +17,33 @@ import java.net.URI;
 
 public class DetailMultimediaPanel extends JPanel {
 
-    final private SearchPanel PARENT;
-    final private Multimedia MULTIMEDIA;
-    final private SearchController CONTROLLER;
-    private String BASE_URL_POSTER;
+    private final SearchPanel searchPanel;
+    private final Multimedia multimedia;
+    private final SearchController controller;
+    private String baseUrlPoster;
 
-    public DetailMultimediaPanel(SearchPanel parent, Multimedia multimedia, SearchController controller) {
+    public DetailMultimediaPanel(SearchPanel parent, Multimedia multimedia,
+                                 SearchController controller) {
         super(new MigLayout(
                 "fill, ins 0",
                 "[fill, 40%][fill, 60%]",
                 "[fill]"));
 
-        this.PARENT = parent;
-        this.MULTIMEDIA = multimedia;
-        this.CONTROLLER = controller;
+        this.searchPanel = parent;
+        this.multimedia = multimedia;
+        this.controller = controller;
 
         init();
     }
 
     private void init() {
-        //setBackground(new Color(224, 224, 224));
         setBackground(Color.PINK);
-        BASE_URL_POSTER = APIController.getBaseURLForPosters(true);
+        baseUrlPoster = ApiController.getBaseURLForPosters(true);
 
-        String releaseDateString = MULTIMEDIA.getReleaseDate() != null ?
-                MULTIMEDIA.getReleaseDate().toString() :
+        String releaseDateString = multimedia.getReleaseDate() != null ?
+                multimedia.getReleaseDate().toString() :
                 null;
-        boolean isAMovie = MULTIMEDIA instanceof Movie;
+        boolean isAMovie = multimedia instanceof Movie;
 
         if (isAMovie)
             setBackground(new Color(250, 219, 111));
@@ -63,7 +63,7 @@ public class DetailMultimediaPanel extends JPanel {
         StretchIcon iconPoster;
         try {
             iconPoster = new StretchIcon(
-                    URI.create(BASE_URL_POSTER + MULTIMEDIA.getPosterURL()).toURL(),
+                    URI.create(baseUrlPoster + multimedia.getPosterUrl()).toURL(),
                     true);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
@@ -84,16 +84,17 @@ public class DetailMultimediaPanel extends JPanel {
 
         //Title & Score
 
-        String titleText = "<html><p align=\"center\">" + MULTIMEDIA.getTitle();
+        String titleText = "<html><p align=\"center\">" + multimedia.getTitle();
         titleText += releaseDateString != null ?
-                " (" + MULTIMEDIA.getReleaseDate().getYear() + ")</p></html>" :
+                " (" + multimedia.getReleaseDate().getYear() + ")</p></html>" :
                 "</p></html>";
         JLabel lblTitle = new JLabel(titleText);
         Font titleFont = lblTitle.getFont().deriveFont(Font.BOLD, 22);
         lblTitle.setFont(titleFont);
-        lblTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        lblTitle.setBorder(BorderFactory.createMatteBorder(
+                0, 0, 1, 0, Color.BLACK));
 
-        JLabel lblScore = new JLabel(MULTIMEDIA.getScore());
+        JLabel lblScore = new JLabel(multimedia.getScore());
         lblScore.setFont(titleFont);
         lblScore.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -103,16 +104,16 @@ public class DetailMultimediaPanel extends JPanel {
                 (releaseDateString == null ?
                         "Unknown" : releaseDateString));
 
-        JLabel lblCountry = new JLabel("Country: " + MULTIMEDIA.getCountry());
+        JLabel lblCountry = new JLabel("Country: " + multimedia.getCountry());
 
         //Duration & Status
 
         JLabel lblDuration = new JLabel("Duration: " + (isAMovie ?
-                ((Movie) MULTIMEDIA).getDuration() : ((TVShow) MULTIMEDIA).getEpisodeDuration()));
+                ((Movie) multimedia).getDuration() : ((TvShow) multimedia).getEpisodeDuration()));
 
         JLabel lblStatus = null;
         if (!isAMovie)
-            lblStatus = new JLabel("Status: " + ((TVShow) MULTIMEDIA).getStatus());
+            lblStatus = new JLabel("Status: " + ((TvShow) multimedia).getStatus());
 
         //Synopsis
 
@@ -124,7 +125,7 @@ public class DetailMultimediaPanel extends JPanel {
         pnlSynopsis.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
         pnlSynopsis.setOpaque(false);
 
-        String synopsisString = MULTIMEDIA.getSynopsis();
+        String synopsisString = multimedia.getSynopsis();
         if (synopsisString.isEmpty())
             synopsisString = "-no synopsis found-";
         JLabel lblSynopsis = new JLabel("<html><p align='center'>Synopsis: " +
@@ -140,14 +141,14 @@ public class DetailMultimediaPanel extends JPanel {
 
         //Genre List
 
-        JLabel lblGenres = new JLabel("Genres: " + String.join(", ", MULTIMEDIA.getGenreList()));
+        JLabel lblGenres = new JLabel("Genres: " + String.join(", ", multimedia.getGenreList()));
 
         //Episode & Season count
 
         JLabel lblEpisodeCount = null, lblSeasonCount = null;
         if (!isAMovie) {
-            lblEpisodeCount = new JLabel("# Episodes: " + ((TVShow) MULTIMEDIA).getEpisodeCount());
-            lblSeasonCount = new JLabel("# Seasons: " + ((TVShow) MULTIMEDIA).getSeasonCount());
+            lblEpisodeCount = new JLabel("# Episodes: " + ((TvShow) multimedia).getTotalEpisodes());
+            lblSeasonCount = new JLabel("# Seasons: " + ((TvShow) multimedia).getTotalSeasons());
         }
 
         //Buttons
@@ -174,7 +175,7 @@ public class DetailMultimediaPanel extends JPanel {
 
         //Listeners
 
-        btnBack.addActionListener(_ -> CONTROLLER.backButtonFromDetailPanel(PARENT));
+        btnBack.addActionListener(_ -> controller.backButtonFromDetailPanel(searchPanel));
 
         //Adds
 
@@ -200,6 +201,6 @@ public class DetailMultimediaPanel extends JPanel {
     }
 
     public Multimedia getMultimedia() {
-        return MULTIMEDIA;
+        return multimedia;
     }
 }

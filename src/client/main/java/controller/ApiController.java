@@ -7,7 +7,7 @@ import com.google.gson.JsonParser;
 import file.ApplicationProperty;
 import model.Movie;
 import model.Multimedia;
-import model.TVShow;
+import model.TvShow;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,13 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class APIController {
-    final private static String API_TOKEN;
-    final private static String LANGUAGE;
+public class ApiController {
+    private static final String API_TOKEN;
+    private static final String LANGUAGE;
 
-    final private static String BASE_URL = "https://api.themoviedb.org/3/";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/";
 
-    // Keys: base_url, secure_base_url, backdrop_sizes, logo_sizes, poster_sizes, profile_sizes, still_sizes
+    // Keys: base_url, secure_base_url, backdrop_sizes, logo_sizes, poster_sizes,
+    //       profile_sizes, still_sizes
     private static Map<String, JsonElement> API_CONFIGURATION;
 
     static {
@@ -34,18 +35,21 @@ public class APIController {
         LANGUAGE = properties.getOrDefault("LANGUAGE", "en-GB");
     }
 
-    public static JsonObject searchMultimedia(String multiName) throws IOException, InterruptedException {
-        String urlString = BASE_URL + "search/multi?query=" + multiName.replace(" ", "%20");
+    public static JsonObject searchMultimedia(String multiName) throws IOException,
+            InterruptedException {
+        multiName = multiName.replace(" ", "%20");
+        String urlString = BASE_URL + "search/multi?query=" + multiName;
         urlString += "&language=" + LANGUAGE;
 
         return makeGetRequest(URI.create(urlString));
     }
 
-    public static JsonObject searchMultimediaDetail(Multimedia multimedia) throws IOException, InterruptedException {
+    public static JsonObject searchMultimediaDetail(Multimedia multimedia) throws IOException,
+            InterruptedException {
         String urlString = BASE_URL;
         urlString += switch (multimedia) {
             case Movie _ -> "movie/";
-            case TVShow _ -> "tv/";
+            case TvShow _ -> "tv/";
             default -> "";
         };
         urlString += multimedia.getId();
@@ -63,8 +67,9 @@ public class APIController {
         if (data == null)
             return;
 
+        JsonObject imagesData = data.get("images").getAsJsonObject();
         API_CONFIGURATION = new HashMap<>();
-        for (Map.Entry<String, JsonElement> entry : data.get("images").getAsJsonObject().entrySet()) {
+        for (Map.Entry<String, JsonElement> entry : imagesData.entrySet()) {
             if (entry.getValue() instanceof JsonArray array)
                 API_CONFIGURATION.put(entry.getKey(), array);
             else if (entry.getValue() instanceof JsonElement value) {
@@ -101,7 +106,8 @@ public class APIController {
                 .GET()
                 .build();
         try (HttpClient client = HttpClient.newHttpClient()) {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
                 System.out.println("Se ha producido un error desconocido");
                 System.out.println("API: " + response.body());

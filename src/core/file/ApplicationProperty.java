@@ -14,11 +14,11 @@ public class ApplicationProperty {
     // Keys: API_KEY, API_READ_ACCESS_TOKEN, PORT, HOST
     private static HashMap<String, String> properties;
 
-    final static private String PROPERTIES_FILENAME = "properties.txt";
-    final static private String APPLICATION_NAME = "MyMovieList";
+    private static final String PROPERTIES_FILENAME = "properties.txt";
+    private static final String APPLICATION_NAME = "MyMovieList";
 
-    private static String HOST;
-    private static Integer PORT;
+    private static String host;
+    private static Integer port;
 
     private ApplicationProperty(){}
 
@@ -38,8 +38,8 @@ public class ApplicationProperty {
                         properties.put(aux[0], aux[1]);
                     }
 
-                    HOST = properties.getOrDefault("HOST", "localhost");
-                    PORT = Integer.valueOf(properties.getOrDefault("PORT", "7776"));
+                    host = properties.getOrDefault("HOST", "localhost");
+                    port = Integer.valueOf(properties.getOrDefault("PORT", "7776"));
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -50,16 +50,16 @@ public class ApplicationProperty {
     }
 
     private static void createDefaultPropertiesFile() throws IOException {
-        HOST = "localhost";
-        PORT = 7776;
+        host = "localhost";
+        port = 7776;
 
-        properties.put("HOST", HOST);
-        properties.put("PORT", String.valueOf(PORT));
+        properties.put("HOST", host);
+        properties.put("PORT", String.valueOf(port));
 
         List<String> applicationProperties = Arrays.asList(
                 "# MyMovieList Properties",
-                "HOST=" + HOST,
-                "PORT=" + PORT,
+                "HOST=" + host,
+                "PORT=" + port,
                 "LANGUAGE=en-GB"
         );
 
@@ -67,20 +67,21 @@ public class ApplicationProperty {
         Files.write(filePath, applicationProperties, StandardOpenOption.CREATE);
         JOptionPane.showMessageDialog(
                 null,
-                "Se ha detectado que no existía un archivo de propiedades de la aplicación, así que se ha" +
-                        "creado uno con valores por defecto.\nModifique dichos valores si lo ve necesario en: " +
+                "Se ha detectado que no existía un archivo de propiedades de la " +
+                        "aplicación, así que se ha creado uno con valores por defecto. " +
+                        "Modifique dichos valores si lo ve necesario en: " +
                 filePath.toAbsolutePath(),
                 "Archivo creado por la aplicación",
                 JOptionPane.WARNING_MESSAGE
         );
     }
 
-    public static String getHOST() {
-        return HOST;
+    public static String getHost() {
+        return host;
     }
 
-    public static Integer getPORT() {
-        return PORT;
+    public static Integer getPort() {
+        return port;
     }
 
     public static String getApplicationName(){

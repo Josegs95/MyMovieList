@@ -17,7 +17,7 @@ public class Server {
     }
 
     private void init(){
-        int port = ApplicationProperty.getPORT();
+        int port = ApplicationProperty.getPort();
         try (ServerSocket serverSocket = new ServerSocket(port);
              ExecutorService executor = Executors.newCachedThreadPool()){
 

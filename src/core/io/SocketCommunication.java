@@ -13,31 +13,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SocketCommunication implements AutoCloseable {
-    final private Socket SOCKET;
-    final private DataInputStream DIS;
-    final private DataOutputStream DOS;
+    private final Socket socket;
+    private final DataInputStream dis;
+    private final DataOutputStream dos;
 
     public SocketCommunication(Socket socket) {
         if (socket == null)
             throw new NullPointerException("The object 'socket' can not be null");
 
-        this.SOCKET = socket;
+        this.socket = socket;
         try {
-            DIS = new DataInputStream(socket.getInputStream());
-            DOS = new DataOutputStream(socket.getOutputStream());
+            dis = new DataInputStream(socket.getInputStream());
+            dos = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public SocketCommunication() throws IOException {
-        this(new Socket(ApplicationProperty.getHOST(), ApplicationProperty.getPORT()));
+        this(new Socket(ApplicationProperty.getHost(), ApplicationProperty.getPort()));
     }
 
-    public ServerResponse writeToServer(Map<String, Object> messageData, MessageType messageType) throws IOException {
+    public ServerResponse writeToServer(Map<String, Object> messageData, MessageType messageType)
+            throws IOException {
         writeStringToSocket(MessageFactory.createMessage(MessageType.KNOCK, new HashMap<>()));
         ServerResponse serverResponse = new ServerResponse(readStringFromSocket());
-        if (serverResponse.getMessageType() != MessageType.KNOCK || serverResponse.getStatus() != 200)
+        if (serverResponse.getMessageType() != MessageType.KNOCK
+                || serverResponse.getStatus() != 200)
             return null;
 
         writeStringToSocket(MessageFactory.createMessage(messageType, messageData));
@@ -45,7 +47,8 @@ public class SocketCommunication implements AutoCloseable {
         return new ServerResponse(readStringFromSocket());
     }
 
-    public void writeToClient(Map<String, Object> messageData, int status, MessageType messageType) throws IOException {
+    public void writeToClient(Map<String, Object> messageData, int status, MessageType messageType)
+            throws IOException {
         writeStringToSocket(MessageFactory.createMessage(messageType, messageData, status));
     }
 
@@ -54,19 +57,20 @@ public class SocketCommunication implements AutoCloseable {
     }
 
     public String readStringFromSocket() throws IOException {
-        String encodedMessage = DIS.readUTF();
+        String encodedMessage = dis.readUTF();
         return new String (Base64.getDecoder().decode(encodedMessage), StandardCharsets.UTF_8);
     }
 
     private void writeStringToSocket(String message) throws IOException {
-        String encodedMessage = Base64.getEncoder().encodeToString(message.getBytes(StandardCharsets.UTF_8));
-        DOS.writeUTF(encodedMessage);
+        String encodedMessage = Base64.getEncoder().encodeToString(
+                message.getBytes(StandardCharsets.UTF_8));
+        dos.writeUTF(encodedMessage);
     }
 
     @Override
     public void close() throws IOException {
-        DIS.close();
-        DOS.close();
-        SOCKET.close();
+        dis.close();
+        dos.close();
+        socket.close();
     }
 }

@@ -3,10 +3,10 @@ package model;
 import java.time.LocalDate;
 import java.util.List;
 
-public class TVShow implements Multimedia {
-    final private int ID;
+public class TvShow implements Multimedia {
+    private final int id;
     private String title;
-    private String posterURL;
+    private String posterUrl;
     private LocalDate releaseDate;
     private String score;
     private Double popularity;
@@ -16,25 +16,25 @@ public class TVShow implements Multimedia {
     private String country;
 
     private String status;
-    private int episodeCount;
-    private int seasonCount;
+    private int totalEpisodes;
+    private int totalSeasons;
     private String episodeDuration;
 
-    public TVShow(int id) {
-        this.ID = id;
+    public TvShow(int id) {
+        this.id = id;
     }
 
     @Override
     public int getId() {
-        return ID;
+        return id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getPosterURL() {
-        return posterURL;
+    public String getPosterUrl() {
+        return posterUrl;
     }
 
     public LocalDate getReleaseDate() {
@@ -63,17 +63,15 @@ public class TVShow implements Multimedia {
         return status;
     }
 
-    public int getEpisodeCount() {
-        return episodeCount;
+    public int getTotalEpisodes() {
+        return totalEpisodes;
     }
 
-    public int getSeasonCount() {
-        return seasonCount;
+    public int getTotalSeasons() {
+        return totalSeasons;
     }
 
     public String getEpisodeDuration() {
-        if (episodeDuration == null)
-            return "Unknown";
         return episodeDuration;
     }
 
@@ -83,8 +81,8 @@ public class TVShow implements Multimedia {
     }
 
     @Override
-    public void setPosterURL(String posterURL) {
-        this.posterURL = posterURL;
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 
     @Override
@@ -116,12 +114,12 @@ public class TVShow implements Multimedia {
         this.status = status;
     }
 
-    public void setEpisodeCount(int episodeCount) {
-        this.episodeCount = episodeCount;
+    public void setTotalEpisodes(int totalEpisodes) {
+        this.totalEpisodes = totalEpisodes;
     }
 
-    public void setSeasonCount(int seasonCount) {
-        this.seasonCount = seasonCount;
+    public void setTotalSeasons(int totalSeasons) {
+        this.totalSeasons = totalSeasons;
     }
 
     public void setEpisodeDuration(String episodeDuration) {
@@ -142,7 +140,7 @@ public class TVShow implements Multimedia {
     public String toString() {
         return "TVShow{" +
                 "title='" + title + '\'' +
-                ", posterURL='" + posterURL + '\'' +
+                ", posterURL='" + posterUrl + '\'' +
                 ", releaseDate=" + releaseDate +
                 ", score='" + score + '\'' +
                 ", popularity=" + popularity +
