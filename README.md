@@ -10,7 +10,7 @@ In this project I will create a client-server application, use of a DB (MySQL) w
 
 <h2>To-Do:</h2>
 
-- Lists creation
+- Get user's lists from DB and their elements
 - Fix comm error cases like mysql service off
 - (Optional):
   - Proccess all pages of each API request
