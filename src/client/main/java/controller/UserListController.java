@@ -14,15 +14,12 @@ import java.util.Map;
 
 public class UserListController {
 
-    public UserListController(){
-    }
+    public UserListController() {}
 
-    public static ServerResponse fetchUserList(User user){
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("username", user.getUsername());
-        userData.put("token", user.getSessionToken());
+    public static ServerResponse fetchUserList(User user) {
+        Map<String, Object> userData = getUserData(user);
 
-        try(SocketCommunication socketCommunication = new SocketCommunication()){
+        try(SocketCommunication socketCommunication = new SocketCommunication()) {
 
             return socketCommunication.writeToServer(userData, MessageType.GET_USER_LISTS);
         } catch (IOException e) {
@@ -30,11 +27,29 @@ public class UserListController {
         }
     }
 
-    public void createUserList(User user){}
+    public ServerResponse createUserList(User user, String listName) {
+        Map<String, Object> userData = getUserData(user);
+        userData.put("listName", listName);
 
-    public void modifyMultimediaAttributes(User user, Multimedia multimedia){}
+        try(SocketCommunication socketCommunication = new SocketCommunication()) {
 
-    public void deleteMultimediaFromList(User user, UserList list, Multimedia multimedia){}
+            return socketCommunication.writeToServer(userData, MessageType.CREATE_USER_LIST);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    public void showMultimediaDetails(MainFrame mainView){}
+    public void modifyMultimediaAttributes(User user, Multimedia multimedia) {}
+
+    public void deleteMultimediaFromList(User user, UserList list, Multimedia multimedia) {}
+
+    public void showMultimediaDetails(MainFrame mainView) {}
+
+    private static Map<String, Object> getUserData(User user) {
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("username", user.getUsername());
+        userData.put("token", user.getSessionToken());
+
+        return userData;
+    }
 }

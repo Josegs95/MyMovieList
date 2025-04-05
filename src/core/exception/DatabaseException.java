@@ -2,7 +2,7 @@ package exception;
 
 public class DatabaseException extends Exception{
 
-    // Error codes: 23000 (Duplicity in UNIQUE field)
+    // Error codes: 23 (Duplicity in UNIQUE field)
     private int errorCode;
 
     public DatabaseException(String message) {

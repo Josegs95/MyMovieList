@@ -2,6 +2,7 @@ package view.component.panel;
 
 import controller.UserListController;
 import lib.ScrollablePanel;
+import model.ServerResponse;
 import model.UserList;
 import net.miginfocom.swing.MigLayout;
 import view.MainFrame;
@@ -22,7 +23,7 @@ public class UserListsPanel extends JPanel {
         this.controller = new UserListController();
 
         init();
-        initUserList();
+        //initUserList();
     }
 
     private void init() {
@@ -61,12 +62,20 @@ public class UserListsPanel extends JPanel {
         btnCreateList.addActionListener(_->{
             String listName = JOptionPane.showInputDialog(mainFrame,
                     "Write the list's name that you desire.");
+
             if (listName == null)
                 return;
 
-            //
-            // Enviar informacion al server
-            //
+            ServerResponse serverResponse = controller.createUserList(mainFrame.getUser(), listName);
+            if (serverResponse.getStatus() != 200) {
+                String errorMessage = "Could not create the new list";
+                if (serverResponse.getErrorCode() == 23) {
+                    errorMessage = "You already have a list with than name";
+                }
+                JOptionPane.showMessageDialog(mainFrame, errorMessage,
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             createListItemPanel(new UserList(listName, new HashSet<>()));
         });

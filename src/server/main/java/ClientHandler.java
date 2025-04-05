@@ -64,6 +64,10 @@ public class ClientHandler implements Runnable{
                     if (registerUser())
                         System.out.println("Un usuario se ha registrado exitosamente");
                 }
+                case CREATE_USER_LIST -> {
+                    if (createUserList())
+                        System.out.println("Se ha creado una lista de multimedia nueva");
+                }
                 case GET_USER_LISTS -> {
                     List<UserList> userLists = getUserLists();
                     serverResponseData.put("lists", JSONMessageProtocol.serializeObject(userLists));
@@ -87,6 +91,7 @@ public class ClientHandler implements Runnable{
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+            throw new RuntimeException(e);
         }
     }
 
@@ -109,11 +114,21 @@ public class ClientHandler implements Runnable{
         return Database.loginUser(username, password);
     }
 
+    private boolean createUserList() throws AuthenticationException,
+            SQLException, DatabaseException {
+        String username = clientData.get("username").toString();
+        Integer token = (Integer) clientData.get("token");
+        String listName = clientData.get("listName").toString();
+        int idUser = Database.validateUser(username, token);
+
+        return Database.createUserList(idUser, listName);
+    }
+
     private List<UserList> getUserLists() throws DatabaseException, AuthenticationException {
         String username = clientData.get("username").toString();
         Integer token = (Integer) clientData.get("token");
-        Database.validateUser(username, token);
+        int idUser = Database.validateUser(username, token);
 
-        return Database.getUserLists(username);
+        return Database.getUserLists(idUser);
     }
 }

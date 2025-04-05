@@ -74,8 +74,8 @@ public class Database {
         }
     }
 
-    public static void validateUser(String username, Integer token) throws AuthenticationException {
-        String sqlStatement = "SELECT 1 FROM user WHERE name = ? AND password_salt = ?";
+    public static int validateUser(String username, Integer token) throws AuthenticationException {
+        String sqlStatement = "SELECT id FROM user WHERE name = ? AND password_salt = ?";
 
         try(Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(sqlStatement)){
@@ -83,22 +83,43 @@ public class Database {
             statement.setString(1, username);
             statement.setInt(2, token);
 
-            if (!statement.executeQuery().next())
+            ResultSet result = statement.executeQuery();
+            if (!result.next())
                 throw new AuthenticationException("Invalid user");
+
+            return result.getInt(1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static List<UserList> getUserLists(String username){
-        String sqlStatement = "SELECT l.id, l.name FROM list AS l " +
-                "INNER JOIN user AS u ON u.id = l.user_id " +
-                "WHERE u.name = ?";
+    public static boolean createUserList(int idUser, String listName)
+            throws SQLException, DatabaseException {
+        String sqlStatement = "INSERT INTO list (name, user_id) VALUES (?, ?)";
 
         try(Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(sqlStatement)){
 
-            statement.setString(1, username);
+            statement.setString(1, listName);
+            statement.setInt(2, idUser);
+
+            return statement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23000"))
+                throw new DatabaseException(23);
+            throw new SQLException(e);
+        }
+    }
+
+    public static List<UserList> getUserLists(int idUser){
+        String sqlStatement = "SELECT l.id, l.name FROM list AS l " +
+                "INNER JOIN user AS u ON u.id = l.user_id " +
+                "WHERE u.id = ?";
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sqlStatement)){
+
+            statement.setInt(1, idUser);
 
             ResultSet resultSet = statement.executeQuery();
             List<UserList> userLists = new ArrayList<>();
@@ -112,6 +133,8 @@ public class Database {
             throw new RuntimeException(e);
         }
     }
+
+    // Private methods
 
     private static UserList getListItems(int idList, String listName){
         String sqlStatement = "SELECT mt.name, m.title, m.api_id, s.name, " +

@@ -26,7 +26,7 @@ public class MainFrame extends JFrame{
 
         new LoginDialog(this, true);
 
-        new Thread(new FetchUserLists(this)).start();
+        //new Thread(new FetchUserLists(this)).start();
         finishInit();
     }
 
