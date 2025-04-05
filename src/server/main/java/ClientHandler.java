@@ -26,6 +26,7 @@ public class ClientHandler implements Runnable{
         this.SOCKET = socket;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void run() {
         SocketCommunication socketCommunication = new SocketCommunication(SOCKET);
