@@ -11,8 +11,8 @@ In this project I will create a client-server application, use of a DB (MySQL) w
 <h2>To-Do:</h2>
 
 - Lists creation
+- Fix comm error cases like mysql service off
 - (Optional):
-  - Improve DB with triggers
   - Proccess all pages of each API request
   - Add Guest session compatibility for the API: [Link](https://developer.themoviedb.org/docs/authentication-guest-sessions)
   - Something to view the multimedia's poster bigger
