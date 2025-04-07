@@ -23,7 +23,7 @@ public class UserListsPanel extends JPanel {
         this.controller = new UserListController();
 
         init();
-        //initUserList();
+        initUserList();
     }
 
     private void init() {

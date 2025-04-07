@@ -1,12 +1,12 @@
 package json;
 
 import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,26 +15,28 @@ public class JSONMessageProtocol {
     private static final Gson GSON;
 
     static {
-        GSON = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter()).create();
+        GSON = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                .setObjectToNumberStrategy((JsonReader::nextInt))
+                .create();
     }
 
 
     public static String createJSONFromMap(Map<String, Object> map){
-        return new Gson().toJsonTree(map).getAsJsonObject().toString();
+        return GSON.toJsonTree(map).getAsJsonObject().toString();
     }
 
     public static Map<String, Object> createMapFromJSONString(String jsonString){
-        JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
-        Map<String, Object> resultMap = new HashMap<>();
-        for (Map.Entry<String, JsonElement> entry : json.asMap().entrySet()){
-            resultMap.put(entry.getKey(), parseJSONToObject(entry.getValue()));
-        }
-
-        return resultMap;
+        return deserializeObject(jsonString, Map.class);
     }
 
-    public static JsonElement serializeObject(Object object){
-        return GSON.toJsonTree(object);
+    public static <T> JsonElement serializeObject(T t){
+        return GSON.toJsonTree(t);
+    }
+
+    public static <T> T deserializeObject(String jsonString, Class<T> classOfObject){
+        JsonElement jsonElement = JsonParser.parseString(jsonString);
+        return GSON.fromJson(jsonElement, classOfObject);
     }
 
     private static List<Object> createListFromJSONArray(JsonArray jsonArray){
@@ -64,7 +66,7 @@ public class JSONMessageProtocol {
                     return primitive.getAsBoolean();
             }
             default -> {
-                System.out.println("Valor no soportado: " + element);
+                System.out.println("Unsupported value: " + element);
                 return null;
             }
         }
@@ -88,4 +90,5 @@ public class JSONMessageProtocol {
             return LocalDate.parse(json.getAsString(), formatter);
         }
     }
+
 }

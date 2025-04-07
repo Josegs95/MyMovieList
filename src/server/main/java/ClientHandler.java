@@ -3,7 +3,6 @@ import exception.DatabaseException;
 import io.MessageType;
 import io.SocketCommunication;
 import json.JSONMessageProtocol;
-import model.UserList;
 
 import javax.naming.AuthenticationException;
 import java.io.IOException;
@@ -67,10 +66,10 @@ public class ClientHandler implements Runnable{
                 }
                 case CREATE_USER_LIST -> {
                     if (createUserList())
-                        System.out.println("Se ha creado una lista de multimedia nueva");
+                        System.out.println("Se ha creado una lista nueva");
                 }
                 case GET_USER_LISTS -> {
-                    List<UserList> userLists = getUserLists();
+                    List<Map<String, Object>> userLists = getUserLists();
                     serverResponseData.put("lists", JSONMessageProtocol.serializeObject(userLists));
 
                 }
@@ -125,7 +124,7 @@ public class ClientHandler implements Runnable{
         return Database.createUserList(idUser, listName);
     }
 
-    private List<UserList> getUserLists() throws DatabaseException, AuthenticationException {
+    private List<Map<String, Object>> getUserLists() throws DatabaseException, AuthenticationException {
         String username = clientData.get("username").toString();
         Integer token = (Integer) clientData.get("token");
         int idUser = Database.validateUser(username, token);

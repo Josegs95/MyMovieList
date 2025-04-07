@@ -12,7 +12,12 @@ public class ServerResponse {
 
     private final String jsonString;
 
-    public ServerResponse(String serverMessage){
+    @SuppressWarnings("unchecked")
+    public ServerResponse(String serverMessage) {
+
+        // Borrar
+        System.out.println("From server: " + serverMessage);
+
         Map<String, Object> messageData = JSONMessageProtocol.createMapFromJSONString(serverMessage);
 
         messageType = MessageType.valueOf(messageData.get("message_type").toString());
@@ -20,8 +25,6 @@ public class ServerResponse {
         data = (Map<String, Object>) messageData.get("data");
         jsonString = serverMessage;
 
-        // Borrar
-        System.out.println("From server: " + serverMessage);
     }
 
     public MessageType getMessageType() {
@@ -50,7 +53,7 @@ public class ServerResponse {
         return (int) data.getOrDefault("error_code", -1);
     }
 
-    public String getDataAsJsonString() {
+    public String getAsJsonString() {
         return jsonString;
     }
 }

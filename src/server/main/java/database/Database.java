@@ -3,7 +3,6 @@ package database;
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import exception.DatabaseException;
 import file.ApplicationProperty;
-import model.*;
 import security.Security;
 
 import javax.naming.AuthenticationException;
@@ -111,7 +110,7 @@ public class Database {
         }
     }
 
-    public static List<UserList> getUserLists(int idUser){
+    public static List<Map<String, Object>> getUserLists(int idUser){
         String sqlStatement = "SELECT l.id, l.name FROM list AS l " +
                 "INNER JOIN user AS u ON u.id = l.user_id " +
                 "WHERE u.id = ?";
@@ -122,10 +121,11 @@ public class Database {
             statement.setInt(1, idUser);
 
             ResultSet resultSet = statement.executeQuery();
-            List<UserList> userLists = new ArrayList<>();
+            List<Map<String, Object>> userLists = new ArrayList<>();
             while(resultSet.next()){
-                userLists.add(getListItems(
-                        resultSet.getInt(1), resultSet.getString(2)));
+                int idList = resultSet.getInt(1);
+                String listName = resultSet.getString(2);
+                userLists.add(getListData(idList, listName));
             }
 
             return userLists;
@@ -136,7 +136,7 @@ public class Database {
 
     // Private methods
 
-    private static UserList getListItems(int idList, String listName){
+    private static Map<String, Object> getListData(int idList, String listName){
         String sqlStatement = "SELECT mt.name, m.title, m.api_id, s.name, " +
                 "lhm.current_episode, m.total_episodes " +
                 "FROM multimedia_type AS mt " +
@@ -149,40 +149,26 @@ public class Database {
             PreparedStatement statement = connection.prepareStatement(sqlStatement)){
 
             statement.setInt(1, idList);
-
             ResultSet resultSet = statement.executeQuery();
-            Set<MultimediaAtList> multimediaSet = new HashSet<>();
+
+            Map<String, Object> listData = new HashMap<>();
+            List<Map<String, Object>> multimediaDataList = new ArrayList<>();
+            listData.put("listName", listName);
+            listData.put("multimediaItems", multimediaDataList);
+
             while(resultSet.next()){
-                Multimedia multi;
-                String multimediaTypeString = resultSet.getString(1);
-                String multimediaTitle = resultSet.getString(2);
-                int apiID = resultSet.getInt(3);
-                String statusName = resultSet.getString(4);
-                int current_episode = resultSet.getInt(5);
-                int total_episodes = resultSet.getInt(6);
+                Map<String, Object> multimediaData = new HashMap<>();
+                multimediaData.put("type", resultSet.getString(1));
+                multimediaData.put("title", resultSet.getString(2));
+                multimediaData.put("apiId", resultSet.getInt(3));
+                multimediaData.put("status", resultSet.getString(4));
+                multimediaData.put("currentEpisode", resultSet.getInt(5));
+                multimediaData.put("totalEpisodes", resultSet.getInt(6));
 
-                if (resultSet.wasNull())
-                    current_episode = -1;
-
-                MultimediaType multimediaType;
-                if (multimediaTypeString.equalsIgnoreCase("movie")) {
-                    multi = new Movie(apiID);
-                    multimediaType = MultimediaType.MOVIE;
-                } else if (multimediaTypeString.equalsIgnoreCase("tv_show")) {
-                    multi = new TvShow(apiID);
-                    ((TvShow) multi).setTotalEpisodes(total_episodes);
-                    multimediaType = MultimediaType.TV_SHOW;
-                } else
-                    throw new SQLException("Unknown multimedia type: " + multimediaTypeString);
-
-                multi.setTitle(multimediaTitle);
-
-                multimediaSet.add(
-                        new MultimediaAtList(multi, MultimediaStatus.valueOf(statusName),
-                                current_episode, multimediaType));
+                multimediaDataList.add(multimediaData);
             }
 
-            return new UserList(listName, multimediaSet);
+            return listData;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
