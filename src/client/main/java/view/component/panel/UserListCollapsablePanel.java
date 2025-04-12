@@ -20,10 +20,7 @@ public class UserListCollapsablePanel extends JPanel {
     private boolean isCollapsed = true;
     private final UserList multimediaList;
 
-    private final UserListsPanel parentComponent;
-
-    public UserListCollapsablePanel(UserListsPanel parent, UserList userList){
-        parentComponent = parent;
+    public UserListCollapsablePanel(UserList userList){
         this.multimediaList = userList;
 
         init();

@@ -91,7 +91,7 @@ public class UserListsPanel extends JPanel {
     }
 
     private void createListItemPanel(UserList userList){
-        pnlMultimediaLists.add(new UserListCollapsablePanel(this, userList));
+        pnlMultimediaLists.add(new UserListCollapsablePanel(userList));
         UserListsPanel.this.revalidate();
         UserListsPanel.this.repaint();
     }

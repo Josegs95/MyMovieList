@@ -1,7 +1,6 @@
 import controller.ApiController;
 import file.ApplicationProperty;
 import view.MainFrame;
-import view.component.dialog.ConfigureMultimediaDialog;
 
 import javax.swing.*;
 import java.io.IOException;
