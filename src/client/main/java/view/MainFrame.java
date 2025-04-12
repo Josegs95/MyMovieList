@@ -20,14 +20,42 @@ public class MainFrame extends JFrame{
     private User user;
 
     private static final String APP_TITLE = "MyMovieList";
+    private static MainFrame instance;
 
-    public MainFrame() {
+    private MainFrame(boolean withLogin) {
         initFrame();
 
-        new LoginDialog(this, true);
+        if (withLogin) {
+            new LoginDialog(this, true);
+        }
 
-        new Thread(new FetchUserLists(this)).start();
         finishInit();
+    }
+
+    public static MainFrame getInstance(){
+        if (instance == null) {
+            instance = new MainFrame(true);
+            new Thread(new FetchUserLists()).start();
+        }
+
+        return instance;
+    }
+
+    public void changeCentralPanel(JPanel panel) {
+        getContentPane().remove(pnlCentral);
+        pnlCentral = panel;
+        getContentPane().add(pnlCentral);
+
+        revalidate();
+        repaint();
+    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     private void initFrame() {
@@ -110,7 +138,7 @@ public class MainFrame extends JFrame{
         });
 
         btnLateralLists.addActionListener(_ -> {
-            UserListsPanel panel = new UserListsPanel(MainFrame.this);
+            UserListsPanel panel = new UserListsPanel();
             panel.setBorder(LineBorder.createBlackLineBorder());
 
             changeCentralPanel(panel);
@@ -128,23 +156,6 @@ public class MainFrame extends JFrame{
 
         revalidate();
         repaint();
-    }
-
-    public void changeCentralPanel(JPanel panel) {
-        getContentPane().remove(pnlCentral);
-        pnlCentral = panel;
-        getContentPane().add(pnlCentral);
-
-        revalidate();
-        repaint();
-    }
-
-    public void setUser(User user){
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     private static class MainWindowListener extends WindowAdapter {

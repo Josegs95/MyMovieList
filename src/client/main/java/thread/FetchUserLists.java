@@ -10,8 +10,8 @@ public class FetchUserLists implements Runnable{
 
     private final MainFrame mainFrame;
 
-    public FetchUserLists(MainFrame parent){
-        this.mainFrame = parent;
+    public FetchUserLists(){
+        this.mainFrame = MainFrame.getInstance();
     }
 
     @Override @SuppressWarnings("unchecked")

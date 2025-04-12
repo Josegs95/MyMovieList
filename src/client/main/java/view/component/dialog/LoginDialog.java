@@ -57,9 +57,6 @@ public class LoginDialog extends AuthenticationDialog {
                         "Error al registrarse",
                         JOptionPane.ERROR_MESSAGE);
 
-            // Borrar
-            System.out.println(serverResponse.getData());
-
             if ((boolean) serverResponse.getData().get("login")) {
                 String username = userData.get("username").toString();
                 Integer token = (Integer) (serverResponse.getData().get("token"));

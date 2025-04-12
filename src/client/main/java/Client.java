@@ -1,6 +1,7 @@
 import controller.ApiController;
 import file.ApplicationProperty;
 import view.MainFrame;
+import view.component.dialog.ConfigureMultimediaDialog;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class Client {
 
     private void init() {
         SwingUtilities.invokeLater(() -> {
-            new MainFrame();
+            MainFrame.getInstance();
             new Thread(() -> {
                 try {
                     ApiController.setUpConfigurationDetails();

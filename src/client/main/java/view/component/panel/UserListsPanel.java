@@ -18,8 +18,8 @@ public class UserListsPanel extends JPanel {
 
     private ScrollablePanel pnlMultimediaLists;
 
-    public UserListsPanel(MainFrame mainFrame){
-        this.mainFrame = mainFrame;
+    public UserListsPanel(){
+        this.mainFrame = MainFrame.getInstance();
         this.controller = new UserListController();
 
         init();
@@ -91,7 +91,7 @@ public class UserListsPanel extends JPanel {
     }
 
     private void createListItemPanel(UserList userList){
-        pnlMultimediaLists.add(new UserListCollapsablePanel(userList));
+        pnlMultimediaLists.add(new UserListCollapsablePanel(this, userList));
         UserListsPanel.this.revalidate();
         UserListsPanel.this.repaint();
     }
