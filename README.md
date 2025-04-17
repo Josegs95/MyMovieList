@@ -10,6 +10,7 @@ In this project I will create a client-server application, use of a DB (MySQL) w
 
 <h2>To-Do:</h2>
 
+- Delete user list.
 - Add a multimedia to a user list.
 - Modify/Remove multimedia from user lists.
 - (Optional):
