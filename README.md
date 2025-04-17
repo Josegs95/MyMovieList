@@ -10,8 +10,8 @@ In this project I will create a client-server application, use of a DB (MySQL) w
 
 <h2>To-Do:</h2>
 
-- Get user's lists from DB and their elements
-- Fix comm error cases like mysql service off
+- Add a multimedia to a user list.
+- Modify/Remove multimedia from user lists.
 - (Optional):
   - Proccess all pages of each API request
   - Add Guest session compatibility for the API: [Link](https://developer.themoviedb.org/docs/authentication-guest-sessions)
