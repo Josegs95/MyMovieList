@@ -1,4 +1,4 @@
-<h1>Still in development... (7/04/25)</h1>
+<h1>Still in development... (17/04/25)</h1>
 <h2>About</h2>
 Second portfolio project. This time, it's my final project of my "CFGS" in spanish (I think it's "ASVL" in english). I almost finish it in that time but it's so outdated, so I will create it again from scratch.
 
@@ -10,8 +10,9 @@ In this project I will create a client-server application, use of a DB (MySQL) w
 
 <h2>To-Do:</h2>
 
-- Get user's lists from DB and their elements
-- Fix comm error cases like mysql service off
+- Delete user list.
+- Add a multimedia to a user list.
+- Modify/Remove multimedia from user lists.
 - (Optional):
   - Proccess all pages of each API request
   - Add Guest session compatibility for the API: [Link](https://developer.themoviedb.org/docs/authentication-guest-sessions)
