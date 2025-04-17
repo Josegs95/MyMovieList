@@ -81,7 +81,7 @@ public class FetchDataFromAPI implements Runnable {
                                 .getAsString();
                     }
 
-                    tvShow.setStatus(inProduction ? "Ongoing" : "Finished");
+                    tvShow.setAiringStatus(inProduction ? "Ongoing" : "Finished");
                     tvShow.setTotalEpisodes(data.get("number_of_episodes").getAsInt());
                     tvShow.setTotalSeasons(data.get("number_of_seasons").getAsInt());
                     tvShow.setEpisodeDuration(episodeRuntime);

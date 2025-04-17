@@ -134,6 +134,92 @@ public class Database {
         }
     }
 
+    public static int existMultimedia(int apiId, String type){
+        String sqlStatement = "SELECT m.id FROM multimedia AS m " +
+                "INNER JOIN multimedia_type AS mt ON m.multimedia_type_id = mt.id " +
+                "WHERE m.api_id = ? AND mt.name = ?";
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sqlStatement)) {
+
+            statement.setInt(1, apiId);
+            statement.setString(2, type);
+
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1);
+            }
+
+            return -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static int createMultimedia(int apiId, String title, String type, int totalEpisodes)
+            throws DatabaseException, SQLException {
+        String sqlStatement = "INSERT INTO multimedia (title, api_id, total_episodes, " +
+                "multimedia_type_id) " +
+                "SELECT ?, ?, ?, mt.id FROM multimedia_type AS mt " +
+                "WHERE mt.name = ?";
+
+        Connection connection = getConnection();
+        PreparedStatement statement =
+                connection.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS);
+        try(connection; statement){
+
+            statement.setString(1, title);
+            statement.setInt(2, apiId);
+            statement.setString(4, type);
+            if (type.equals("MOVIE")) {
+                statement.setNull(3, Types.NULL);
+            } else {
+                statement.setInt(3, totalEpisodes);
+            }
+
+            if (statement.executeUpdate() != 1) {
+                return -1;
+            }
+
+            ResultSet generatedIds = statement.getGeneratedKeys();
+            generatedIds.next();
+            return generatedIds.getInt(1);
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23000"))
+                throw new DatabaseException(23);
+            throw new SQLException(e);
+        }
+    }
+
+    public static boolean addMultimediaToList(int idUser, int idMultimedia, String listName,
+                                              String status, int currentEpisode) throws DatabaseException, SQLException {
+        String sqlStatement = "INSERT INTO list_has_multimedia (list_id, multimedia_id, current_episode, status_id)" +
+                "VALUES (" +
+                    "(SELECT l.id FROM user AS u " +
+                        "INNER JOIN list AS l ON l.user_id = u.id " +
+                        "WHERE u.id = ? AND l.name = ?" +
+                        "LIMIT 1), ?, ?, " +
+                        "(SELECT s.id FROM status AS s " +
+                            "WHERE s.name = ?" +
+                            "LIMIT 1))";
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sqlStatement)) {
+
+            statement.setInt(1, idUser);
+            statement.setString(2, listName);
+            statement.setInt(3, idMultimedia);
+            statement.setInt(4, currentEpisode);
+            statement.setString(5, status);
+
+            return statement.executeUpdate() != 0;
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23000"))
+                throw new DatabaseException(23);
+            throw new SQLException(e);
+        }
+    }
+
     // Private methods
 
     private static Map<String, Object> getListData(int idList, String listName){
@@ -200,11 +286,12 @@ public class Database {
             );
         } catch (SQLException e) {
             if (e instanceof CommunicationsException){
-                RuntimeException ex =new RuntimeException("MySQL service might be down");
+                RuntimeException ex = new RuntimeException("MySQL service might be down");
                 ex.setStackTrace(new StackTraceElement[]{});
                 throw ex;
+            } else {
+                throw new RuntimeException(e);
             }
-            throw new RuntimeException(e);
         }
     }
 }

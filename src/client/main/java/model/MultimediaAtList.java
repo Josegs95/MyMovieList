@@ -2,23 +2,18 @@ package model;
 
 public class MultimediaAtList {
     private final Multimedia multimedia;
-    private final MultimediaType multimediaType;
 
     private MultimediaStatus status;
     private int currentEpisode;
 
-    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status, int currentEpisode,
-                            MultimediaType multimediaType) {
+    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status, int currentEpisode) {
         this.multimedia = multimedia;
         this.status = status;
         this.currentEpisode = currentEpisode;
-
-        this.multimediaType = multimediaType;
     }
 
-    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status,
-                            MultimediaType multimediaType) {
-        this(multimedia, status, -1, multimediaType);
+    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status) {
+        this(multimedia, status, -1);
     }
 
     public Multimedia getMultimedia() {
@@ -39,9 +34,5 @@ public class MultimediaAtList {
 
     public void setCurrentEpisode(int currentEpisode) {
         this.currentEpisode = currentEpisode;
-    }
-
-    public MultimediaType getMultimediaType() {
-        return multimediaType;
     }
 }

@@ -50,7 +50,7 @@ public class FetchUserLists implements Runnable{
                 multimedia.setTitle(title);
 
                 MultimediaAtList multimediaAtList =
-                        new MultimediaAtList(multimedia, status, currentEpisode, type);
+                        new MultimediaAtList(multimedia, status, currentEpisode);
                 multimediaItemsList.add(multimediaAtList);
             }
 

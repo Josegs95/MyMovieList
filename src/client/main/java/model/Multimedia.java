@@ -23,6 +23,8 @@ public interface Multimedia {
 
     String getCountry();
 
+    MultimediaType getMultimediaType();
+
     void setTitle(String title);
 
     void setPosterUrl(String posterUrl);

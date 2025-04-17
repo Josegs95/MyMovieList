@@ -20,26 +20,37 @@ public class Movie implements Multimedia {
         this.id = id;
     }
 
+    @Override
+    public MultimediaType getMultimediaType() {
+        return MultimediaType.MOVIE;
+    }
+
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public String getPosterUrl() {
         return posterUrl;
     }
 
+    @Override
     public LocalDate getReleaseDate() {
         return releaseDate;
     }
 
+    @Override
     public String getScore() {
         return score;
     }
 
+    @Override
     public Double getPopularity() {
         return popularity;
     }

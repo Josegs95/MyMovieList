@@ -2,12 +2,13 @@ package view.component.panel;
 
 import controller.ApiController;
 import controller.SearchController;
+import controller.UserListController;
 import lib.ScrollablePanel;
 import lib.StretchIcon;
-import model.Movie;
-import model.Multimedia;
-import model.TvShow;
+import model.*;
 import net.miginfocom.swing.MigLayout;
+import view.MainFrame;
+import view.component.dialog.ConfigureMultimediaDialog;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -78,7 +79,7 @@ public class DetailMultimediaPanel extends JPanel {
         JPanel pnlDetails = new JPanel(new MigLayout(
                 "ins 5, fill",
                 "[|||]",
-                "[fill, 20%|fill, 10%|fill, 10%|fill, 30%|fill, 10%|fill, 10%|fill, 10%]"
+                "[fill, 20%|fill, 10%|fill, 10%|fill, 40%|fill, 10%|fill, 10%]"
         ));
         pnlDetails.setOpaque(false);
 
@@ -113,7 +114,7 @@ public class DetailMultimediaPanel extends JPanel {
 
         JLabel lblStatus = null;
         if (!isAMovie)
-            lblStatus = new JLabel("Status: " + ((TvShow) multimedia).getStatus());
+            lblStatus = new JLabel("Status: " + ((TvShow) multimedia).getAiringStatus());
 
         //Synopsis
 
@@ -141,14 +142,21 @@ public class DetailMultimediaPanel extends JPanel {
 
         //Genre List
 
-        JLabel lblGenres = new JLabel("Genres: " + String.join(", ", multimedia.getGenreList()));
+        String genres = String.join(", ", multimedia.getGenreList());
+        JLabel lblGenres = new JLabel("Genres: " + genres);
+        lblGenres.setHorizontalAlignment(SwingConstants.CENTER);
 
         //Episode & Season count
 
         JLabel lblEpisodeCount = null, lblSeasonCount = null;
         if (!isAMovie) {
-            lblEpisodeCount = new JLabel("# Episodes: " + ((TvShow) multimedia).getTotalEpisodes());
-            lblSeasonCount = new JLabel("# Seasons: " + ((TvShow) multimedia).getTotalSeasons());
+            int totalEpisodes = ((TvShow) multimedia).getTotalEpisodes();
+            int totalSeasons = ((TvShow) multimedia).getTotalSeasons();
+            lblEpisodeCount = new JLabel("# Episodes: " + totalEpisodes);
+            lblSeasonCount = new JLabel("# Seasons: " + totalSeasons);
+
+            lblEpisodeCount.setHorizontalAlignment(SwingConstants.CENTER);
+            lblEpisodeCount.setHorizontalAlignment(SwingConstants.CENTER);
         }
 
         //Buttons
@@ -165,6 +173,10 @@ public class DetailMultimediaPanel extends JPanel {
         JButton btnAddToList = new JButton("Add");
         JButton btnRemoveFromList = new JButton("Remove");
 
+        btnBack.setFocusPainted(false);
+        btnAddToList.setFocusPainted(false);
+        btnRemoveFromList.setFocusPainted(false);
+
         btnRemoveFromList.setEnabled(false);
 
         pnlButton.add(btnBack, "sg buttons");
@@ -176,6 +188,48 @@ public class DetailMultimediaPanel extends JPanel {
         //Listeners
 
         btnBack.addActionListener(_ -> controller.backButtonFromDetailPanel(searchPanel));
+        btnAddToList.addActionListener(_ -> {
+            MainFrame mainFrame = MainFrame.getInstance();
+            User user = mainFrame.getUser();
+
+            if (user.getLists().isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        mainFrame,
+                        "You have not created any list yet to add this multimedia.",
+                        "Add multimedia to a list",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            ConfigureMultimediaDialog dialog =
+                    new ConfigureMultimediaDialog(mainFrame, multimedia,
+                            mainFrame.getUser().getLists());
+            dialog.setVisible(true);
+
+            if (!dialog.isCanceled()) {
+                UserList selectedList = dialog.getSelectedList();
+                MultimediaAtList multimediaAtList = new MultimediaAtList(
+                        multimedia,
+                        dialog.getSelectedMultimediaStatus(),
+                        dialog.getSelectedCurrentEpisode());
+
+                ServerResponse response = UserListController.addMultimediaToList(
+                        user,
+                        selectedList.getListName(),
+                        multimediaAtList);
+                if (response.getStatus() != 200) {
+                    JOptionPane.showMessageDialog(
+                            mainFrame,
+                            "Couldn't add the multimedia to the list",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                selectedList.getMultimediaList().add(multimediaAtList);
+            }
+        });
 
         //Adds
 

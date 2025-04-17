@@ -1,9 +1,17 @@
 package model;
 
 public enum MultimediaStatus {
-    FINISHED,
-    ON_HOLD,
-    WATCHING,
     PLAN_TO_WATCH,
-    DROPPED
+    WATCHING,
+    ON_HOLD,
+    DROPPED,
+    FINISHED;
+
+    public static MultimediaStatus[] getMultimediaStatusValues(MultimediaType multimediaType) {
+        if (multimediaType == MultimediaType.MOVIE) {
+            return new MultimediaStatus[] { PLAN_TO_WATCH, FINISHED };
+        } else {
+            return MultimediaStatus.values();
+        }
+    }
 }

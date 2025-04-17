@@ -14,13 +14,11 @@ import java.util.HashSet;
 public class UserListsPanel extends JPanel {
 
     private final MainFrame mainFrame;
-    private final UserListController controller;
 
     private ScrollablePanel pnlMultimediaLists;
 
     public UserListsPanel(){
         this.mainFrame = MainFrame.getInstance();
-        this.controller = new UserListController();
 
         init();
         initUserList();
@@ -66,7 +64,7 @@ public class UserListsPanel extends JPanel {
             if (listName == null)
                 return;
 
-            ServerResponse serverResponse = controller.createUserList(mainFrame.getUser(), listName);
+            ServerResponse serverResponse = UserListController.createUserList(mainFrame.getUser(), listName);
             if (serverResponse.getStatus() != 200) {
                 String errorMessage = "Could not create the new list";
                 if (serverResponse.getErrorCode() == 23) {
@@ -77,7 +75,9 @@ public class UserListsPanel extends JPanel {
                 return;
             }
 
-            createListItemPanel(new UserList(listName, new HashSet<>()));
+            UserList newList = new UserList(listName, new HashSet<>());
+            MainFrame.getInstance().getUser().getLists().add(newList);
+            createListItemPanel(newList);
         });
 
         //Adds

@@ -73,6 +73,12 @@ public class ClientHandler implements Runnable{
                     serverResponseData.put("lists", JSONMessageProtocol.serializeObject(userLists));
 
                 }
+                case ADD_MULTIMEDIA -> {
+                    boolean done = addMultimediaToList();
+                    if (done) {
+                        System.out.println("Multimedia añadido con éxito");
+                    }
+                }
                 default -> System.out.println("Tipo de mensaje desconocido: " + messageType);
             }
 
@@ -124,11 +130,41 @@ public class ClientHandler implements Runnable{
         return Database.createUserList(idUser, listName);
     }
 
-    private List<Map<String, Object>> getUserLists() throws DatabaseException, AuthenticationException {
+    private List<Map<String, Object>> getUserLists()
+            throws DatabaseException, AuthenticationException {
         String username = clientData.get("username").toString();
         Integer token = (Integer) clientData.get("token");
         int idUser = Database.validateUser(username, token);
 
         return Database.getUserLists(idUser);
+    }
+
+    @SuppressWarnings({"unckecked", "unchecked"})
+    private boolean addMultimediaToList() throws AuthenticationException,
+            SQLException, DatabaseException {
+        // User verification
+        String username = clientData.get("username").toString();
+        Integer token = (Integer) clientData.get("token");
+        int idUser = Database.validateUser(username, token);
+
+        // Verify if multimedia exists
+        Map<String, Object> multimediaData = (Map<String, Object>) (clientData.get("multimedia"));
+        int apiId = (int) (multimediaData.get("apiId"));
+        String multimediaType = multimediaData.get("type").toString();
+
+        int idMultimedia = Database.existMultimedia(apiId, multimediaType);
+        if (idMultimedia == -1) {
+            String title = multimediaData.get("title").toString();
+            int totalEpisodes = (int) (multimediaData.get("totalEpisodes"));
+
+            idMultimedia = Database.createMultimedia(apiId, title, multimediaType, totalEpisodes);
+        }
+
+        // Add multimedia to the list
+        String listName = clientData.get("listName").toString();
+        String status = clientData.get("status").toString();
+        int currentEpisode = (int) (clientData.get("currentEpisode"));
+
+        return Database.addMultimediaToList(idUser, idMultimedia, listName, status, currentEpisode);
     }
 }

@@ -67,20 +67,21 @@ public class UserListCollapsablePanel extends JPanel {
 
     private void fillPanelWithMultimedia(JPanel pnlContent){
         for (MultimediaAtList multimediaAtList : multimediaList.getMultimediaList()){
-            MultimediaType multimediaType = multimediaAtList.getMultimediaType();
+            MultimediaType multimediaType = multimediaAtList.getMultimedia().getMultimediaType();
             Multimedia multimedia = multimediaAtList.getMultimedia();
 
             // Set up components
 
             JPanel panel = new JPanel(new MigLayout(
-                    "ins 0, fill",
+                    "ins 0 5 0 0, fill, debug",
                     "[20%, fill][20%, fill][20%, fill][20%, fill][20%, fill]",
                     "[fill]"
             ));
             panel.setBackground(multimediaType == MultimediaType.MOVIE ? Color.CYAN : Color.PINK);
             panel.setBorder(LineBorder.createGrayLineBorder());
 
-            JLabel lblTitle = new JLabel(multimedia.getTitle());
+            JLabel lblTitle = new JLabel("<html><span align=center>"
+                    + multimedia.getTitle() + "</span></html>");
             JLabel lblType = new JLabel(multimediaType.toString());
             JLabel lblStatus = new JLabel(multimediaAtList.getStatus().toString());
             String episodeString = "";

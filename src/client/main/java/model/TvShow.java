@@ -15,7 +15,7 @@ public class TvShow implements Multimedia {
     private List<String> genreList;
     private String country;
 
-    private String status;
+    private String airingStatus;
     private int totalEpisodes;
     private int totalSeasons;
     private String episodeDuration;
@@ -25,26 +25,36 @@ public class TvShow implements Multimedia {
     }
 
     @Override
+    public MultimediaType getMultimediaType() {
+        return MultimediaType.TV_SHOW;
+    }
+
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public String getPosterUrl() {
         return posterUrl;
     }
 
+    @Override
     public LocalDate getReleaseDate() {
         return releaseDate;
     }
 
+    @Override
     public String getScore() {
         return score;
     }
 
+    @Override
     public Double getPopularity() {
         return popularity;
     }
@@ -59,8 +69,13 @@ public class TvShow implements Multimedia {
         return genreList;
     }
 
-    public String getStatus() {
-        return status;
+    @Override
+    public String getCountry() {
+        return country;
+    }
+
+    public String getAiringStatus() {
+        return airingStatus;
     }
 
     public int getTotalEpisodes() {
@@ -110,8 +125,13 @@ public class TvShow implements Multimedia {
         this.genreList = genreList;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    @Override
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setAiringStatus(String airingStatus) {
+        this.airingStatus = airingStatus;
     }
 
     public void setTotalEpisodes(int totalEpisodes) {
@@ -124,16 +144,6 @@ public class TvShow implements Multimedia {
 
     public void setEpisodeDuration(String episodeDuration) {
         this.episodeDuration = episodeDuration + " minutes per ep.";
-    }
-
-    @Override
-    public String getCountry() {
-        return country;
-    }
-
-    @Override
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     @Override
