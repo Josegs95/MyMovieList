@@ -58,10 +58,14 @@ public class ConfigureMultimediaDialog extends JDialog {
         JLabel lblLists = new JLabel("Lists:");
         lblLists.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        cmbLists = new JComboBox<>(userLists.stream()
+        String[] listNames = userLists.stream()
+                .filter(userList -> !userList.getMultimediaList().stream()
+                        .map(MultimediaListItem::getMultimedia)
+                        .anyMatch(m -> m.equals(multimedia)))
                 .map(UserList::getListName)
-                .toArray(String[]::new)
-        );
+                .toArray(String[]::new);
+
+        cmbLists = new JComboBox<>(listNames);
         cmbLists.setSelectedItem(userLists.getFirst());
         ((JLabel) cmbLists.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 

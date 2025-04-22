@@ -12,12 +12,11 @@ import java.util.Map;
 
 public class LoginDialog extends AuthenticationDialog {
 
-    private final MainFrame mainFrame;
+    private User user;
 
     public LoginDialog(MainFrame mainFrame, boolean modal) {
         super(mainFrame, modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
 
-        this.mainFrame = mainFrame;
         init();
     }
 
@@ -60,8 +59,8 @@ public class LoginDialog extends AuthenticationDialog {
             if ((boolean) serverResponse.getData().get("login")) {
                 String username = userData.get("username").toString();
                 Integer token = (Integer) (serverResponse.getData().get("token"));
-                User user = new User(username, token);
-                mainFrame.setUser(user);
+
+                user = new User(username, token);
                 setLoginSuccess();
                 dispose();
             } else
@@ -86,6 +85,10 @@ public class LoginDialog extends AuthenticationDialog {
         add(pnlButtons);
 
         setVisible(true);
+    }
+
+    public User getLoggedUser() {
+        return user;
     }
 
     protected void setUsername(String username){

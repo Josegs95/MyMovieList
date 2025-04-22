@@ -3,6 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 README.md
+TO-DO.txt
 properties.txt
 
 ### IntelliJ IDEA ###

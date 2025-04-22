@@ -13,6 +13,36 @@ public class User {
         this.sessionToken = sessionToken;
     }
 
+    public boolean hasMultimediaInAnyList(Multimedia multimedia){
+        for (UserList userList : lists) {
+            for (MultimediaListItem multimediaListItem : userList.getMultimediaList()) {
+                if (multimediaListItem.getMultimedia().equals(multimedia)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean hasMultimediaInAllList(Multimedia multimedia){
+        listsLoop :
+        for (UserList userList : lists) {
+            boolean found = false;
+            for (MultimediaListItem multimediaListItem : userList.getMultimediaList()) {
+                if (multimediaListItem.getMultimedia().equals(multimedia)) {
+                    continue listsLoop;
+                }
+            }
+
+            if (!found) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public void setLists(List<UserList> lists) {
         this.lists = lists;
     }

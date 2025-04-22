@@ -36,12 +36,11 @@ public class UserListController {
         }
     }
 
-    public static ServerResponse addMultimediaToList(User user, String listName,
-                                                     MultimediaAtList multimediaAtList) {
+    public static ServerResponse addMultimediaToList(User user, UserList userList, MultimediaListItem multimediaListItem) {
         Map<String, Object> userData = getUserData(user);
         Map<String, Object> multimediaData = new HashMap<>();
 
-        Multimedia multimedia = multimediaAtList.getMultimedia();
+        Multimedia multimedia = multimediaListItem.getMultimedia();
         multimediaData.put("apiId", multimedia.getId());
         multimediaData.put("title", multimedia.getTitle());
         multimediaData.put("type", multimedia.getMultimediaType());
@@ -52,9 +51,9 @@ public class UserListController {
         }
 
         userData.put("multimedia", multimediaData);
-        userData.put("listName", listName);
-        userData.put("status", multimediaAtList.getStatus());
-        userData.put("currentEpisode", multimediaAtList.getCurrentEpisode());
+        userData.put("listName", userList.getListName());
+        userData.put("status", multimediaListItem.getStatus());
+        userData.put("currentEpisode", multimediaListItem.getCurrentEpisode());
 
         try(SocketCommunication socketCommunication = new SocketCommunication()) {
 

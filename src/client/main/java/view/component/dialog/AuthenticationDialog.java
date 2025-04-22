@@ -26,6 +26,34 @@ public abstract class AuthenticationDialog extends JDialog{
         init();
     }
 
+    public boolean isLoginSuccess(){
+        return loginSuccess;
+    }
+
+    protected Map<String, JTextField> getTextFieldMap() {
+        return textFieldMap;
+    }
+
+    protected void setLoginSuccess(){
+        loginSuccess = true;
+    }
+
+    protected void setDefaultButton(JButton button){
+        btnDefault = button;
+    }
+
+    protected void setTextFieldListeners(Map<String, JTextField> textFieldMap){
+        for (JTextField textField : textFieldMap.values()){
+            textField.addActionListener(_ -> btnDefault.doClick());
+            textField.addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    textField.selectAll();
+                }
+            });
+        }
+    }
+
     private void init() {
         setLayout(new MigLayout(
                 "align 50% 50%, flowy",
@@ -84,35 +112,6 @@ public abstract class AuthenticationDialog extends JDialog{
         add(pnlUsername);
         add(pnlPassword);
     }
-
-    protected Map<String, JTextField> getTextFieldMap() {
-        return textFieldMap;
-    }
-
-    protected void setLoginSuccess(){
-        loginSuccess = true;
-    }
-
-    protected boolean isLoginSuccess(){
-        return loginSuccess;
-    }
-
-    protected void setDefaultButton(JButton button){
-        btnDefault = button;
-    }
-
-    protected void setTextFieldListeners(Map<String, JTextField> textFieldMap){
-        for (JTextField textField : textFieldMap.values()){
-            textField.addActionListener(_ -> btnDefault.doClick());
-            textField.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    textField.selectAll();
-                }
-            });
-        }
-    }
-
 
     private static class AuthenticationWindowListener extends WindowAdapter {
 

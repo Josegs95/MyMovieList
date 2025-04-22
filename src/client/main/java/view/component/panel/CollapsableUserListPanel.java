@@ -15,12 +15,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class UserListCollapsablePanel extends JPanel {
+public class CollapsableUserListPanel extends JPanel {
 
     private boolean isCollapsed = true;
     private final UserList multimediaList;
 
-    public UserListCollapsablePanel(UserList userList){
+    public CollapsableUserListPanel(UserList userList){
         this.multimediaList = userList;
 
         init();
@@ -52,28 +52,28 @@ public class UserListCollapsablePanel extends JPanel {
         //Listener
         btnExpand.addActionListener(_ ->{
             if (isCollapsed && !multimediaList.getMultimediaList().isEmpty()){
-                UserListCollapsablePanel.this.add(pnlContent);
+                CollapsableUserListPanel.this.add(pnlContent);
             } else {
-                UserListCollapsablePanel.this.remove(pnlContent);
+                CollapsableUserListPanel.this.remove(pnlContent);
             }
 
             isCollapsed = !isCollapsed;
-            UserListCollapsablePanel.this.revalidate();
-            UserListCollapsablePanel.this.repaint();
+            CollapsableUserListPanel.this.revalidate();
+            CollapsableUserListPanel.this.repaint();
         });
 
         add(btnExpand, "hmin 100");
     }
 
     private void fillPanelWithMultimedia(JPanel pnlContent){
-        for (MultimediaAtList multimediaAtList : multimediaList.getMultimediaList()){
-            MultimediaType multimediaType = multimediaAtList.getMultimedia().getMultimediaType();
-            Multimedia multimedia = multimediaAtList.getMultimedia();
+        for (MultimediaListItem multimediaListItem : multimediaList.getMultimediaList()){
+            MultimediaType multimediaType = multimediaListItem.getMultimedia().getMultimediaType();
+            Multimedia multimedia = multimediaListItem.getMultimedia();
 
             // Set up components
 
             JPanel panel = new JPanel(new MigLayout(
-                    "ins 0 5 0 0, fill, debug",
+                    "ins 0 5 0 0, fill",
                     "[20%, fill][20%, fill][20%, fill][20%, fill][20%, fill]",
                     "[fill]"
             ));
@@ -83,12 +83,12 @@ public class UserListCollapsablePanel extends JPanel {
             JLabel lblTitle = new JLabel("<html><span align=center>"
                     + multimedia.getTitle() + "</span></html>");
             JLabel lblType = new JLabel(multimediaType.toString());
-            JLabel lblStatus = new JLabel(multimediaAtList.getStatus().toString());
+            JLabel lblStatus = new JLabel(multimediaListItem.getStatus().toString());
             String episodeString = "";
             if (multimediaType == MultimediaType.TV_SHOW){
                 episodeString = String.join(
                         "/",
-                        String.valueOf(multimediaAtList.getCurrentEpisode()),
+                        String.valueOf(multimediaListItem.getCurrentEpisode()),
                         String.valueOf(((TvShow) multimedia).getTotalEpisodes()));
             }
             JLabel lblCurrentEpisode = new JLabel(episodeString);

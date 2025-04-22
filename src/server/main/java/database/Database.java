@@ -193,15 +193,7 @@ public class Database {
 
     public static boolean addMultimediaToList(int idUser, int idMultimedia, String listName,
                                               String status, int currentEpisode) throws DatabaseException, SQLException {
-        String sqlStatement = "INSERT INTO list_has_multimedia (list_id, multimedia_id, current_episode, status_id)" +
-                "VALUES (" +
-                    "(SELECT l.id FROM user AS u " +
-                        "INNER JOIN list AS l ON l.user_id = u.id " +
-                        "WHERE u.id = ? AND l.name = ?" +
-                        "LIMIT 1), ?, ?, " +
-                        "(SELECT s.id FROM status AS s " +
-                            "WHERE s.name = ?" +
-                            "LIMIT 1))";
+        String sqlStatement = "CALL insert_multimedia_item_to_list(?, ?, ?, ?, ?)";
 
         try(Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(sqlStatement)) {

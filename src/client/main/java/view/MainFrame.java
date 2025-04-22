@@ -26,7 +26,11 @@ public class MainFrame extends JFrame{
         initFrame();
 
         if (withLogin) {
-            new LoginDialog(this, true);
+            LoginDialog dialog = new LoginDialog(this, true);
+            if (dialog.isLoginSuccess()) {
+                user = dialog.getLoggedUser();
+                new Thread(new FetchUserLists(user)).start();
+            }
         }
 
         finishInit();
@@ -35,7 +39,6 @@ public class MainFrame extends JFrame{
     public static MainFrame getInstance(){
         if (instance == null) {
             instance = new MainFrame(true);
-            new Thread(new FetchUserLists()).start();
         }
 
         return instance;

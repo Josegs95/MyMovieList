@@ -2,19 +2,21 @@ package model;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 public class TvShow implements Multimedia {
+
+    private static final MultimediaType TYPE = MultimediaType.TV_SHOW;
     private final int id;
+
     private String title;
     private String posterUrl;
     private LocalDate releaseDate;
     private String score;
     private Double popularity;
-
     private String synopsis;
     private List<String> genreList;
     private String country;
-
     private String airingStatus;
     private int totalEpisodes;
     private int totalSeasons;
@@ -26,7 +28,7 @@ public class TvShow implements Multimedia {
 
     @Override
     public MultimediaType getMultimediaType() {
-        return MultimediaType.TV_SHOW;
+        return TYPE;
     }
 
     @Override
@@ -155,5 +157,16 @@ public class TvShow implements Multimedia {
                 ", score='" + score + '\'' +
                 ", popularity=" + popularity +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof TvShow tvShow)) return false;
+        return id == tvShow.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, TYPE);
     }
 }

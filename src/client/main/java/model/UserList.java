@@ -4,9 +4,9 @@ import java.util.Set;
 
 public class UserList {
     private final String listName;
-    private final Set<MultimediaAtList> multimediaList;
+    private final Set<MultimediaListItem> multimediaList;
 
-    public UserList(String name, Set<MultimediaAtList> multimediaList){
+    public UserList(String name, Set<MultimediaListItem> multimediaList){
         this.listName = name;
         this.multimediaList = multimediaList;
     }
@@ -15,7 +15,7 @@ public class UserList {
         return listName;
     }
 
-    public Set<MultimediaAtList> getMultimediaList() {
+    public Set<MultimediaListItem> getMultimediaList() {
         return multimediaList;
     }
 

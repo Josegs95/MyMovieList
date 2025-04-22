@@ -1,18 +1,18 @@
 package model;
 
-public class MultimediaAtList {
+public class MultimediaListItem {
     private final Multimedia multimedia;
 
     private MultimediaStatus status;
     private int currentEpisode;
 
-    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status, int currentEpisode) {
+    public MultimediaListItem(Multimedia multimedia, MultimediaStatus status, int currentEpisode) {
         this.multimedia = multimedia;
         this.status = status;
         this.currentEpisode = currentEpisode;
     }
 
-    public MultimediaAtList(Multimedia multimedia, MultimediaStatus status) {
+    public MultimediaListItem(Multimedia multimedia, MultimediaStatus status) {
         this(multimedia, status, -1);
     }
 

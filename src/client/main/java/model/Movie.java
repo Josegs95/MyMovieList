@@ -2,15 +2,18 @@ package model;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 public class Movie implements Multimedia {
+
+    private static final MultimediaType TYPE = MultimediaType.MOVIE;
     private final int id;
+
     private String title;
     private String posterUrl;
     private LocalDate releaseDate;
     private String score;
     private Double popularity;
-
     private String synopsis;
     private List<String> genreList;
     private String duration;
@@ -22,7 +25,7 @@ public class Movie implements Multimedia {
 
     @Override
     public MultimediaType getMultimediaType() {
-        return MultimediaType.MOVIE;
+        return TYPE;
     }
 
     @Override
@@ -134,5 +137,16 @@ public class Movie implements Multimedia {
                 ", score='" + score + '\'' +
                 ", popularity=" + popularity +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Movie movie)) return false;
+        return id == movie.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, TYPE);
     }
 }

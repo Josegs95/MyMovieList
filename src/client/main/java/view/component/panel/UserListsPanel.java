@@ -3,25 +3,30 @@ package view.component.panel;
 import controller.UserListController;
 import lib.ScrollablePanel;
 import model.ServerResponse;
+import model.User;
 import model.UserList;
 import net.miginfocom.swing.MigLayout;
+import thread.FetchUserLists;
 import view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class UserListsPanel extends JPanel {
 
     private final MainFrame mainFrame;
+    private final User user;
 
     private ScrollablePanel pnlMultimediaLists;
 
     public UserListsPanel(){
         this.mainFrame = MainFrame.getInstance();
+        this.user = mainFrame.getUser();
 
         init();
-        initUserList();
+        printUserLists();
     }
 
     private void init() {
@@ -64,20 +69,28 @@ public class UserListsPanel extends JPanel {
             if (listName == null)
                 return;
 
-            ServerResponse serverResponse = UserListController.createUserList(mainFrame.getUser(), listName);
+            ServerResponse serverResponse = UserListController.createUserList(user, listName);
             if (serverResponse.getStatus() != 200) {
-                String errorMessage = "Could not create the new list";
-                if (serverResponse.getErrorCode() == 23) {
-                    errorMessage = "You already have a list with than name";
-                }
-                JOptionPane.showMessageDialog(mainFrame, errorMessage,
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+                processServerError(serverResponse);
+            } else {
+                SwingWorker<List<UserList>, Void> worker = new SwingWorker<>() {
+                    @Override
+                    protected List<UserList> doInBackground() {
+                        return new FetchUserLists(user).getUpdatedUserLists();
+                    }
 
-            UserList newList = new UserList(listName, new HashSet<>());
-            MainFrame.getInstance().getUser().getLists().add(newList);
-            createListItemPanel(newList);
+                    @Override
+                    protected void done() {
+                        try {
+                            user.setLists(get());
+                            printUserLists();
+                        } catch (InterruptedException | ExecutionException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                };
+                worker.execute();
+            }
         });
 
         //Adds
@@ -86,13 +99,23 @@ public class UserListsPanel extends JPanel {
         add(scrollPane);
     }
 
-    private void initUserList(){
-        mainFrame.getUser().getLists().forEach(this::createListItemPanel);
+    private void printUserLists() {
+        pnlMultimediaLists.removeAll();
+        user.getLists().forEach(list -> pnlMultimediaLists.add(new CollapsableUserListPanel(list)));
+        updateUIStatus();
     }
 
-    private void createListItemPanel(UserList userList){
-        pnlMultimediaLists.add(new UserListCollapsablePanel(userList));
-        UserListsPanel.this.revalidate();
-        UserListsPanel.this.repaint();
+    private void updateUIStatus() {
+        revalidate();
+        repaint();
+    }
+
+    private void processServerError(ServerResponse response) {
+        String errorMessage = "Could not create the new list";
+        if (response.getErrorCode() == 23) {
+            errorMessage = "You already have a list with than name";
+        }
+        JOptionPane.showMessageDialog(mainFrame, errorMessage,
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
 }

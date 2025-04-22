@@ -7,6 +7,7 @@ import lib.ScrollablePanel;
 import lib.StretchIcon;
 import model.*;
 import net.miginfocom.swing.MigLayout;
+import thread.FetchUserLists;
 import view.MainFrame;
 import view.component.dialog.ConfigureMultimediaDialog;
 
@@ -15,13 +16,21 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class DetailMultimediaPanel extends JPanel {
 
     private final SearchPanel searchPanel;
     private final Multimedia multimedia;
     private final SearchController controller;
+
     private String baseUrlPoster;
+    private MainFrame mainFrame;
+    private User user;
+
+    private JButton btnAddToList;
+    private JButton btnRemoveFromList;
 
     public DetailMultimediaPanel(SearchPanel parent, Multimedia multimedia,
                                  SearchController controller) {
@@ -38,6 +47,9 @@ public class DetailMultimediaPanel extends JPanel {
     }
 
     private void init() {
+        mainFrame = MainFrame.getInstance();
+        user = mainFrame.getUser();
+
         setBackground(Color.PINK);
         baseUrlPoster = ApiController.getBaseURLForPosters(true);
 
@@ -170,14 +182,12 @@ public class DetailMultimediaPanel extends JPanel {
         pnlButton.setBorder(LineBorder.createBlackLineBorder());
 
         JButton btnBack = new JButton("Back");
-        JButton btnAddToList = new JButton("Add");
-        JButton btnRemoveFromList = new JButton("Remove");
+        btnAddToList = new JButton("Add");
+        btnRemoveFromList = new JButton("Remove");
 
         btnBack.setFocusPainted(false);
         btnAddToList.setFocusPainted(false);
         btnRemoveFromList.setFocusPainted(false);
-
-        btnRemoveFromList.setEnabled(false);
 
         pnlButton.add(btnBack, "sg buttons");
         pnlButton.add(btnAddToList, "sg buttons");
@@ -189,8 +199,7 @@ public class DetailMultimediaPanel extends JPanel {
 
         btnBack.addActionListener(_ -> controller.backButtonFromDetailPanel(searchPanel));
         btnAddToList.addActionListener(_ -> {
-            MainFrame mainFrame = MainFrame.getInstance();
-            User user = mainFrame.getUser();
+            // Error if the user has no lists
 
             if (user.getLists().isEmpty()) {
                 JOptionPane.showMessageDialog(
@@ -202,32 +211,48 @@ public class DetailMultimediaPanel extends JPanel {
                 return;
             }
 
+            // Show dialog to configure the multimedia
+
             ConfigureMultimediaDialog dialog =
                     new ConfigureMultimediaDialog(mainFrame, multimedia,
-                            mainFrame.getUser().getLists());
+                            user.getLists());
             dialog.setVisible(true);
 
-            if (!dialog.isCanceled()) {
-                UserList selectedList = dialog.getSelectedList();
-                MultimediaAtList multimediaAtList = new MultimediaAtList(
-                        multimedia,
-                        dialog.getSelectedMultimediaStatus(),
-                        dialog.getSelectedCurrentEpisode());
+            if (dialog.isCanceled()) {
+                return;
+            }
 
-                ServerResponse response = UserListController.addMultimediaToList(
-                        user,
-                        selectedList.getListName(),
-                        multimediaAtList);
-                if (response.getStatus() != 200) {
-                    JOptionPane.showMessageDialog(
-                            mainFrame,
-                            "Couldn't add the multimedia to the list",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+            UserList selectedList = dialog.getSelectedList();
+            MultimediaStatus selectedStatus = dialog.getSelectedMultimediaStatus();
+            int selectedCurrentEpisode = dialog.getSelectedCurrentEpisode();
+            MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia, selectedStatus, selectedCurrentEpisode);
 
-                selectedList.getMultimediaList().add(multimediaAtList);
+            // Send the information to the server
+
+            ServerResponse response = UserListController.addMultimediaToList(user, selectedList, multimediaListItem);
+            if (response.getStatus() != 200) {
+                JOptionPane.showMessageDialog(
+                        mainFrame,
+                        "Couldn't add the multimedia to the list",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                new SwingWorker<List<UserList>, Void>() {
+                    @Override
+                    protected List<UserList> doInBackground() {
+                        return new FetchUserLists(user).getUpdatedUserLists();
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            user.setLists(get());
+                            updatePage();
+                        } catch (InterruptedException | ExecutionException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }.execute();
             }
         });
 
@@ -250,11 +275,23 @@ public class DetailMultimediaPanel extends JPanel {
         add(pnlPoster);
         add(pnlDetails);
 
-        revalidate();
-        repaint();
+        // Status
+
+        System.out.println("Any: " + user.hasMultimediaInAnyList(multimedia));
+        System.out.println("All: " + user.hasMultimediaInAllList(multimedia));
+
+        updatePage();
     }
 
     public Multimedia getMultimedia() {
         return multimedia;
+    }
+
+    private void updatePage() {
+        btnRemoveFromList.setEnabled(user.hasMultimediaInAnyList(multimedia));
+        btnAddToList.setEnabled(!user.hasMultimediaInAllList(multimedia));
+
+        revalidate();
+        repaint();
     }
 }
