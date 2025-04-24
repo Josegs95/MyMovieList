@@ -23,34 +23,33 @@ public class DetailMultimediaPanel extends JPanel {
 
     private final SearchPanel searchPanel;
     private final Multimedia multimedia;
-    private final SearchController controller;
 
     private String baseUrlPoster;
-    private MainFrame mainFrame;
-    private User user;
+    private final MainFrame mainFrame;
+    private final User user;
 
     private JButton btnAddToList;
     private JButton btnRemoveFromList;
 
-    public DetailMultimediaPanel(SearchPanel parent, Multimedia multimedia,
-                                 SearchController controller) {
-        super(new MigLayout(
-                "fill, ins 0",
-                "[fill, 40%][fill, 60%]",
-                "[fill]"));
+    public DetailMultimediaPanel(SearchPanel parent, Multimedia multimedia) {
 
         this.searchPanel = parent;
         this.multimedia = multimedia;
-        this.controller = controller;
+
+        this.mainFrame = MainFrame.getInstance();
+        this.user = mainFrame.getUser();
 
         init();
     }
 
     private void init() {
-        mainFrame = MainFrame.getInstance();
-        user = mainFrame.getUser();
-
+        setLayout(new MigLayout(
+                "fill, ins 0",
+                "[fill, 40%][fill, 60%]",
+                "[fill]")
+        );
         setBackground(Color.PINK);
+
         baseUrlPoster = ApiController.getBaseURLForPosters(true);
 
         String releaseDateString = multimedia.getReleaseDate() != null ?
@@ -197,7 +196,7 @@ public class DetailMultimediaPanel extends JPanel {
 
         //Listeners
 
-        btnBack.addActionListener(_ -> controller.backButtonFromDetailPanel(searchPanel));
+        btnBack.addActionListener(_ -> SearchController.backButtonFromDetailPanel(searchPanel));
         btnAddToList.addActionListener(_ -> {
             // Error if the user has no lists
 
@@ -277,9 +276,6 @@ public class DetailMultimediaPanel extends JPanel {
 
         // Status
 
-        System.out.println("Any: " + user.hasMultimediaInAnyList(multimedia));
-        System.out.println("All: " + user.hasMultimediaInAllList(multimedia));
-
         updatePage();
     }
 
@@ -287,7 +283,7 @@ public class DetailMultimediaPanel extends JPanel {
         return multimedia;
     }
 
-    private void updatePage() {
+    public void updatePage() {
         btnRemoveFromList.setEnabled(user.hasMultimediaInAnyList(multimedia));
         btnAddToList.setEnabled(!user.hasMultimediaInAllList(multimedia));
 

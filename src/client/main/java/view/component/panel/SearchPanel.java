@@ -29,8 +29,6 @@ public class SearchPanel extends JPanel {
     private JScrollPane scrollPaneResult;
     private MySearchTextField txfCentralSearch;
 
-    private SearchController controller;
-
     private SearchPanel() {
         super(new MigLayout(
                 "ins 0, fill",
@@ -80,11 +78,11 @@ public class SearchPanel extends JPanel {
 
         //Listeners
 
-        btnSearch.addActionListener(e -> {
+        btnSearch.addActionListener(_ -> {
             if (txfCentralSearch.getText().isEmpty())
                 return;
             String searchString = txfCentralSearch.getText().strip();
-            List<Multimedia> multiList = controller.searchMultimediaByKeyword(searchString);
+            List<Multimedia> multiList = SearchController.searchMultimediaByKeyword(searchString);
             if (multiList.isEmpty())
                 JOptionPane.showMessageDialog(SearchPanel.this.getParent(),
                         "No se ha encontrado resultados",
@@ -113,8 +111,19 @@ public class SearchPanel extends JPanel {
         return instance;
     }
 
-    public void setController(SearchController controller) {
-        this.controller = controller;
+    public void deleteDetailPanel() {
+        remove(0);
+        add(pnlResultList);
+        txfCentralSearch.requestFocusInWindow();
+
+        revalidate();
+        repaint();
+    }
+
+    public void updateDetailPanel() {
+        if (getComponent(0) instanceof DetailMultimediaPanel) {
+            ((DetailMultimediaPanel) getComponent(0)).updatePage();
+        }
     }
 
     private void addResultPanel(List<Multimedia> multiList) {
@@ -127,8 +136,9 @@ public class SearchPanel extends JPanel {
                 panel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
+                        System.out.println("Clickó en el panel");
                         showDetailPanel(new DetailMultimediaPanel(
-                                SearchPanel.this, multi, controller));
+                                SearchPanel.this, multi));
                     }
                 });
                 pnlInnerResultList.add(panel);
@@ -147,15 +157,6 @@ public class SearchPanel extends JPanel {
     private void showDetailPanel(DetailMultimediaPanel panel) {
         remove(pnlResultList);
         add(panel);
-
-        revalidate();
-        repaint();
-    }
-
-    public void deleteDetailPanel() {
-        remove(0);
-        add(pnlResultList);
-        txfCentralSearch.requestFocusInWindow();
 
         revalidate();
         repaint();

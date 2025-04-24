@@ -1,6 +1,5 @@
 package view;
 
-import controller.SearchController;
 import model.User;
 import net.miginfocom.swing.MigLayout;
 import thread.FetchUserLists;
@@ -21,6 +20,8 @@ public class MainFrame extends JFrame{
 
     private static final String APP_TITLE = "MyMovieList";
     private static MainFrame instance;
+
+    private SearchPanel searchPanel;
 
     private MainFrame(boolean withLogin) {
         initFrame();
@@ -89,8 +90,7 @@ public class MainFrame extends JFrame{
 
         //Set central panel to "search mode"
 
-        SearchPanel searchPanel = SearchPanel.getInstance();
-        searchPanel.setController(new SearchController());
+        searchPanel = SearchPanel.getInstance();
         pnlCentral = searchPanel;
 
         //User panel initialization
@@ -136,8 +136,11 @@ public class MainFrame extends JFrame{
         //Listeners
 
         btnLateralSearch.addActionListener(_ -> {
-            if (pnlCentral != SearchPanel.getInstance())
-                changeCentralPanel(SearchPanel.getInstance());
+            if (pnlCentral != searchPanel) {
+                changeCentralPanel(searchPanel);
+                searchPanel.updateDetailPanel();
+            }
+
         });
 
         btnLateralLists.addActionListener(_ -> {

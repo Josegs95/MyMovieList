@@ -12,16 +12,13 @@ import java.util.List;
 
 public class SearchController {
 
-    public SearchController() {}
+    private SearchController() {}
 
-    public List<Multimedia> searchMultimediaByKeyword(String name) {
+    public static List<Multimedia> searchMultimediaByKeyword(String name) {
         try {
             JsonObject data = ApiController.searchMultimedia(name);
             JsonArray results = data.get("results").getAsJsonArray();
             List<Multimedia> multiList = Parser.parseJSONFromAPI(results);
-
-            // Borrar
-            System.out.println("Data: " + data);
 
             new Thread(new FetchDataFromAPI(multiList)).start();
 
@@ -31,7 +28,7 @@ public class SearchController {
         }
     }
 
-    public void backButtonFromDetailPanel(SearchPanel view) {
+    public static void backButtonFromDetailPanel(SearchPanel view) {
         view.deleteDetailPanel();
     }
 }
