@@ -1,4 +1,4 @@
-<h1>Still in development... (25/04/25)</h1>
+<h1>Still in development... (27/04/25)</h1>
 <h2>About</h2>
 Second portfolio project. This time, it's my final project of my "CFGS" in spanish (I think it's "ASVL" in english). I almost finish it in that time but it's so outdated, so I will create it again from scratch.
 
@@ -18,6 +18,7 @@ In this project I will create a client-server application, use of a DB (MySQL) w
   - Add Guest session compatibility for the API: [Link](https://developer.themoviedb.org/docs/authentication-guest-sessions)
   - Something to view the multimedia's poster bigger
   - Use TSL/SSL
+  - Use/Investigate JavaFX instead raw Swing
 
 
 <h2>Credits:</h2>
