@@ -110,7 +110,9 @@ public class ClientHandler implements Runnable{
                 .orElse(null);
         System.out.println("Un usuario se quiere registrar");
 
-        Database.registerUser(username, password, email);
+        if (!Database.registerUser(username, password, email)) {
+            throw new DatabaseException("Couldn't register the user cause unknown reasons");
+        }
     }
 
     private Integer loginUser() throws DatabaseException {
@@ -129,7 +131,9 @@ public class ClientHandler implements Runnable{
 
         String listName = clientData.get("listName").toString();
 
-        Database.createUserList(idUser, listName);
+        if (!Database.createUserList(idUser, listName)) {
+            throw new DatabaseException("Couldn't create the user list cause unknown reasons");
+        }
     }
 
     private void renameUserList() throws AuthenticationException, SQLException, DatabaseException {
@@ -190,11 +194,13 @@ public class ClientHandler implements Runnable{
         String status = clientData.get("status").toString();
         int currentEpisode = (int) (clientData.get("currentEpisode"));
 
-        Database.addMultimediaToList(idUser, idMultimedia, listName, status, currentEpisode);
+        if (!Database.addMultimediaToList(idUser, idMultimedia, listName, status, currentEpisode)) {
+            throw new DatabaseException("Couldn't add the multimedia to the user list cause unknown reasons.");
+        }
     }
 
     @SuppressWarnings("unchecked")
-    private void removeMultimediaFromList() throws AuthenticationException, SQLException {
+    private void removeMultimediaFromList() throws AuthenticationException, SQLException, DatabaseException {
         // User verification
         String username = clientData.get("username").toString();
         Integer token = (Integer) clientData.get("token");
@@ -213,6 +219,8 @@ public class ClientHandler implements Runnable{
         // Remove multimedia from the list
         String listName = clientData.get("listName").toString();
 
-        Database.removeMultimediaFromList(idUser, idMultimedia, listName);
+        if (!Database.removeMultimediaFromList(idUser, idMultimedia, listName)) {
+            throw new DatabaseException("Couldn't remove the multimedia from the user list cause unknown reasons.");
+        }
     }
 }
