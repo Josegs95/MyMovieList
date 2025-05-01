@@ -7,6 +7,8 @@ public enum MessageType {
     REGISTER("Register"),
     GET_USER_LISTS("Get user lists"),
     CREATE_USER_LIST("Create user list"),
+    RENAME_USER_LIST("Rename user list"),
+    DELETE_USER_LIST("Delete user list"),
     ADD_MULTIMEDIA("Add multimedia to list"),
     MODIFY_MULTIMEDIA("Modify multimedia data in a list"),
     REMOVE_MULTIMEDIA("Remove multimedia from a list");

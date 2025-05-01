@@ -9,7 +9,8 @@ public class DatabaseException extends Exception{
         super(message);
     }
 
-    public DatabaseException(int errorCode) {
+    public DatabaseException(int errorCode, String message) {
+        this(message);
         this.errorCode = errorCode;
     }
 

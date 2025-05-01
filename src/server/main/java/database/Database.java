@@ -29,7 +29,7 @@ public class Database {
 
     private Database(){}
 
-    public static boolean registerUser(String username, String password, String email)
+    public static void registerUser(String username, String password, String email)
             throws DatabaseException, SQLException {
         String sqlStatement = "INSERT INTO user (name, password, password_salt, email) " +
                 "VALUES (?, ?, ?, ?)";
@@ -44,11 +44,12 @@ public class Database {
             statement.setInt(3, salt);
             statement.setString(4, email);
 
-            return statement.executeUpdate() != 0;
-
+            statement.executeUpdate();
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23000"))
-                throw new DatabaseException(23);
+            if (e.getSQLState().equals("23000")) {
+                String errorMessage = "Already exists a user with that username";
+                throw new DatabaseException(23, errorMessage);
+            }
             throw new SQLException(e);
         }
     }
@@ -92,7 +93,7 @@ public class Database {
         }
     }
 
-    public static boolean createUserList(int idUser, String listName)
+    public static void createUserList(int idUser, String listName)
             throws SQLException, DatabaseException {
         String sqlStatement = "INSERT INTO list (name, user_id) VALUES (?, ?)";
 
@@ -102,10 +103,34 @@ public class Database {
             statement.setString(1, listName);
             statement.setInt(2, idUser);
 
-            return statement.executeUpdate() == 1;
+            statement.executeUpdate();
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23000"))
-                throw new DatabaseException(23);
+            if (e.getSQLState().equals("23000")) {
+                String errorMessage = "You already has a list with that name";
+                throw new DatabaseException(23, errorMessage);
+            }
+            throw new SQLException(e);
+        }
+    }
+
+    public static void renameUserList(int idUser, String oldListName, String newListName) throws DatabaseException, SQLException {
+        String sqlStatement = "UPDATE list AS l " +
+                "SET l.name = ? " +
+                "WHERE l.user_id = ? AND l.name = ?";
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sqlStatement)){
+
+            statement.setString(1, newListName);
+            statement.setInt(2, idUser);
+            statement.setString(3, oldListName);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23000")) {
+                String errorMessage = "You already has a list with that name";
+                throw new DatabaseException(23, errorMessage);
+            }
             throw new SQLException(e);
         }
     }
@@ -185,13 +210,15 @@ public class Database {
             generatedIds.next();
             return generatedIds.getInt(1);
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23000"))
-                throw new DatabaseException(23);
+            if (e.getSQLState().equals("23000")) {
+                String errorMessage = "Already exists a multimedia with that API_ID and type";
+                throw new DatabaseException(23, errorMessage);
+            }
             throw new SQLException(e);
         }
     }
 
-    public static boolean addMultimediaToList(int idUser, int idMultimedia, String listName,
+    public static void addMultimediaToList(int idUser, int idMultimedia, String listName,
                                               String status, int currentEpisode) throws DatabaseException, SQLException {
         String sqlStatement = "CALL insert_multimedia_item_to_list(?, ?, ?, ?, ?)";
 
@@ -204,10 +231,31 @@ public class Database {
             statement.setInt(4, currentEpisode);
             statement.setString(5, status);
 
-            return statement.executeUpdate() != 0;
+            statement.executeUpdate();
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23000"))
-                throw new DatabaseException(23);
+            if (e.getSQLState().equals("23000")) {
+                String errorMessage = "You already has the multimedia in that list";
+                throw new DatabaseException(23, errorMessage);
+            }
+            throw new SQLException(e);
+        }
+    }
+
+    public static void removeMultimediaFromList(int idUser, int idMultimedia, String listName) throws SQLException {
+        String sqlStatement = "DELETE lhm FROM list_has_multimedia AS lhm " +
+                "WHERE lhm.multimedia_id = ? AND lhm.list_id = (" +
+                "SELECT l.id FROM list AS l " +
+                "WHERE l.name = ? AND l.user_id = ?)";
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sqlStatement)) {
+
+            statement.setInt(1, idMultimedia);
+            statement.setString(2, listName);
+            statement.setInt(3, idUser);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
             throw new SQLException(e);
         }
     }

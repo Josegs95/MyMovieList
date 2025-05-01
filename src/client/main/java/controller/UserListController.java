@@ -36,6 +36,23 @@ public class UserListController {
         }
     }
 
+    public static ServerResponse renameUserList(User user, String oldListName, String newListName) {
+        Map<String, Object> userData = getUserData(user);
+        userData.put("oldListName", oldListName);
+        userData.put("newListName", newListName);
+
+        try(SocketCommunication socketCommunication = new SocketCommunication()) {
+
+            return socketCommunication.writeToServer(userData, MessageType.RENAME_USER_LIST);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ServerResponse deleteUserList(User user, String listName) {
+        return null;
+    }
+
     public static ServerResponse addMultimediaToList(User user, UserList userList, MultimediaListItem multimediaListItem) {
         Map<String, Object> userData = getUserData(user);
         Map<String, Object> multimediaData = new HashMap<>();
@@ -65,7 +82,23 @@ public class UserListController {
 
     public static void modifyMultimediaAttributes(User user, Multimedia multimedia) {}
 
-    public static void deleteMultimediaFromList(User user, UserList list, Multimedia multimedia) {}
+    public static ServerResponse deleteMultimediaFromList(User user, UserList userList, Multimedia multimedia) {
+        Map<String, Object> userData = getUserData(user);
+        Map<String, Object> multimediaData = new HashMap<>();
+
+        multimediaData.put("apiId", multimedia.getId());
+        multimediaData.put("type", multimedia.getMultimediaType());
+
+        userData.put("multimedia", multimediaData);
+        userData.put("listName", userList.getListName());
+
+        try(SocketCommunication socketCommunication = new SocketCommunication()) {
+
+            return socketCommunication.writeToServer(userData, MessageType.REMOVE_MULTIMEDIA);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void showMultimediaDetails(MainFrame mainView) {}
 

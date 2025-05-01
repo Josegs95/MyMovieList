@@ -3,7 +3,7 @@ package model;
 import java.util.Set;
 
 public class UserList {
-    private final String listName;
+    private String listName;
     private final Set<MultimediaListItem> multimediaList;
 
     public UserList(String name, Set<MultimediaListItem> multimediaList){
@@ -15,12 +15,15 @@ public class UserList {
         return listName;
     }
 
+    public String getFullListName() {
+        return listName + " (" + multimediaList.size() + " items)";
+    }
+
     public Set<MultimediaListItem> getMultimediaList() {
         return multimediaList;
     }
 
-    @Override
-    public String toString() {
-        return listName + " (" + multimediaList.size() + " items)";
+    public void setListName(String listName) {
+        this.listName = listName;
     }
 }

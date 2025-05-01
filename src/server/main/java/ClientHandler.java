@@ -60,48 +60,48 @@ public class ClientHandler implements Runnable{
                         serverResponseData.put("token", sessionToken);
                     }
                 }
-                case REGISTER -> {
-                    if (registerUser())
-                        System.out.println("Un usuario se ha registrado exitosamente");
-                }
-                case CREATE_USER_LIST -> {
-                    if (createUserList())
-                        System.out.println("Se ha creado una lista nueva");
-                }
+                case REGISTER -> registerUser();
+                case CREATE_USER_LIST -> createUserList();
+                case RENAME_USER_LIST -> renameUserList();
                 case GET_USER_LISTS -> {
                     List<Map<String, Object>> userLists = getUserLists();
                     serverResponseData.put("lists", JSONMessageProtocol.serializeObject(userLists));
 
                 }
-                case ADD_MULTIMEDIA -> {
-                    boolean done = addMultimediaToList();
-                    if (done) {
-                        System.out.println("Multimedia añadido con éxito");
-                    }
-                }
+                case ADD_MULTIMEDIA -> addMultimediaToList();
+                case REMOVE_MULTIMEDIA -> removeMultimediaFromList();
                 default -> System.out.println("Tipo de mensaje desconocido: " + messageType);
             }
+
+            // Borrar
+            System.out.println("Mensaje tipo \"" + messageType + "\" finalizado con éxito");
 
             status = 200;
             socketCommunication.writeToClient(serverResponseData, status, messageType);
         } catch (AuthenticationException | IOException e) {
             throw new RuntimeException(e);
         } catch (DatabaseException |SQLException e) {
-            if (e instanceof DatabaseException)
-                serverResponseData.put("error_code", ((DatabaseException) e).getErrorCode());
-            else
-                serverResponseData.put("error_message", "Unknown error in the server database");
             status = 500;
+
+            if (e instanceof DatabaseException) {
+                serverResponseData.put("error_code", ((DatabaseException) e).getErrorCode());
+                serverResponseData.put("error_message", e.getMessage());
+            } else {
+                serverResponseData.put("error_message", "Unknown error in the server database");
+            }
+
             try {
                 socketCommunication.writeToClient(serverResponseData, status, messageType);
+                if (!(e instanceof DatabaseException)) {
+                    throw new RuntimeException(e);
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            throw new RuntimeException(e);
         }
     }
 
-    private boolean registerUser() throws SQLException, DatabaseException {
+    private void registerUser() throws SQLException, DatabaseException {
         String username = clientData.get("username").toString();
         String password = clientData.get("password").toString();
         String email = Optional.ofNullable(clientData.get("email"))
@@ -109,7 +109,7 @@ public class ClientHandler implements Runnable{
                 .orElse(null);
         System.out.println("Un usuario se quiere registrar");
 
-        return Database.registerUser(username, password, email);
+        Database.registerUser(username, password, email);
     }
 
     private Integer loginUser() throws DatabaseException {
@@ -120,14 +120,26 @@ public class ClientHandler implements Runnable{
         return Database.loginUser(username, password);
     }
 
-    private boolean createUserList() throws AuthenticationException,
+    private void createUserList() throws AuthenticationException,
             SQLException, DatabaseException {
         String username = clientData.get("username").toString();
         Integer token = (Integer) clientData.get("token");
-        String listName = clientData.get("listName").toString();
         int idUser = Database.validateUser(username, token);
 
-        return Database.createUserList(idUser, listName);
+        String listName = clientData.get("listName").toString();
+
+        Database.createUserList(idUser, listName);
+    }
+
+    private void renameUserList() throws AuthenticationException, SQLException, DatabaseException {
+        String username = clientData.get("username").toString();
+        Integer token = (Integer) clientData.get("token");
+        int idUser = Database.validateUser(username, token);
+
+        String oldListName = clientData.get("oldListName").toString();
+        String newListName = clientData.get("newListName").toString();
+
+        Database.renameUserList(idUser, oldListName, newListName);
     }
 
     private List<Map<String, Object>> getUserLists()
@@ -140,7 +152,7 @@ public class ClientHandler implements Runnable{
     }
 
     @SuppressWarnings({"unckecked", "unchecked"})
-    private boolean addMultimediaToList() throws AuthenticationException,
+    private void addMultimediaToList() throws AuthenticationException,
             SQLException, DatabaseException {
         // User verification
         String username = clientData.get("username").toString();
@@ -165,6 +177,29 @@ public class ClientHandler implements Runnable{
         String status = clientData.get("status").toString();
         int currentEpisode = (int) (clientData.get("currentEpisode"));
 
-        return Database.addMultimediaToList(idUser, idMultimedia, listName, status, currentEpisode);
+        Database.addMultimediaToList(idUser, idMultimedia, listName, status, currentEpisode);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void removeMultimediaFromList() throws AuthenticationException, SQLException {
+        // User verification
+        String username = clientData.get("username").toString();
+        Integer token = (Integer) clientData.get("token");
+        int idUser = Database.validateUser(username, token);
+
+        // Get Multimedia ID
+        Map<String, Object> multimediaData = (Map<String, Object>) (clientData.get("multimedia"));
+        int apiId = (int) (multimediaData.get("apiId"));
+        String multimediaType = multimediaData.get("type").toString();
+        int idMultimedia = Database.existMultimedia(apiId, multimediaType);
+
+        if (idMultimedia == -1) {
+            return;
+        }
+
+        // Remove multimedia from the list
+        String listName = clientData.get("listName").toString();
+
+        Database.removeMultimediaFromList(idUser, idMultimedia, listName);
     }
 }
