@@ -21,7 +21,8 @@ public class MainFrame extends JFrame{
     private static final String APP_TITLE = "MyMovieList";
     private static MainFrame instance;
 
-    private SearchPanel searchPanel;
+    private static SearchPanel searchPanel;
+    private static UserListsPanel userListsPanel;
 
     private MainFrame(boolean withLogin) {
         initFrame();
@@ -40,6 +41,7 @@ public class MainFrame extends JFrame{
     public static MainFrame getInstance(){
         if (instance == null) {
             instance = new MainFrame(true);
+            userListsPanel = new UserListsPanel();
         }
 
         return instance;
@@ -52,6 +54,14 @@ public class MainFrame extends JFrame{
 
         revalidate();
         repaint();
+    }
+
+    public void updateCentralPanelUI() {
+        if (pnlCentral == searchPanel) {
+            searchPanel.updateDetailPanel();
+        } else if (pnlCentral == userListsPanel) {
+            userListsPanel.printUserLists();
+        }
     }
 
     public void setUser(User user){
@@ -144,11 +154,13 @@ public class MainFrame extends JFrame{
         });
 
         btnLateralLists.addActionListener(_ -> {
-            UserListsPanel panel = new UserListsPanel();
-            panel.setBorder(LineBorder.createBlackLineBorder());
-
-            changeCentralPanel(panel);
+            if (pnlCentral != userListsPanel) {
+                changeCentralPanel(userListsPanel);
+                userListsPanel.printUserLists();
+            }
         });
+
+        addWindowListener(new MainWindowListener(this));
 
         //Adds
 
@@ -158,7 +170,7 @@ public class MainFrame extends JFrame{
         add(pnlLateral);
         add(pnlCentral);
 
-        addWindowListener(new MainWindowListener(this));
+        // Logic
 
         revalidate();
         repaint();

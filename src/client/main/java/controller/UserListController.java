@@ -50,7 +50,15 @@ public class UserListController {
     }
 
     public static ServerResponse deleteUserList(User user, String listName) {
-        return null;
+        Map<String, Object> userData = getUserData(user);
+        userData.put("listName", listName);
+
+        try(SocketCommunication socketCommunication = new SocketCommunication()) {
+
+            return socketCommunication.writeToServer(userData, MessageType.DELETE_USER_LIST);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static ServerResponse addMultimediaToList(User user, UserList userList, MultimediaListItem multimediaListItem) {

@@ -135,6 +135,20 @@ public class Database {
         }
     }
 
+    public static boolean deleteUserList(int idUser, String listName) throws SQLException {
+        String sqlStatement = "DELETE FROM list AS l " +
+                "WHERE l.user_id = ? AND l.name = ?";
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sqlStatement)){
+
+            statement.setInt(1, idUser);
+            statement.setString(2, listName);
+
+            return statement.executeUpdate() == 1;
+        }
+    }
+
     public static List<Map<String, Object>> getUserLists(int idUser){
         String sqlStatement = "SELECT l.id, l.name FROM list AS l " +
                 "INNER JOIN user AS u ON u.id = l.user_id " +

@@ -63,6 +63,7 @@ public class ClientHandler implements Runnable{
                 case REGISTER -> registerUser();
                 case CREATE_USER_LIST -> createUserList();
                 case RENAME_USER_LIST -> renameUserList();
+                case DELETE_USER_LIST -> deleteUserList();
                 case GET_USER_LISTS -> {
                     List<Map<String, Object>> userLists = getUserLists();
                     serverResponseData.put("lists", JSONMessageProtocol.serializeObject(userLists));
@@ -140,6 +141,18 @@ public class ClientHandler implements Runnable{
         String newListName = clientData.get("newListName").toString();
 
         Database.renameUserList(idUser, oldListName, newListName);
+    }
+
+    private void deleteUserList() throws AuthenticationException, SQLException, DatabaseException {
+        String username = clientData.get("username").toString();
+        Integer token = (Integer) clientData.get("token");
+        int idUser = Database.validateUser(username, token);
+
+        String listName = clientData.get("listName").toString();
+
+        if (!Database.deleteUserList(idUser, listName)) {
+            throw new DatabaseException("The list didn't get removed cause unknown reasons");
+        }
     }
 
     private List<Map<String, Object>> getUserLists()

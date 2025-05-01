@@ -93,8 +93,6 @@ public class CollapsableUserListPanel extends JPanel {
             }
         });
         btnRename.addActionListener(_ ->{
-
-
             String newListName = JOptionPane.showInputDialog(
                     mainFrame,
                     "¿How would you like to name the list?",
@@ -115,7 +113,27 @@ public class CollapsableUserListPanel extends JPanel {
                 updateUserListUI();
             }
         });
-        btnDelete.addActionListener(_ ->{});
+        btnDelete.addActionListener(_ ->{
+            String listName = userList.getListName();
+            int dialogResponse = JOptionPane.showConfirmDialog(
+                    mainFrame,
+                    String.format("¿Are you sure that you want to delete the list \"%s\"?", listName),
+                    "Confirmation",
+                    JOptionPane.OK_CANCEL_OPTION
+            );
+
+            if (dialogResponse != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            ServerResponse response = UserListController.deleteUserList(user, listName);
+            if (response.getStatus() != 200) {
+                processErrorMessage(response, String.format("Couldn't delete the list \"%s\"", listName));
+            } else {
+                user.getLists().remove(userList);
+                mainFrame.updateCentralPanelUI();
+            }
+        });
 
         // Adds
 

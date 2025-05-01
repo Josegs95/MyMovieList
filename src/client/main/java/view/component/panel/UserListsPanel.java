@@ -35,6 +35,7 @@ public class UserListsPanel extends JPanel {
                 "[fill]",
                 "[50!, fill]10[fill]"
         ));
+        setBorder(LineBorder.createBlackLineBorder());
 
         JPanel pnlButtons = new JPanel(new MigLayout(
                 "fill, ins 0",
@@ -99,7 +100,7 @@ public class UserListsPanel extends JPanel {
         add(scrollPane);
     }
 
-    private void printUserLists() {
+    public void printUserLists() {
         pnlMultimediaLists.removeAll();
         user.getLists().forEach(list -> pnlMultimediaLists.add(new CollapsableUserListPanel(list)));
         updateUIStatus();
