@@ -16,6 +16,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -24,10 +25,10 @@ public class DetailMultimediaPanel extends JPanel {
     private final SearchPanel searchPanel;
     private final Multimedia multimedia;
 
-    private String baseUrlPoster;
     private final MainFrame mainFrame;
     private final User user;
 
+    private JButton btnBack;
     private JButton btnAddToList;
     private JButton btnRemoveFromList;
 
@@ -43,35 +44,42 @@ public class DetailMultimediaPanel extends JPanel {
     }
 
     private void init() {
+        createUI();
+        addListenersToComponents();
+        updatePage();
+    }
+
+    public Multimedia getMultimedia() {
+        return multimedia;
+    }
+
+    public void updatePage() {
+        btnRemoveFromList.setEnabled(user.hasMultimediaInAnyList(multimedia));
+        btnAddToList.setEnabled(!user.hasMultimediaInAllList(multimedia));
+
+        revalidate();
+        repaint();
+    }
+
+    private void createUI() {
         setLayout(new MigLayout(
                 "fill, ins 0",
                 "[fill, 40%][fill, 60%]",
                 "[fill]")
         );
-        setBackground(Color.PINK);
 
-        baseUrlPoster = ApiController.getBaseURLForPosters(true);
-
-        String releaseDateString = multimedia.getReleaseDate() != null ?
-                multimedia.getReleaseDate().toString() :
-                null;
         boolean isAMovie = multimedia instanceof Movie;
-
-        if (isAMovie)
-            setBackground(new Color(250, 219, 111));
-        else
-            setBackground(new Color(132, 182, 244));
-
-        //Components
+        setBackground(isAMovie ? new Color(250, 219, 111) : new Color(132, 182, 244));
 
         //Poster
-        JPanel pnlPoster = new JPanel(new MigLayout(
+        JPanel pnlLateral = new JPanel(new MigLayout(
                 "flowy, fill",
                 "[fill]",
                 "[fill, 60%]50[fill, 40%]"
         ));
-        pnlPoster.setOpaque(false);
+        pnlLateral.setOpaque(false);
 
+        String baseUrlPoster = ApiController.getBaseURLForPosters(true);
         StretchIcon iconPoster;
         try {
             iconPoster = new StretchIcon(
@@ -83,7 +91,7 @@ public class DetailMultimediaPanel extends JPanel {
         JLabel lblPoster = new JLabel(iconPoster);
         lblPoster.setBorder(LineBorder.createBlackLineBorder());
 
-        pnlPoster.add(lblPoster);
+        pnlLateral.add(lblPoster);
 
         //Panel Details
 
@@ -96,36 +104,36 @@ public class DetailMultimediaPanel extends JPanel {
 
         //Title & Score
 
-        String titleText = "<html><p align=\"center\">" + multimedia.getTitle();
-        titleText += releaseDateString != null ?
-                " (" + multimedia.getReleaseDate().getYear() + ")</p></html>" :
-                "</p></html>";
-        JLabel lblTitle = new JLabel(titleText);
+        LocalDate releaseDate = multimedia.getReleaseDate();
+
+        String titleText = multimedia.getTitle();
+        if (releaseDate != null) {
+            titleText = String.format("%s (%d)", titleText, releaseDate.getYear());
+        }
+
+        String title = String.format("<html><p style=\"text-align: center;\">%s</p></html>", titleText);
+        JLabel lblTitle = new JLabel(title, SwingConstants.CENTER);
         Font titleFont = lblTitle.getFont().deriveFont(Font.BOLD, 22);
         lblTitle.setFont(titleFont);
-        lblTitle.setBorder(BorderFactory.createMatteBorder(
-                0, 0, 1, 0, Color.BLACK));
+        lblTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
-        JLabel lblScore = new JLabel(multimedia.getScore());
+        JLabel lblScore = new JLabel(multimedia.getScore(), SwingConstants.CENTER);
         lblScore.setFont(titleFont);
-        lblScore.setHorizontalAlignment(SwingConstants.CENTER);
 
         //Release date & Country
 
-        JLabel lblReleaseDate = new JLabel("Release Date: " +
-                (releaseDateString == null ?
-                        "Unknown" : releaseDateString));
+        String releaseDateString = releaseDate != null ? releaseDate.toString() : "Unknown";
+        JLabel lblReleaseDate = new JLabel(String.format("Release Date: %s", releaseDateString));
 
-        JLabel lblCountry = new JLabel("Country: " + multimedia.getCountry());
+        JLabel lblCountry = new JLabel(String.format("Country: %s", multimedia.getCountry()), SwingConstants.CENTER);
 
         //Duration & Status
 
-        JLabel lblDuration = new JLabel("Duration: " + (isAMovie ?
-                ((Movie) multimedia).getDuration() : ((TvShow) multimedia).getEpisodeDuration()));
+        String duration = isAMovie ? ((Movie) multimedia).getDuration() : ((TvShow) multimedia).getEpisodeDuration();
+        JLabel lblDuration = new JLabel(String.format("Duration: %s", duration));
 
-        JLabel lblStatus = null;
-        if (!isAMovie)
-            lblStatus = new JLabel("Status: " + ((TvShow) multimedia).getAiringStatus());
+        String status = isAMovie ? "" : ((TvShow) multimedia).getAiringStatus();
+        JLabel lblStatus = new JLabel(String.format("Status: %s", status), SwingConstants.CENTER);
 
         //Synopsis
 
@@ -137,12 +145,9 @@ public class DetailMultimediaPanel extends JPanel {
         pnlSynopsis.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
         pnlSynopsis.setOpaque(false);
 
-        String synopsisString = multimedia.getSynopsis();
-        if (synopsisString.isEmpty())
-            synopsisString = "-no synopsis found-";
-        JLabel lblSynopsis = new JLabel("<html><p align='center'>Synopsis: " +
-                synopsisString +
-                "</p></html>");
+        String synopsis = String.format("<html><p style=\"text-align: center\">Synopsis: %s</p></html>",
+                multimedia.getSynopsis());
+        JLabel lblSynopsis = new JLabel(synopsis, SwingConstants.CENTER);
 
         pnlSynopsis.add(lblSynopsis);
 
@@ -154,8 +159,7 @@ public class DetailMultimediaPanel extends JPanel {
         //Genre List
 
         String genres = String.join(", ", multimedia.getGenreList());
-        JLabel lblGenres = new JLabel("Genres: " + genres);
-        lblGenres.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel lblGenres = new JLabel(String.format("Genres: %s", genres), SwingConstants.CENTER);
 
         //Episode & Season count
 
@@ -163,11 +167,8 @@ public class DetailMultimediaPanel extends JPanel {
         if (!isAMovie) {
             int totalEpisodes = ((TvShow) multimedia).getTotalEpisodes();
             int totalSeasons = ((TvShow) multimedia).getTotalSeasons();
-            lblEpisodeCount = new JLabel("# Episodes: " + totalEpisodes);
-            lblSeasonCount = new JLabel("# Seasons: " + totalSeasons);
-
-            lblEpisodeCount.setHorizontalAlignment(SwingConstants.CENTER);
-            lblEpisodeCount.setHorizontalAlignment(SwingConstants.CENTER);
+            lblEpisodeCount = new JLabel(String.format("# Episodes: %d", totalEpisodes), SwingConstants.CENTER);
+            lblSeasonCount = new JLabel(String.format("# Seasons: %d", totalSeasons), SwingConstants.CENTER);
         }
 
         //Buttons
@@ -180,7 +181,7 @@ public class DetailMultimediaPanel extends JPanel {
         pnlButton.setOpaque(false);
         pnlButton.setBorder(LineBorder.createBlackLineBorder());
 
-        JButton btnBack = new JButton("Back");
+        btnBack = new JButton("Back");
         btnAddToList = new JButton("Add");
         btnRemoveFromList = new JButton("Remove");
 
@@ -192,10 +193,29 @@ public class DetailMultimediaPanel extends JPanel {
         pnlButton.add(btnAddToList, "sg buttons");
         pnlButton.add(btnRemoveFromList, "sg buttons");
 
-        pnlPoster.add(pnlButton);
+        pnlLateral.add(pnlButton);
 
-        //Listeners
+        //Adds
 
+        pnlDetails.add(lblTitle, "growx 100, push");
+        pnlDetails.add(lblScore, "alignx center, wrap");
+        pnlDetails.add(lblReleaseDate, "growx 50");
+        pnlDetails.add(lblCountry, "growx 50, wrap");
+        pnlDetails.add(lblDuration, isAMovie ? "growx 50, wrap" : "growx 50");
+        if (!isAMovie)
+            pnlDetails.add(lblStatus, "growx 50, wrap");
+        pnlDetails.add(scrollSynopsis, "spanx 4, growx 100, wrap");
+        pnlDetails.add(lblGenres, "spanx 4, growx 100, wrap");
+        if (!isAMovie) {
+            pnlDetails.add(lblEpisodeCount, "growx 50");
+            pnlDetails.add(lblSeasonCount, "growx 50, wrap");
+        }
+
+        add(pnlLateral);
+        add(pnlDetails);
+    }
+
+    private void addListenersToComponents() {
         btnBack.addActionListener(_ -> SearchController.backButtonFromDetailPanel(searchPanel));
         btnAddToList.addActionListener(_ -> {
             // Error if the user has no lists
@@ -212,9 +232,7 @@ public class DetailMultimediaPanel extends JPanel {
 
             // Show dialog to configure the multimedia
 
-            ConfigureMultimediaDialog dialog =
-                    new ConfigureMultimediaDialog(mainFrame, multimedia,
-                            user.getLists());
+            ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimedia, user.getLists());
             dialog.setVisible(true);
 
             if (dialog.isCanceled()) {
@@ -254,40 +272,8 @@ public class DetailMultimediaPanel extends JPanel {
                 }.execute();
             }
         });
+        btnRemoveFromList.addActionListener(_ -> {
 
-        //Adds
-
-        pnlDetails.add(lblTitle, "growx 100, push");
-        pnlDetails.add(lblScore, "alignx center, wrap");
-        pnlDetails.add(lblReleaseDate, "growx 50");
-        pnlDetails.add(lblCountry, "growx 50, wrap");
-        pnlDetails.add(lblDuration, isAMovie ? "growx 50, wrap" : "growx 50");
-        if (!isAMovie)
-            pnlDetails.add(lblStatus, "growx 50, wrap");
-        pnlDetails.add(scrollSynopsis, "spanx 4, growx 100, wrap");
-        pnlDetails.add(lblGenres, "spanx 4, growx 100, wrap");
-        if (!isAMovie) {
-            pnlDetails.add(lblEpisodeCount, "growx 50");
-            pnlDetails.add(lblSeasonCount, "growx 50, wrap");
-        }
-
-        add(pnlPoster);
-        add(pnlDetails);
-
-        // Status
-
-        updatePage();
-    }
-
-    public Multimedia getMultimedia() {
-        return multimedia;
-    }
-
-    public void updatePage() {
-        btnRemoveFromList.setEnabled(user.hasMultimediaInAnyList(multimedia));
-        btnAddToList.setEnabled(!user.hasMultimediaInAllList(multimedia));
-
-        revalidate();
-        repaint();
+        });
     }
 }

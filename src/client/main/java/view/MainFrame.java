@@ -1,6 +1,7 @@
 package view;
 
 import model.User;
+import model.UserList;
 import net.miginfocom.swing.MigLayout;
 import thread.FetchUserLists;
 import view.component.dialog.LoginDialog;
@@ -10,6 +11,7 @@ import view.component.panel.UserListsPanel;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.util.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -38,13 +40,17 @@ public class MainFrame extends JFrame{
         finishInit();
     }
 
-    public static MainFrame getInstance(){
+    public static synchronized MainFrame getInstance(){
         if (instance == null) {
             instance = new MainFrame(true);
-            userListsPanel = new UserListsPanel();
         }
 
         return instance;
+    }
+
+    public void setUserLists(List<UserList> userLists) {
+        user.setLists(userLists);
+        userListsPanel = new UserListsPanel();
     }
 
     public void changeCentralPanel(JPanel panel) {

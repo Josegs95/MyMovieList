@@ -1,7 +1,9 @@
 package thread;
 
+import com.sun.tools.javac.Main;
 import controller.UserListController;
 import model.*;
+import view.MainFrame;
 
 import java.util.*;
 
@@ -17,7 +19,7 @@ public class FetchUserLists implements Runnable{
     public void run(){
         List<UserList> userLists = getUpdatedUserLists();
 
-        user.setLists(userLists);
+        MainFrame.getInstance().setUserLists(userLists);
     }
 
     @SuppressWarnings("unchecked")

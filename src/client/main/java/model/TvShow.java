@@ -63,6 +63,9 @@ public class TvShow implements Multimedia {
 
     @Override
     public String getSynopsis() {
+        if (synopsis.isEmpty()) {
+            return "-no synopsis found-";
+        }
         return synopsis;
     }
 
