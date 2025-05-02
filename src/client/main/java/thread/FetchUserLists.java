@@ -1,6 +1,5 @@
 package thread;
 
-import com.sun.tools.javac.Main;
 import controller.UserListController;
 import model.*;
 import view.MainFrame;
