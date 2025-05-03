@@ -17,7 +17,9 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class SearchPanel extends JPanel {
 
@@ -63,7 +65,7 @@ public class SearchPanel extends JPanel {
                 "[fill, 100!]0[fill, 100!]"
         ));
         pnlInnerResultList.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
-        pnlInnerResultList.setBorder(new LineBorder(Color.BLACK, 1, false));
+        pnlInnerResultList.setBorder(LineBorder.createBlackLineBorder());
 
         scrollPaneResult = new JScrollPane(pnlInnerResultList);
         scrollPaneResult.getVerticalScrollBar().setUnitIncrement(20);
@@ -83,13 +85,14 @@ public class SearchPanel extends JPanel {
                 return;
             String searchString = txfCentralSearch.getText().strip();
             List<Multimedia> multiList = SearchController.searchMultimediaByKeyword(searchString);
-            if (multiList.isEmpty())
+            if (multiList.isEmpty()) {
                 JOptionPane.showMessageDialog(SearchPanel.this.getParent(),
                         "No se ha encontrado resultados",
                         "No hay resultados",
                         JOptionPane.INFORMATION_MESSAGE);
-            else
+            } else {
                 addResultPanel(multiList);
+            }
         });
 
         txfCentralSearch.addActionListener(_ -> btnSearch.doClick());
@@ -104,7 +107,7 @@ public class SearchPanel extends JPanel {
         add(pnlResultList);
     }
 
-    public static SearchPanel getInstance() {
+    public static synchronized SearchPanel getInstance() {
         if (instance == null)
             instance = new SearchPanel();
 
@@ -127,23 +130,23 @@ public class SearchPanel extends JPanel {
     }
 
     private void addResultPanel(List<Multimedia> multiList) {
-        String baseURLForPosters = ApiController.getBaseURLForPosters(false);
-        if (!multiList.isEmpty())
-            pnlInnerResultList.removeAll();
+        pnlInnerResultList.removeAll();
         try {
             for (Multimedia multi : multiList) {
-                JPanel panel = createListItem(multi, baseURLForPosters);
+                JPanel panel = createListItem(multi);
                 panel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        System.out.println("Clickó en el panel");
-                        showDetailPanel(new DetailMultimediaPanel(
-                                SearchPanel.this, multi));
+                        showDetailPanel(new DetailMultimediaPanel(SearchPanel.this, multi));
                     }
                 });
                 pnlInnerResultList.add(panel);
             }
-        } catch (IOException e) {
+
+            // Se puede borrar. Está para esperar a que las imágenes carguen un poco
+            Thread.sleep(500);
+
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
 
@@ -162,33 +165,32 @@ public class SearchPanel extends JPanel {
         repaint();
     }
 
-    private JPanel createListItem(Multimedia multi, String baseURLForPosters)
-            throws MalformedURLException {
+    private JPanel createListItem(Multimedia multi) throws MalformedURLException {
         JPanel panel = new JPanel(new MigLayout(
                 "fill",
                 "[fill, 15%][fill, 70%][fill, 15%]",
                 "[fill]"
         ));
 
-        Color backgroundColor;
-        if (multi instanceof Movie)
-            backgroundColor = new Color(250, 219, 111);
-        else
-            backgroundColor = new Color(132, 182, 244);
+        Color backgroundColor = multi instanceof Movie ?
+                new Color(250, 219, 111) : new Color(132, 182, 244);
         panel.setBackground(backgroundColor);
 
-        JLabel lblPoster;
-        if (multi.getPosterUrl() == null)
-            lblPoster = new JLabel("No Image");
-        else {
-            StretchIcon multiPoster = new StretchIcon(
-                    URI.create(baseURLForPosters + multi.getPosterUrl()).toURL(),
-                    true);
-            lblPoster = new JLabel(multiPoster);
+
+        String baseURLForPosters = ApiController.getBaseURLForPosters(true);
+        String posterUrlString = multi.getPosterUrl();
+        JLabel lblPoster = new JLabel();
+        if (posterUrlString == null) {
+            lblPoster.setText("No Image");
+        } else {
+            URL posterUrl = URI.create(baseURLForPosters + posterUrlString).toURL();
+
+            new ImageLoaderWorker(panel, lblPoster, posterUrl).execute();
+
+            lblPoster.setText("Loading Image");
         }
-        JLabel lblTitle = new JLabel("<html>" + multi.getTitle() + "</html>");
-        JLabel lblScore = new JLabel(multi.getScore());
-        lblScore.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel lblTitle = new JLabel(String.format("<html><p>%s</p></html>", multi.getTitle()));
+        JLabel lblScore = new JLabel(multi.getScore(), SwingConstants.CENTER);
 
         panel.add(lblPoster);
         panel.add(lblTitle);
@@ -197,4 +199,35 @@ public class SearchPanel extends JPanel {
         return panel;
     }
 
+    private static class ImageLoaderWorker extends SwingWorker<StretchIcon, Void> {
+
+        private final JPanel panel;
+        private final JLabel lblPoster;
+
+        private final URL posterUrl;
+
+        public ImageLoaderWorker(JPanel panel, JLabel lblPoster, URL posterUrl) {
+            this.panel = panel;
+            this.lblPoster = lblPoster;
+            this.posterUrl = posterUrl;
+        }
+
+
+        @Override
+        protected StretchIcon doInBackground(){
+            return new StretchIcon(posterUrl, true);
+        }
+
+        @Override
+        protected void done() {
+            try {
+                lblPoster.setText(null);
+                lblPoster.setIcon(get());
+                panel.revalidate();
+                panel.repaint();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
