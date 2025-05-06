@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -13,34 +14,24 @@ public class User {
         this.sessionToken = sessionToken;
     }
 
-    public boolean hasMultimediaInAnyList(Multimedia multimedia){
+    public List<UserList> getUserListsWhichContainsMultimedia(Multimedia multimedia){
+        List<UserList> auxLists = new ArrayList<>();
+
+        userListsLoop :
         for (UserList userList : lists) {
             for (MultimediaListItem multimediaListItem : userList.getMultimediaList()) {
                 if (multimediaListItem.getMultimedia().equals(multimedia)) {
-                    return true;
+                    auxLists.add(userList);
+                    continue userListsLoop;
                 }
             }
         }
 
-        return false;
+        return auxLists;
     }
 
     public boolean hasMultimediaInAllList(Multimedia multimedia){
-        listsLoop :
-        for (UserList userList : lists) {
-            boolean found = false;
-            for (MultimediaListItem multimediaListItem : userList.getMultimediaList()) {
-                if (multimediaListItem.getMultimedia().equals(multimedia)) {
-                    continue listsLoop;
-                }
-            }
-
-            if (!found) {
-                return false;
-            }
-        }
-
-        return true;
+        return lists.size() == getUserListsWhichContainsMultimedia(multimedia).size();
     }
 
     public void setLists(List<UserList> lists) {

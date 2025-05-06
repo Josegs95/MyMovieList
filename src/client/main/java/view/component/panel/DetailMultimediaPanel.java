@@ -10,6 +10,7 @@ import net.miginfocom.swing.MigLayout;
 import thread.FetchUserLists;
 import view.MainFrame;
 import view.component.dialog.ConfigureMultimediaDialog;
+import view.component.dialog.RemoveMultimediaDialog;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -32,8 +33,9 @@ public class DetailMultimediaPanel extends JPanel {
     private JButton btnAddToList;
     private JButton btnRemoveFromList;
 
-    public DetailMultimediaPanel(SearchPanel parent, Multimedia multimedia) {
+    private List<UserList> userListsWithMultimedia;
 
+    public DetailMultimediaPanel(SearchPanel parent, Multimedia multimedia) {
         this.searchPanel = parent;
         this.multimedia = multimedia;
 
@@ -54,8 +56,10 @@ public class DetailMultimediaPanel extends JPanel {
     }
 
     public void updatePage() {
-        btnRemoveFromList.setEnabled(user.hasMultimediaInAnyList(multimedia));
-        btnAddToList.setEnabled(!user.hasMultimediaInAllList(multimedia));
+        userListsWithMultimedia = user.getUserListsWhichContainsMultimedia(multimedia);
+
+        btnRemoveFromList.setEnabled(!userListsWithMultimedia.isEmpty());
+        btnAddToList.setEnabled(user.getLists().size() > userListsWithMultimedia.size());
 
         revalidate();
         repaint();
@@ -232,10 +236,10 @@ public class DetailMultimediaPanel extends JPanel {
 
             // Show dialog to configure the multimedia
 
-            ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimedia, user.getLists());
+            ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimedia, user);
             dialog.setVisible(true);
 
-            if (dialog.isCanceled()) {
+            if (dialog.isCancelled()) {
                 return;
             }
 
@@ -248,32 +252,54 @@ public class DetailMultimediaPanel extends JPanel {
 
             ServerResponse response = UserListController.addMultimediaToList(user, selectedList, multimediaListItem);
             if (response.getStatus() != 200) {
-                JOptionPane.showMessageDialog(
-                        mainFrame,
-                        "Couldn't add the multimedia to the list",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                processServerError(response, "Couldn't add the multimedia to the list");
             } else {
-                new SwingWorker<List<UserList>, Void>() {
-                    @Override
-                    protected List<UserList> doInBackground() {
-                        return new FetchUserLists(user).getUpdatedUserLists();
-                    }
-
-                    @Override
-                    protected void done() {
-                        try {
-                            user.setLists(get());
-                            updatePage();
-                        } catch (InterruptedException | ExecutionException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }.execute();
+                new FetchListsWorker().execute();
             }
         });
         btnRemoveFromList.addActionListener(_ -> {
+            RemoveMultimediaDialog dialog = new RemoveMultimediaDialog(userListsWithMultimedia);
+            dialog.setVisible(true);
 
+            if (dialog.isCancelled()) {
+                return;
+            }
+
+            UserList selectedList = dialog.getSelectedList();
+            ServerResponse response = UserListController.deleteMultimediaFromList(user, selectedList, multimedia);
+            if (response.getStatus() != 200) {
+                processServerError(response, "Couldn't remove the multimedia from the list");
+                return;
+            }
+
+            String message = String.format("'%s' successfully removed from '%s' list",
+                    multimedia.getTitle(), selectedList.getListName());
+            JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+            new FetchListsWorker().execute();
         });
+    }
+
+    private void processServerError(ServerResponse response, String defaultMessage) {
+        String message = response.getErrorMessage() != null ?
+                response.getErrorMessage() : defaultMessage;
+
+        JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private class FetchListsWorker extends SwingWorker<List<UserList>, Void> {
+        @Override
+        protected List<UserList> doInBackground() {
+            return new FetchUserLists(user).getUpdatedUserLists();
+        }
+
+        @Override
+        protected void done() {
+            try {
+                user.setLists(get());
+                updatePage();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

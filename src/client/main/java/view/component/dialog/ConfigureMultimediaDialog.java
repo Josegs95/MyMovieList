@@ -8,27 +8,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigureMultimediaDialog extends JDialog {
 
     private final MainFrame mainFrame;
     private final Multimedia multimedia;
-    private final List<UserList> userLists;
+    private final User user;
 
     private JComboBox<String> cmbLists;
     private JComboBox<MultimediaStatus> cmbStatus;
     private JSpinner spnEpisode;
 
-    private boolean isCanceled = false;
+    private boolean cancelled = false;
 
-    public ConfigureMultimediaDialog(MainFrame mainFrame, Multimedia multimedia,
-                                     List<UserList> userLists) {
+    public ConfigureMultimediaDialog(MainFrame mainFrame, Multimedia multimedia, User user) {
         super(mainFrame, true);
 
         this.mainFrame = mainFrame;
         this.multimedia = multimedia;
-        this.userLists = userLists;
+        this.user = user;
         init();
     }
 
@@ -42,7 +42,7 @@ public class ConfigureMultimediaDialog extends JDialog {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                isCanceled = true;
+                cancelled = true;
                 ConfigureMultimediaDialog.this.dispose();
             }
         });
@@ -58,15 +58,14 @@ public class ConfigureMultimediaDialog extends JDialog {
         JLabel lblLists = new JLabel("Lists:");
         lblLists.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        String[] listNames = userLists.stream()
-                .filter(userList -> !userList.getMultimediaList().stream()
-                        .map(MultimediaListItem::getMultimedia)
-                        .anyMatch(m -> m.equals(multimedia)))
+        List<UserList> lists = new ArrayList<>(user.getLists());
+        lists.removeAll(user.getUserListsWhichContainsMultimedia(multimedia));
+        String[] listNames = lists.stream()
                 .map(UserList::getListName)
                 .toArray(String[]::new);
 
         cmbLists = new JComboBox<>(listNames);
-        cmbLists.setSelectedItem(userLists.getFirst());
+        cmbLists.setSelectedItem(lists.getFirst());
         ((JLabel) cmbLists.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 
         // Status selector component
@@ -149,7 +148,7 @@ public class ConfigureMultimediaDialog extends JDialog {
         });
 
         btnCancel.addActionListener(_ -> {
-            isCanceled = true;
+            cancelled = true;
             ConfigureMultimediaDialog.this.dispose();
         });
 
@@ -166,24 +165,24 @@ public class ConfigureMultimediaDialog extends JDialog {
         add(pnlButtons, "span 2");
     }
 
-    public boolean isCanceled() {
-        return isCanceled;
+    public boolean isCancelled() {
+        return cancelled;
     }
 
     public UserList getSelectedList() {
-        if (isCanceled || cmbLists.getSelectedItem() == null) {
+        if (cancelled || cmbLists.getSelectedItem() == null) {
             return null;
         }
 
         String selectedListName = cmbLists.getSelectedItem().toString();
-        return userLists.stream()
+        return user.getLists().stream()
                 .filter(userList -> userList.getListName().equals(selectedListName))
                 .findFirst()
                 .orElse(null);
     }
 
     public MultimediaStatus getSelectedMultimediaStatus() {
-        if (!isCanceled) {
+        if (!cancelled) {
             return (MultimediaStatus) cmbStatus.getSelectedItem();
         }
 
@@ -191,7 +190,7 @@ public class ConfigureMultimediaDialog extends JDialog {
     }
 
     public int getSelectedCurrentEpisode() {
-        if (!isCanceled) {
+        if (!cancelled) {
             return (int) (spnEpisode.getModel().getValue());
         }
 
