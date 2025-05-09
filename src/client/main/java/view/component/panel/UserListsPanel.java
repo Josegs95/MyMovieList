@@ -21,8 +21,8 @@ public class UserListsPanel extends JPanel {
 
     private ScrollablePanel pnlMultimediaLists;
 
-    public UserListsPanel(){
-        this.mainFrame = MainFrame.getInstance();
+    public UserListsPanel(MainFrame mainFrame){
+        this.mainFrame = mainFrame;
         this.user = mainFrame.getUser();
 
         init();

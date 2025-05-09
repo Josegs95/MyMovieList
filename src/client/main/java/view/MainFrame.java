@@ -11,20 +11,22 @@ import view.component.panel.UserListsPanel;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.util.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 public class MainFrame extends JFrame{
 
-    private JPanel pnlCentral;
+    private static MainFrame instance;
     private User user;
 
-    private static final String APP_TITLE = "MyMovieList";
-    private static MainFrame instance;
-
+    private JPanel pnlCentral;
+    private JButton btnLateralSearch;
+    private JButton btnLateralLists;
     private static SearchPanel searchPanel;
     private static UserListsPanel userListsPanel;
+
+    private static final String APP_TITLE = "MyMovieList";
 
     private MainFrame(boolean withLogin) {
         initFrame();
@@ -38,6 +40,7 @@ public class MainFrame extends JFrame{
         }
 
         finishInit();
+        addListenersToComponents();
     }
 
     public static synchronized MainFrame getInstance(){
@@ -50,7 +53,6 @@ public class MainFrame extends JFrame{
 
     public void setUserLists(List<UserList> userLists) {
         user.setLists(userLists);
-        userListsPanel = new UserListsPanel();
     }
 
     public void changeCentralPanel(JPanel panel) {
@@ -94,8 +96,14 @@ public class MainFrame extends JFrame{
                 "[fill, 22%]5[fill, 78%]",
                 "[fill]"
         ));
+        searchPanel = SearchPanel.getInstance();
+        userListsPanel = new UserListsPanel(this);
 
-        //Initialize lateral panel
+        // Set central panel to "search mode"
+
+        pnlCentral = searchPanel;
+
+        // Create "lateral panel"
 
         JPanel pnlLateral = new JPanel(new MigLayout(
                 "flowy, ins 0, fill",
@@ -104,12 +112,7 @@ public class MainFrame extends JFrame{
         ));
         pnlLateral.setOpaque(false);
 
-        //Set central panel to "search mode"
-
-        searchPanel = SearchPanel.getInstance();
-        pnlCentral = searchPanel;
-
-        //User panel initialization
+        // Create "user panel" and its components
 
         JPanel pnlUser = new JPanel(new MigLayout(
                 "fill",
@@ -119,21 +122,18 @@ public class MainFrame extends JFrame{
         pnlUser.setBackground(new Color(224, 224, 224));
         pnlUser.setBorder(LineBorder.createBlackLineBorder());
 
-        //User panel components
-
-        JLabel lblUsername = new JLabel();
-        String welcomeMessage = "<html><p align=center>Welcome, [username]!</p></html>";
+        String userName = "guest user";
         if (user != null && !user.getUsername().isEmpty()) {
-            welcomeMessage = welcomeMessage.replace("[username]", user.getUsername());
+            userName = user.getUsername();
         }
+        JLabel lblUsername = new JLabel(String.format("<html><p text-align= center>Welcome, %s!</p></html>", userName),
+                SwingConstants.CENTER);
 
-        lblUsername.setText(welcomeMessage);
         lblUsername.setFont(lblUsername.getFont().deriveFont(Font.ITALIC, 18));
-        lblUsername.setHorizontalAlignment(SwingConstants.CENTER);
 
         pnlUser.add(lblUsername);
 
-        //Lateral menu components
+        //Create "lateral menu" and its components
 
         JPanel pnlMenuLateral = new JPanel(new MigLayout(
                 "flowy, ins 0",
@@ -143,14 +143,27 @@ public class MainFrame extends JFrame{
         pnlMenuLateral.setBackground(new Color(224, 224, 224));
         pnlMenuLateral.setBorder(LineBorder.createBlackLineBorder());
 
-        JButton btnLateralSearch = new MyLateralButton("Search");
-        JButton btnLateralLists = new MyLateralButton("Lists");
+        btnLateralSearch = new MyLateralButton("Search");
+        btnLateralLists = new MyLateralButton("Lists");
 
         pnlMenuLateral.add(btnLateralSearch, "grow");
         pnlMenuLateral.add(btnLateralLists, "grow");
 
-        //Listeners
+        //Adds
 
+        pnlLateral.add(pnlUser);
+        pnlLateral.add(pnlMenuLateral);
+
+        add(pnlLateral);
+        add(pnlCentral);
+
+        // Logic
+
+        revalidate();
+        repaint();
+    }
+
+    private void addListenersToComponents() {
         btnLateralSearch.addActionListener(_ -> {
             if (pnlCentral != searchPanel) {
                 changeCentralPanel(searchPanel);
@@ -167,19 +180,6 @@ public class MainFrame extends JFrame{
         });
 
         addWindowListener(new MainWindowListener(this));
-
-        //Adds
-
-        pnlLateral.add(pnlUser);
-        pnlLateral.add(pnlMenuLateral);
-
-        add(pnlLateral);
-        add(pnlCentral);
-
-        // Logic
-
-        revalidate();
-        repaint();
     }
 
     private static class MainWindowListener extends WindowAdapter {

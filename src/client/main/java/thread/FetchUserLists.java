@@ -19,6 +19,10 @@ public class FetchUserLists implements Runnable{
         List<UserList> userLists = getUpdatedUserLists();
 
         MainFrame.getInstance().setUserLists(userLists);
+        List<Multimedia> multimediaList = userLists.stream()
+                .flatMap(list -> list.getMultimediaList().stream().map(MultimediaListItem::getMultimedia))
+                .toList();
+        FetchDataFromAPI.fetchData(multimediaList);
     }
 
     @SuppressWarnings("unchecked")

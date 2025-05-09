@@ -12,6 +12,8 @@ public class User {
     public User(String username, Integer sessionToken) {
         this.username = username;
         this.sessionToken = sessionToken;
+
+        this.lists = new ArrayList<>();
     }
 
     public List<UserList> getUserListsWhichContainsMultimedia(Multimedia multimedia){
@@ -28,10 +30,6 @@ public class User {
         }
 
         return auxLists;
-    }
-
-    public boolean hasMultimediaInAllList(Multimedia multimedia){
-        return lists.size() == getUserListsWhichContainsMultimedia(multimedia).size();
     }
 
     public void setLists(List<UserList> lists) {
