@@ -20,7 +20,7 @@ public class SearchController {
             JsonArray results = data.get("results").getAsJsonArray();
             List<Multimedia> multiList = Parser.parseJSONFromAPI(results);
 
-            new Thread(new FetchDataFromAPI(multiList)).start();
+            FetchDataFromAPI.fetchData(multiList);
 
             return multiList;
         } catch (IOException | InterruptedException e) {

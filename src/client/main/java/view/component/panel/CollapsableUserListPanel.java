@@ -280,6 +280,12 @@ public class CollapsableUserListPanel extends JPanel {
                 }
 
             }));
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    System.out.printf("Título: %s, Sinopsis: %s%n", multimedia.getTitle(), multimedia.getSynopsis());
+                }
+            });
 
             // Adds
 
