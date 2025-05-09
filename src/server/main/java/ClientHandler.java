@@ -187,6 +187,10 @@ public class ClientHandler implements Runnable{
             int totalEpisodes = (int) (multimediaData.get("totalEpisodes"));
 
             idMultimedia = Database.createMultimedia(apiId, title, multimediaType, totalEpisodes);
+
+            if (idMultimedia != -1) {
+                System.out.println("Multimedia creado en la BD de forma exitosa.");
+            }
         }
 
         // Add multimedia to the list

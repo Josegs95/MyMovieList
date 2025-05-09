@@ -234,10 +234,10 @@ public class Database {
 
     public static boolean addMultimediaToList(int idUser, int idMultimedia, String listName,
                                               String status, int currentEpisode) throws DatabaseException, SQLException {
-        String sqlStatement = "CALL insert_multimedia_item_to_list(?, ?, ?, ?, ?)";
+        String sqlStatement = "{CALL insert_multimedia_item_to_list(?, ?, ?, ?, ?)}";
 
         try(Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement(sqlStatement)) {
+            CallableStatement statement = connection.prepareCall(sqlStatement)) {
 
             statement.setInt(1, idUser);
             statement.setString(2, listName);
@@ -245,7 +245,15 @@ public class Database {
             statement.setInt(4, currentEpisode);
             statement.setString(5, status);
 
-            return statement.executeUpdate() != 0;
+            statement.execute();
+
+            try (ResultSet rs = statement.getResultSet()) {
+                if (rs.next()) {
+                    return rs.getInt("affectedRows") > 0;
+                }
+            }
+
+            return false;
         } catch (SQLException e) {
             if (e.getSQLState().equals("23000")) {
                 String errorMessage = "You already has the multimedia in that list";
