@@ -7,6 +7,7 @@ import lib.ScrollablePanel;
 import lib.StretchIcon;
 import model.*;
 import net.miginfocom.swing.MigLayout;
+import thread.FetchDataFromAPI;
 import thread.FetchUserLists;
 import view.MainFrame;
 import view.component.dialog.ConfigureMultimediaDialog;
@@ -254,7 +255,11 @@ public class DetailMultimediaPanel extends JPanel {
             if (response.getStatus() != 200) {
                 processServerError(response, "Couldn't add the multimedia to the list");
             } else {
+                String message = String.format("\"%s\" has been added to \"%s\" list successfully.",
+                        multimedia.getTitle(), selectedList.getListName());
+                JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
                 new FetchListsWorker().execute();
+                FetchDataFromAPI.fetchData(multimedia);
             }
         });
         btnRemoveFromList.addActionListener(_ -> {
