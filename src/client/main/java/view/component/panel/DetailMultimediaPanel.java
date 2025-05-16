@@ -8,7 +8,6 @@ import lib.StretchIcon;
 import model.*;
 import net.miginfocom.swing.MigLayout;
 import thread.FetchDataFromAPI;
-import thread.FetchUserLists;
 import view.MainFrame;
 import view.component.dialog.ConfigureMultimediaDialog;
 import view.component.dialog.RemoveMultimediaDialog;
@@ -20,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class DetailMultimediaPanel extends JPanel {
 
@@ -237,17 +235,19 @@ public class DetailMultimediaPanel extends JPanel {
 
             // Show dialog to configure the multimedia
 
-            ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimedia, user);
+            MultimediaListItem multimediaListItem =
+                    new MultimediaListItem(multimedia, MultimediaStatus.PLAN_TO_WATCH, 0);
+            ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimediaListItem);
             dialog.setVisible(true);
 
             if (dialog.isCancelled()) {
                 return;
             }
 
-            UserList selectedList = dialog.getSelectedList();
+            UserList selectedList = dialog.getMultimediaList();
             MultimediaStatus selectedStatus = dialog.getSelectedMultimediaStatus();
             int selectedCurrentEpisode = dialog.getSelectedCurrentEpisode();
-            MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia, selectedStatus, selectedCurrentEpisode);
+            multimediaListItem = new MultimediaListItem(multimedia, selectedStatus, selectedCurrentEpisode);
 
             // Send the information to the server
 
@@ -258,7 +258,12 @@ public class DetailMultimediaPanel extends JPanel {
                 String message = String.format("\"%s\" has been added to \"%s\" list successfully.",
                         multimedia.getTitle(), selectedList.getListName());
                 JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
-                new FetchListsWorker().execute();
+
+                int currentEpisode = (int) (response.getData().get("currentEpisode"));
+                MultimediaStatus status = MultimediaStatus.valueOf(response.getData().get("status").toString());
+
+                selectedList.getMultimediaList().add(new MultimediaListItem(multimedia, status, currentEpisode));
+                updatePage();
                 FetchDataFromAPI.fetchData(multimedia);
             }
         });
@@ -280,7 +285,8 @@ public class DetailMultimediaPanel extends JPanel {
             String message = String.format("'%s' successfully removed from '%s' list",
                     multimedia.getTitle(), selectedList.getListName());
             JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
-            new FetchListsWorker().execute();
+            selectedList.removeMultimedia(multimedia);
+            updatePage();
         });
     }
 
@@ -289,22 +295,5 @@ public class DetailMultimediaPanel extends JPanel {
                 response.getErrorMessage() : defaultMessage;
 
         JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
-    }
-
-    private class FetchListsWorker extends SwingWorker<List<UserList>, Void> {
-        @Override
-        protected List<UserList> doInBackground() {
-            return new FetchUserLists(user).getUpdatedUserLists();
-        }
-
-        @Override
-        protected void done() {
-            try {
-                user.setLists(get());
-                updatePage();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }

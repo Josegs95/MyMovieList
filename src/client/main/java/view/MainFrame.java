@@ -4,7 +4,7 @@ import model.User;
 import model.UserList;
 import net.miginfocom.swing.MigLayout;
 import thread.FetchUserLists;
-import view.component.dialog.LoginDialog;
+import view.component.dialog.auth.LoginDialog;
 import view.component.panel.SearchPanel;
 import view.component.panel.UserListsPanel;
 

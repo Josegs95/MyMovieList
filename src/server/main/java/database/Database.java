@@ -232,7 +232,7 @@ public class Database {
         }
     }
 
-    public static boolean addMultimediaToList(int idUser, int idMultimedia, String listName,
+    public static Map<String, Object> addMultimediaToList(int idUser, int idMultimedia, String listName,
                                               String status, int currentEpisode) throws DatabaseException, SQLException {
         String sqlStatement = "{CALL insert_multimedia_item_to_list(?, ?, ?, ?, ?)}";
 
@@ -248,17 +248,44 @@ public class Database {
             statement.execute();
 
             try (ResultSet rs = statement.getResultSet()) {
-                if (rs.next()) {
-                    return rs.getInt("affectedRows") > 0;
+                if (rs.next() && rs.getInt("affectedRows") > 0) {
+                    return getMultimediaListItem(idMultimedia, listName, idUser);
                 }
             }
 
-            return false;
+            return null;
         } catch (SQLException e) {
             if (e.getSQLState().equals("23000")) {
                 String errorMessage = "You already has the multimedia in that list";
                 throw new DatabaseException(23, errorMessage);
             }
+            throw new SQLException(e);
+        }
+    }
+
+    public static Map<String, Object> modifyMultimedia(int idUser, int idMultimedia, String listName,
+                                           String status, int currentEpisode) throws SQLException {
+        String sqlStatement = "UPDATE list_has_multimedia AS lhm " +
+                "INNER JOIN list AS l ON lhm.list_id = l.id " +
+                "INNER JOIN status AS s ON s.name = ? " +
+                "SET lhm.status_id = s.id, lhm.current_episode = ? " +
+                "WHERE l.name = ? AND l.user_id = ? AND lhm.multimedia_id = ?";
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sqlStatement)) {
+
+            statement.setString(1, status);
+            statement.setInt(2, currentEpisode);
+            statement.setString(3, listName);
+            statement.setInt(4, idUser);
+            statement.setInt(5, idMultimedia);
+
+            if (statement.executeUpdate() != 1) {
+                return null;
+            }
+
+            return getMultimediaListItem(idMultimedia, listName, idUser);
+        } catch (SQLException e) {
             throw new SQLException(e);
         }
     }
@@ -283,6 +310,35 @@ public class Database {
     }
 
     // Private methods
+
+    private static Map<String, Object> getMultimediaListItem(int idMultimedia, String listName, int idUser) {
+        String sqlStatement = "SELECT s.name, lhm.current_episode FROM list_has_multimedia AS lhm " +
+                "INNER JOIN list AS l ON l.id = lhm.list_id " +
+                "INNER JOIN status AS s ON lhm.status_id = s.id " +
+                "WHERE lhm.multimedia_id = ? AND l.name = ? AND l.user_id = ?";
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sqlStatement)){
+
+            statement.setInt(1, idMultimedia);
+            statement.setString(2, listName);
+            statement.setInt(3, idUser);
+
+            ResultSet resultSet = statement.executeQuery();
+            Map<String, Object> multimediaData = new HashMap<>();
+
+            if (resultSet.next()){
+                multimediaData.put("status", resultSet.getString(1));
+                multimediaData.put("currentEpisode", resultSet.getInt(2));
+
+                return multimediaData;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private static Map<String, Object> getListData(int idList, String listName){
         String sqlStatement = "SELECT mt.name, m.title, m.api_id, s.name, " +

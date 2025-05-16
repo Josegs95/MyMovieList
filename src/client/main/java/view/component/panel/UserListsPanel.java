@@ -6,13 +6,11 @@ import model.ServerResponse;
 import model.User;
 import model.UserList;
 import net.miginfocom.swing.MigLayout;
-import thread.FetchUserLists;
 import view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.HashSet;
 
 public class UserListsPanel extends JPanel {
 
@@ -74,23 +72,9 @@ public class UserListsPanel extends JPanel {
             if (serverResponse.getStatus() != 200) {
                 processServerError(serverResponse);
             } else {
-                SwingWorker<List<UserList>, Void> worker = new SwingWorker<>() {
-                    @Override
-                    protected List<UserList> doInBackground() {
-                        return new FetchUserLists(user).getUpdatedUserLists();
-                    }
-
-                    @Override
-                    protected void done() {
-                        try {
-                            user.setLists(get());
-                            printUserLists();
-                        } catch (InterruptedException | ExecutionException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                };
-                worker.execute();
+                UserList userList = new UserList(listName, new HashSet<>());
+                user.getLists().add(userList);
+                printUserLists();
             }
         });
 

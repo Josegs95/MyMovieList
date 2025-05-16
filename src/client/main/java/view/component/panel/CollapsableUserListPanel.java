@@ -6,6 +6,7 @@ import lib.StretchIcon;
 import model.*;
 import net.miginfocom.swing.MigLayout;
 import view.MainFrame;
+import view.component.dialog.ConfigureMultimediaDialog;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -204,31 +205,38 @@ public class CollapsableUserListPanel extends JPanel {
 
     private class MultimediaItemPanel extends JPanel{
 
-        private final MultimediaListItem multimediaListItem;
+        private MultimediaListItem multimediaListItem;
+        private final Multimedia multimedia;
+        private final MultimediaType multimediaType;
+
+        private JButton btnConfig;
+        private JButton btnDelete;
+        private JLabel lblStatus;
+        private JLabel lblCurrentEpisode;
 
         public MultimediaItemPanel(MultimediaListItem multimediaListItem) {
             this.multimediaListItem = multimediaListItem;
+            this.multimedia = multimediaListItem.getMultimedia();
+            this.multimediaType = multimedia.getMultimediaType();
 
-            this.init();
+            createUI();
+            createListeners();
         }
 
-        private void init() {
-            Multimedia multimedia = multimediaListItem.getMultimedia();
-            MultimediaType multimediaType = multimedia.getMultimediaType();
-
+        private void createUI() {
             setLayout(new MigLayout(
                     "ins 0 25 0 0, fill",
                     "[20%, fill][20%, fill][20%, fill][20%, fill][20%, fill]",
                     "[fill]"
             ));
 
-            setBackground(multimediaType == MultimediaType.MOVIE ? Color.CYAN : Color.PINK);
+            setBackground(multimediaType == MultimediaType.MOVIE ? new Color(250, 219, 111) : new Color(132, 182, 244));
             setBorder(LineBorder.createGrayLineBorder());
 
             JLabel lblTitle = new JLabel("<html><p style=\"text-align: center;\">"
                     + multimedia.getTitle() + "</p></html>", SwingConstants.CENTER);
             JLabel lblType = new JLabel(multimediaType.toString(), SwingConstants.CENTER);
-            JLabel lblStatus = new JLabel(multimediaListItem.getStatus().toString(), SwingConstants.CENTER);
+            lblStatus = new JLabel(multimediaListItem.getStatus().toString(), SwingConstants.CENTER);
             String episodeString = "";
             if (multimediaType == MultimediaType.TV_SHOW){
                 episodeString = String.join(
@@ -236,7 +244,7 @@ public class CollapsableUserListPanel extends JPanel {
                         String.valueOf(multimediaListItem.getCurrentEpisode()),
                         String.valueOf(((TvShow) multimedia).getTotalEpisodes()));
             }
-            JLabel lblCurrentEpisode = new JLabel(episodeString, SwingConstants.CENTER);
+            lblCurrentEpisode = new JLabel(episodeString, SwingConstants.CENTER);
 
             JPanel pnlButtons = new JPanel(new MigLayout(
                     "fill, flowy, gapy 6!, align 50% 50%",
@@ -244,14 +252,22 @@ public class CollapsableUserListPanel extends JPanel {
                     "[35!, fill]"));
             pnlButtons.setOpaque(false);
 
-            JButton btnConfig = getJButtonWithIcon("images/config.png");
-            JButton btnDelete = getJButtonWithIcon("images/delete.png");
+            btnConfig = getJButtonWithIcon("images/config.png");
+            btnDelete = getJButtonWithIcon("images/delete.png");
 
             pnlButtons.add(btnConfig, "sg 1");
             pnlButtons.add(btnDelete, "sg 1");
 
-            // Listeners
+            // Adds
 
+            add(lblTitle);
+            add(lblType);
+            add(lblCurrentEpisode);
+            add(lblStatus);
+            add(pnlButtons);
+        }
+
+        private void createListeners() {
             btnDelete.addActionListener((_ -> {
                 String message = "¿Are you sure that you want to delete \"" + multimedia.getTitle() +
                         "\" from your list?";
@@ -280,20 +296,60 @@ public class CollapsableUserListPanel extends JPanel {
                 }
 
             }));
+            btnConfig.addActionListener(_ -> {
+                MainFrame mainFrame = MainFrame.getInstance();
+                ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimediaListItem, userList);
+                dialog.setVisible(true);
+
+                if (dialog.isCancelled()) {
+                    return;
+                }
+
+                MultimediaStatus selectedStatus = dialog.getSelectedMultimediaStatus();
+                int selectedCurrentEpisode = dialog.getSelectedCurrentEpisode();
+                MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia,
+                        selectedStatus, selectedCurrentEpisode);
+
+                // Send the information to the server
+
+                ServerResponse response = UserListController.modifyMultimediaAttributes(mainFrame.getUser(),
+                        userList, multimediaListItem);
+                if (response.getStatus() != 200) {
+                    processErrorMessage(response, "Couldn't modify the multimedia.");
+                } else {
+                    String message = String.format("\"%s\" has been modified successfully.",
+                            multimedia.getTitle());
+                    JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                    MultimediaStatus status = MultimediaStatus.valueOf(response.getData().get("status").toString());
+                    int currentEpisode = (int) (response.getData().get("currentEpisode"));
+
+                    this.multimediaListItem = new MultimediaListItem(multimedia, status, currentEpisode);
+                    updateMultimediaAttributes();
+                }
+            });
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     System.out.printf("Título: %s, Sinopsis: %s%n", multimedia.getTitle(), multimedia.getSynopsis());
                 }
             });
+        }
 
-            // Adds
+        private void updateMultimediaAttributes() {
+            lblStatus.setText(multimediaListItem.getStatus().toString());
+            if (multimediaListItem.getMultimedia().getMultimediaType() == MultimediaType.TV_SHOW){
+                String episodeString = String.join(
+                        "/",
+                        String.valueOf(multimediaListItem.getCurrentEpisode()),
+                        String.valueOf(((TvShow) multimediaListItem.getMultimedia()).getTotalEpisodes()));
 
-            add(lblTitle);
-            add(lblType);
-            add(lblCurrentEpisode);
-            add(lblStatus);
-            add(pnlButtons);
+                lblCurrentEpisode.setText(episodeString);
+            }
+
+            revalidate();
+            repaint();
+
         }
     }
 }

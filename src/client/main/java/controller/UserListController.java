@@ -88,7 +88,33 @@ public class UserListController {
         }
     }
 
-    public static void modifyMultimediaAttributes(User user, Multimedia multimedia) {}
+    public static ServerResponse modifyMultimediaAttributes(User user, UserList userList,
+                                                            MultimediaListItem multimediaListItem) {
+        Map<String, Object> userData = getUserData(user);
+        Map<String, Object> multimediaData = new HashMap<>();
+
+        Multimedia multimedia = multimediaListItem.getMultimedia();
+        multimediaData.put("apiId", multimedia.getId());
+        multimediaData.put("title", multimedia.getTitle());
+        multimediaData.put("type", multimedia.getMultimediaType());
+        if (multimedia instanceof Movie) {
+            multimediaData.put("totalEpisodes", 1);
+        } else {
+            multimediaData.put("totalEpisodes", ((TvShow) multimedia).getTotalEpisodes());
+        }
+
+        userData.put("multimedia", multimediaData);
+        userData.put("listName", userList.getListName());
+        userData.put("status", multimediaListItem.getStatus());
+        userData.put("currentEpisode", multimediaListItem.getCurrentEpisode());
+
+        try(SocketCommunication socketCommunication = new SocketCommunication()) {
+
+            return socketCommunication.writeToServer(userData, MessageType.MODIFY_MULTIMEDIA);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static ServerResponse deleteMultimediaFromList(User user, UserList userList, Multimedia multimedia) {
         Map<String, Object> userData = getUserData(user);

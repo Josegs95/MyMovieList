@@ -1,4 +1,4 @@
-package view.component.dialog;
+package view.component.dialog.auth;
 
 import net.miginfocom.swing.MigLayout;
 

@@ -69,7 +69,8 @@ public class ClientHandler implements Runnable{
                     serverResponseData.put("lists", JSONMessageProtocol.serializeObject(userLists));
 
                 }
-                case ADD_MULTIMEDIA -> addMultimediaToList();
+                case ADD_MULTIMEDIA -> serverResponseData.putAll(addMultimediaToList());
+                case MODIFY_MULTIMEDIA -> serverResponseData.putAll(modifyMultimedia());
                 case REMOVE_MULTIMEDIA -> removeMultimediaFromList();
                 default -> System.out.println("Tipo de mensaje desconocido: " + messageType);
             }
@@ -169,7 +170,7 @@ public class ClientHandler implements Runnable{
     }
 
     @SuppressWarnings({"unckecked", "unchecked"})
-    private void addMultimediaToList() throws AuthenticationException,
+    private Map<String, Object> addMultimediaToList() throws AuthenticationException,
             SQLException, DatabaseException {
         // User verification
         String username = clientData.get("username").toString();
@@ -198,8 +199,39 @@ public class ClientHandler implements Runnable{
         String status = clientData.get("status").toString();
         int currentEpisode = (int) (clientData.get("currentEpisode"));
 
-        if (!Database.addMultimediaToList(idUser, idMultimedia, listName, status, currentEpisode)) {
+        Map<String, Object> result =
+                Database.addMultimediaToList(idUser, idMultimedia, listName, status, currentEpisode);
+        if (result == null) {
             throw new DatabaseException("Couldn't add the multimedia to the user list cause unknown reasons.");
+        } else {
+            return result;
+        }
+    }
+
+    @SuppressWarnings({"unckecked", "unchecked"})
+    private Map<String, Object> modifyMultimedia() throws AuthenticationException, SQLException, DatabaseException {
+        // User verification
+        String username = clientData.get("username").toString();
+        Integer token = (Integer) clientData.get("token");
+        int idUser = Database.validateUser(username, token);
+
+        // Get the multimedia ID
+        Map<String, Object> multimediaData = (Map<String, Object>) (clientData.get("multimedia"));
+        int apiId = (int) (multimediaData.get("apiId"));
+        String multimediaType = multimediaData.get("type").toString();
+
+        int idMultimedia = Database.existMultimedia(apiId, multimediaType);
+
+        // Modify multimedia
+        String listName = clientData.get("listName").toString();
+        String status = clientData.get("status").toString();
+        int currentEpisode = (int) (clientData.get("currentEpisode"));
+
+        Map<String, Object> result = Database.modifyMultimedia(idUser, idMultimedia, listName, status, currentEpisode);
+        if (result == null) {
+            throw new DatabaseException("Couldn't modify the multimedia cause unknown reasons.");
+        } else {
+            return result;
         }
     }
 
