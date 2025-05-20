@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import json.Parser;
 import model.Multimedia;
 import thread.FetchDataFromAPI;
-import view.component.panel.SearchPanel;
+import view.MainFrame;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +20,7 @@ public class SearchController {
             JsonArray results = data.get("results").getAsJsonArray();
             List<Multimedia> multiList = Parser.parseJSONFromAPI(results);
 
-            FetchDataFromAPI.fetchData(multiList);
+            FetchDataFromAPI.fetchData(multiList, false);
 
             return multiList;
         } catch (IOException | InterruptedException e) {
@@ -28,7 +28,7 @@ public class SearchController {
         }
     }
 
-    public static void backButtonFromDetailPanel(SearchPanel view) {
-        view.deleteDetailPanel();
+    public static void backButtonFromDetailPanel() {
+        MainFrame.getInstance().removeDetailPanel();
     }
 }

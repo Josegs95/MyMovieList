@@ -2,7 +2,6 @@ package thread;
 
 import controller.UserListController;
 import model.*;
-import view.MainFrame;
 
 import java.util.*;
 
@@ -18,11 +17,11 @@ public class FetchUserLists implements Runnable{
     public void run(){
         List<UserList> userLists = getUpdatedUserLists();
 
-        MainFrame.getInstance().setUserLists(userLists);
+        user.setLists(userLists);
         List<Multimedia> multimediaList = userLists.stream()
                 .flatMap(list -> list.getMultimediaList().stream().map(MultimediaListItem::getMultimedia))
                 .toList();
-        FetchDataFromAPI.fetchData(multimediaList);
+        FetchDataFromAPI.fetchData(multimediaList, true);
     }
 
     @SuppressWarnings("unchecked")

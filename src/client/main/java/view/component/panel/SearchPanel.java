@@ -24,12 +24,14 @@ import java.util.concurrent.ExecutionException;
 public class SearchPanel extends JPanel {
 
     private static SearchPanel instance;
+    private MySearchTextField txfCentralSearch;
 
     private JPanel pnlResultList;
-
     private ScrollablePanel pnlInnerResultList;
     private JScrollPane scrollPaneResult;
-    private MySearchTextField txfCentralSearch;
+    private JButton btnSearch;
+
+    private boolean detailedView;
 
     private SearchPanel() {
         super(new MigLayout(
@@ -38,13 +40,37 @@ public class SearchPanel extends JPanel {
                 "[fill]"
         ));
 
-        init();
+        detailedView = false;
+
+        createUI();
+        createListeners();
     }
 
-    private void init() {
-        setBorder(new LineBorder(Color.BLACK, 1, false));
+    public static synchronized SearchPanel getInstance() {
+        if (instance == null)
+            instance = new SearchPanel();
 
-        //Components
+        return instance;
+    }
+
+    public void removeDetailPanel() {
+        remove(0);
+        add(pnlResultList);
+        detailedView = false;
+        txfCentralSearch.requestFocusInWindow();
+
+        revalidate();
+        repaint();
+    }
+
+    public void updateState() {
+        if (detailedView) {
+            ((DetailMultimediaPanel) getComponent(0)).updatePage();
+        }
+    }
+
+    private void createUI() {
+        setBorder(new LineBorder(Color.BLACK, 1, false));
 
         pnlResultList = new JPanel(new MigLayout(
                 "ins 20, fillx, aligny 50%, flowy",
@@ -53,12 +79,17 @@ public class SearchPanel extends JPanel {
         ));
         pnlResultList.setBackground(new Color(224, 224, 224));
 
+        add(pnlResultList);
+
         JPanel pnlSearch = new JPanel(new MigLayout(
                 "",
                 "[fill]",
                 "[]"
         ));
         pnlSearch.setOpaque(false);
+
+        pnlResultList.add(pnlSearch);
+
         pnlInnerResultList = new ScrollablePanel(new MigLayout(
                 "ins 0, fill, flowy",
                 "[fill]",
@@ -76,10 +107,13 @@ public class SearchPanel extends JPanel {
                 BorderFactory.createEmptyBorder(0, 20, 0, 0)
         ));
 
-        JButton btnSearch = new JButton("Search");
+        btnSearch = new JButton("Search");
 
-        //Listeners
+        pnlSearch.add(txfCentralSearch, "push, sg group1");
+        pnlSearch.add(btnSearch, "sg group1");
+    }
 
+    private void createListeners() {
         btnSearch.addActionListener(_ -> {
             if (txfCentralSearch.getText().isEmpty())
                 return;
@@ -96,37 +130,6 @@ public class SearchPanel extends JPanel {
         });
 
         txfCentralSearch.addActionListener(_ -> btnSearch.doClick());
-
-        //Adds
-
-        pnlSearch.add(txfCentralSearch, "push, sg group1");
-        pnlSearch.add(btnSearch, "sg group1");
-
-        pnlResultList.add(pnlSearch);
-
-        add(pnlResultList);
-    }
-
-    public static synchronized SearchPanel getInstance() {
-        if (instance == null)
-            instance = new SearchPanel();
-
-        return instance;
-    }
-
-    public void deleteDetailPanel() {
-        remove(0);
-        add(pnlResultList);
-        txfCentralSearch.requestFocusInWindow();
-
-        revalidate();
-        repaint();
-    }
-
-    public void updateDetailPanel() {
-        if (getComponent(0) instanceof DetailMultimediaPanel) {
-            ((DetailMultimediaPanel) getComponent(0)).updatePage();
-        }
     }
 
     private void addResultPanel(List<Multimedia> multiList) {
@@ -134,10 +137,11 @@ public class SearchPanel extends JPanel {
         try {
             for (Multimedia multi : multiList) {
                 JPanel panel = createListItem(multi);
+                panel.setBorder(LineBorder.createGrayLineBorder());
                 panel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        showDetailPanel(new DetailMultimediaPanel(SearchPanel.this, multi));
+                        showDetailPanel(new DetailMultimediaPanel(multi));
                     }
                 });
                 pnlInnerResultList.add(panel);
@@ -152,14 +156,6 @@ public class SearchPanel extends JPanel {
 
         if (getComponentZOrder(scrollPaneResult) == -1)
             pnlResultList.add(scrollPaneResult, "push");
-
-        revalidate();
-        repaint();
-    }
-
-    private void showDetailPanel(DetailMultimediaPanel panel) {
-        remove(pnlResultList);
-        add(panel);
 
         revalidate();
         repaint();
@@ -197,6 +193,15 @@ public class SearchPanel extends JPanel {
         panel.add(lblScore);
 
         return panel;
+    }
+
+    private void showDetailPanel(DetailMultimediaPanel panel) {
+        remove(0);
+        add(panel);
+        detailedView = true;
+
+        revalidate();
+        repaint();
     }
 
     private static class ImageLoaderWorker extends SwingWorker<StretchIcon, Void> {

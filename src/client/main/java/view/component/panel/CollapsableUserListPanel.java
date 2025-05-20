@@ -21,13 +21,15 @@ import java.io.InputStream;
 public class CollapsableUserListPanel extends JPanel {
 
     private final UserList userList;
+    private final UserListsPanel userListsPanel;
 
     private ScrollablePanel pnlContent;
     private JLabel lblListName;
 
     private boolean collapsed = true;
 
-    public CollapsableUserListPanel(UserList userList){
+    public CollapsableUserListPanel(UserListsPanel userListsPanel, UserList userList){
+        this.userListsPanel = userListsPanel;
         this.userList = userList;
 
         init();
@@ -331,7 +333,7 @@ public class CollapsableUserListPanel extends JPanel {
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    System.out.printf("Título: %s, Sinopsis: %s%n", multimedia.getTitle(), multimedia.getSynopsis());
+                    userListsPanel.showDetailPanel(new DetailMultimediaPanel(multimedia));
                 }
             });
         }

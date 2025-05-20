@@ -6,9 +6,11 @@ import com.google.gson.JsonObject;
 import controller.ApiController;
 import model.Movie;
 import model.Multimedia;
+import model.MultimediaType;
 import model.TvShow;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -18,21 +20,17 @@ public class FetchDataFromAPI {
 
     private FetchDataFromAPI(){}
 
-    public static void fetchData(List<Multimedia> multimediaList) {
+    public static void fetchData(List<Multimedia> multimediaList, boolean fullInfo) {
         try (ExecutorService executor = Executors.newCachedThreadPool()) {
             for (Multimedia multimedia : multimediaList) {
-                executor.execute(() -> setMultimediaDataFromApi(multimedia));
+                executor.execute(() -> setMultimediaDataFromApi(multimedia, fullInfo));
             }
         }
 
         System.out.println("Threads done!");
     }
 
-    public static void fetchData(Multimedia multimedia) {
-        new Thread(() -> setMultimediaDataFromApi(multimedia)).start();
-    }
-
-    private static void setMultimediaDataFromApi(Multimedia multimedia) {
+    private static void setMultimediaDataFromApi(Multimedia multimedia, boolean fullInfo) {
         JsonObject data;
         try {
             data = ApiController.searchMultimediaDetail(multimedia);
@@ -41,8 +39,31 @@ public class FetchDataFromAPI {
             throw new RuntimeException(e);
         }
 
+        MultimediaType type = multimedia.getMultimediaType();
+
+        if (fullInfo) {
+            // Release Date
+            JsonElement jsonReleaseDate = data.get(type == MultimediaType.MOVIE ? "release_date" : "first_air_date");
+            if (!jsonReleaseDate.isJsonNull()) {
+                multimedia.setReleaseDate(LocalDate.parse(jsonReleaseDate.getAsString()));
+            }
+
+            // Score
+            double score = data.get("vote_average").getAsDouble();
+            multimedia.setScore(score == 0 ? "No score" : String.valueOf(score));
+        }
+
+        // Poster
+        JsonElement jsonPoster = data.get("poster_path");
+        if (!jsonPoster.isJsonNull()) {
+            multimedia.setPosterUrl(jsonPoster.getAsString());
+        }
+
         //Synopsis
-        multimedia.setSynopsis(data.get("overview").getAsString());
+        JsonElement jsonSynopsis = data.get("overview");
+        if (!jsonSynopsis.isJsonNull()) {
+            multimedia.setSynopsis(jsonSynopsis.getAsString());
+        }
 
         //Genres
         List<String> genreList = new ArrayList<>();

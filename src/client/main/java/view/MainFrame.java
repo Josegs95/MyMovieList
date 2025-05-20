@@ -1,7 +1,6 @@
 package view;
 
 import model.User;
-import model.UserList;
 import net.miginfocom.swing.MigLayout;
 import thread.FetchUserLists;
 import view.component.dialog.auth.LoginDialog;
@@ -13,7 +12,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
 
 public class MainFrame extends JFrame{
 
@@ -40,7 +38,7 @@ public class MainFrame extends JFrame{
         }
 
         finishInit();
-        addListenersToComponents();
+        createListeners();
     }
 
     public static synchronized MainFrame getInstance(){
@@ -49,10 +47,6 @@ public class MainFrame extends JFrame{
         }
 
         return instance;
-    }
-
-    public void setUserLists(List<UserList> userLists) {
-        user.setLists(userLists);
     }
 
     public void changeCentralPanel(JPanel panel) {
@@ -64,11 +58,19 @@ public class MainFrame extends JFrame{
         repaint();
     }
 
+    public void removeDetailPanel() {
+        if (pnlCentral == searchPanel) {
+            searchPanel.removeDetailPanel();
+        } else if (pnlCentral == userListsPanel) {
+            userListsPanel.removeDetailPanel();
+        }
+    }
+
     public void updateCentralPanelUI() {
         if (pnlCentral == searchPanel) {
-            searchPanel.updateDetailPanel();
+            searchPanel.updateState();
         } else if (pnlCentral == userListsPanel) {
-            userListsPanel.printUserLists();
+            userListsPanel.updateUIStatus();
         }
     }
 
@@ -163,11 +165,11 @@ public class MainFrame extends JFrame{
         repaint();
     }
 
-    private void addListenersToComponents() {
+    private void createListeners() {
         btnLateralSearch.addActionListener(_ -> {
             if (pnlCentral != searchPanel) {
                 changeCentralPanel(searchPanel);
-                searchPanel.updateDetailPanel();
+                searchPanel.updateState();
             }
 
         });
@@ -175,7 +177,7 @@ public class MainFrame extends JFrame{
         btnLateralLists.addActionListener(_ -> {
             if (pnlCentral != userListsPanel) {
                 changeCentralPanel(userListsPanel);
-                userListsPanel.printUserLists();
+                userListsPanel.updateUIStatus();
             }
         });
 

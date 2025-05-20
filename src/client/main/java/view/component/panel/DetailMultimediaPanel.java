@@ -7,7 +7,6 @@ import lib.ScrollablePanel;
 import lib.StretchIcon;
 import model.*;
 import net.miginfocom.swing.MigLayout;
-import thread.FetchDataFromAPI;
 import view.MainFrame;
 import view.component.dialog.ConfigureMultimediaDialog;
 import view.component.dialog.RemoveMultimediaDialog;
@@ -22,7 +21,6 @@ import java.util.List;
 
 public class DetailMultimediaPanel extends JPanel {
 
-    private final SearchPanel searchPanel;
     private final Multimedia multimedia;
 
     private final MainFrame mainFrame;
@@ -34,8 +32,7 @@ public class DetailMultimediaPanel extends JPanel {
 
     private List<UserList> userListsWithMultimedia;
 
-    public DetailMultimediaPanel(SearchPanel parent, Multimedia multimedia) {
-        this.searchPanel = parent;
+    public DetailMultimediaPanel(Multimedia multimedia) {
         this.multimedia = multimedia;
 
         this.mainFrame = MainFrame.getInstance();
@@ -46,7 +43,7 @@ public class DetailMultimediaPanel extends JPanel {
 
     private void init() {
         createUI();
-        addListenersToComponents();
+        createListeners();
         updatePage();
     }
 
@@ -218,8 +215,8 @@ public class DetailMultimediaPanel extends JPanel {
         add(pnlDetails);
     }
 
-    private void addListenersToComponents() {
-        btnBack.addActionListener(_ -> SearchController.backButtonFromDetailPanel(searchPanel));
+    private void createListeners() {
+        btnBack.addActionListener(_ -> SearchController.backButtonFromDetailPanel());
         btnAddToList.addActionListener(_ -> {
             // Error if the user has no lists
 
@@ -264,7 +261,6 @@ public class DetailMultimediaPanel extends JPanel {
 
                 selectedList.getMultimediaList().add(new MultimediaListItem(multimedia, status, currentEpisode));
                 updatePage();
-                FetchDataFromAPI.fetchData(multimedia);
             }
         });
         btnRemoveFromList.addActionListener(_ -> {
@@ -286,6 +282,7 @@ public class DetailMultimediaPanel extends JPanel {
                     multimedia.getTitle(), selectedList.getListName());
             JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
             selectedList.removeMultimedia(multimedia);
+            mainFrame.updateCentralPanelUI();
             updatePage();
         });
     }
