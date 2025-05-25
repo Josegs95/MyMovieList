@@ -1,7 +1,9 @@
 package view.component.panel;
 
 import controller.UserListController;
-import lib.ScrollablePanel;
+import controller.ViewController;
+import event.Event;
+import event.EventType;
 import lib.StretchIcon;
 import model.*;
 import net.miginfocom.swing.MigLayout;
@@ -17,28 +19,65 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CollapsableUserListPanel extends JPanel {
 
     private final UserList userList;
-    private final UserListsPanel userListsPanel;
+    private final UserListPanel userListPanel;
+    private final MainFrame mainFrame;
+    private final User user;
 
-    private ScrollablePanel pnlContent;
+    private JPanel pnlMultimediaItems;
     private JLabel lblListName;
+    private JPanel pnlUserList;
+    private JButton btnRename;
+    private JButton btnDelete;
 
-    private boolean collapsed = true;
+    private boolean expanded = false;
+    private final Map<MultimediaListItem, MultimediaItemPanel> multimediaDict;
 
-    public CollapsableUserListPanel(UserListsPanel userListsPanel, UserList userList){
-        this.userListsPanel = userListsPanel;
+    public CollapsableUserListPanel(UserListPanel userListPanel, UserList userList){
+        this.userListPanel = userListPanel;
         this.userList = userList;
+        this.mainFrame = MainFrame.getInstance();
+        this.user = mainFrame.getUser();
 
-        init();
+        multimediaDict = new HashMap<>();
+
+        createUI();
+        createListeners();
+        createItemPanels();
     }
 
-    private void init() {
-        MainFrame mainFrame = MainFrame.getInstance();
-        User user = mainFrame.getUser();
+    public void addMultimediaListItem(MultimediaListItem item) {
+        MultimediaItemPanel pnlItem = new MultimediaItemPanel(item);
+        multimediaDict.put(item, pnlItem);
+        pnlMultimediaItems.add(pnlItem);
+    }
 
+    public void removeMultimediaItem(MultimediaListItem mli) {
+        MultimediaItemPanel panel = multimediaDict.get(mli);
+        pnlMultimediaItems.remove(panel);
+
+        // If there are not more multimedia items in the list, the list wrap itself.
+        if (pnlMultimediaItems.getComponentCount() == 0) {
+            remove(pnlMultimediaItems);
+            expanded = false;
+        }
+
+        updateListName();
+    }
+
+    public void updateListName() {
+        lblListName.setText(userList.getFullListName());
+
+        revalidate();
+        repaint();
+    }
+
+    private void createUI() {
         setLayout(new MigLayout(
                 "fill, flowy, gap 0 0, ins 0",
                 "[fill]",
@@ -47,11 +86,11 @@ public class CollapsableUserListPanel extends JPanel {
 
         //Components
 
-        JPanel pnlListExpand = new JPanel(new MigLayout(
+        pnlUserList = new JPanel(new MigLayout(
                 "fill, ins 0 25 0 0",
                 "[fill, 70%]0[fill, grow]",
                 "[fill]"));
-        pnlListExpand.setBorder(LineBorder.createBlackLineBorder());
+        pnlUserList.setBorder(LineBorder.createBlackLineBorder());
 
         lblListName = new JLabel(userList.getFullListName());
         Font labelFont = lblListName.getFont();
@@ -62,35 +101,35 @@ public class CollapsableUserListPanel extends JPanel {
                 "push[fill]10[fill]push",
                 "[fill]"));
 
-        JButton btnRename = getJButtonWithIcon("images/rename.png");
-        JButton btnDelete = getJButtonWithIcon("images/delete.png");
+        btnRename = getJButtonWithIcon("images/rename.png");
+        btnDelete = getJButtonWithIcon("images/delete.png");
 
         pnlButtons.add(btnRename, "w 35!, h 35!");
         pnlButtons.add(btnDelete, "w 35!, h 35!");
 
-        pnlListExpand.add(lblListName);
-        pnlListExpand.add(pnlButtons);
+        pnlUserList.add(lblListName);
+        pnlUserList.add(pnlButtons);
 
-
-        pnlContent = new ScrollablePanel(new MigLayout(
+        pnlMultimediaItems = new JPanel(new MigLayout(
                 "ins 0, fill, gap 0 0, flowy",
                 "[fill]",
                 "[fill, 100!]"
         ));
-        updateUserListUI();
 
-        //Listener
+        add(pnlUserList);
+    }
 
-        pnlListExpand.addMouseListener(new MouseAdapter() {
+    private void createListeners() {
+        pnlUserList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (collapsed && !userList.getMultimediaList().isEmpty()){
-                    CollapsableUserListPanel.this.add(pnlContent);
+                if (!expanded && !userList.getMultimediaList().isEmpty()){
+                    CollapsableUserListPanel.this.add(pnlMultimediaItems);
                 } else {
-                    CollapsableUserListPanel.this.remove(pnlContent);
+                    CollapsableUserListPanel.this.remove(pnlMultimediaItems);
                 }
 
-                collapsed = !collapsed;
+                expanded = !expanded;
                 CollapsableUserListPanel.this.revalidate();
                 CollapsableUserListPanel.this.repaint();
             }
@@ -113,7 +152,7 @@ public class CollapsableUserListPanel extends JPanel {
                 processErrorMessage(serverResponse, String.format("Couldn't rename the list to \"%s\"", newListName));
             } else {
                 userList.setListName(newListName);
-                updateUserListUI();
+                updateListName();
             }
         });
         btnDelete.addActionListener(_ ->{
@@ -133,37 +172,19 @@ public class CollapsableUserListPanel extends JPanel {
             if (response.getStatus() != 200) {
                 processErrorMessage(response, String.format("Couldn't delete the list \"%s\"", listName));
             } else {
-                user.getLists().remove(userList);
-                mainFrame.updateCentralPanelUI();
+                Event event = new Event(EventType.DELETE_USER_LIST, Map.of("userList", userList));
+                ViewController.getInstance().notifyView("userListPanel", event);
             }
         });
-
-        // Adds
-
-        add(pnlListExpand);
     }
 
-    private void updateUserListUI(){
-        lblListName.setText(userList.getFullListName());
-        pnlContent.removeAll();
-
+    private void createItemPanels() {
         for (MultimediaListItem multimediaListItem : userList.getMultimediaList()){
-            pnlContent.add(new MultimediaItemPanel(multimediaListItem));
+            addMultimediaListItem(multimediaListItem);
         }
 
         revalidate();
         repaint();
-    }
-
-    private void removeMultimediaItemFromList (MultimediaListItem multimediaListItem) {
-        userList.getMultimediaList().remove(multimediaListItem);
-
-        if (userList.getMultimediaList().isEmpty()) {
-            remove(pnlContent);
-            collapsed = true;
-        }
-
-        updateUserListUI();
     }
 
     private JButton getJButtonWithIcon(String iconPath) {
@@ -202,7 +223,7 @@ public class CollapsableUserListPanel extends JPanel {
             defaultMessage = serverResponse.getErrorMessage();
         }
 
-        JOptionPane.showMessageDialog(MainFrame.getInstance(), defaultMessage, "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(mainFrame, defaultMessage, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     private class MultimediaItemPanel extends JPanel{
@@ -271,35 +292,30 @@ public class CollapsableUserListPanel extends JPanel {
 
         private void createListeners() {
             btnDelete.addActionListener((_ -> {
-                String message = "¿Are you sure that you want to delete \"" + multimedia.getTitle() +
-                        "\" from your list?";
-                int dialogResponse = JOptionPane.showConfirmDialog(
-                        MainFrame.getInstance(),
-                        message,
-                        "Confirmation",
+                String message = String.format("¿Are you sure that you want to delete \"%s\" from your list?",
+                        multimedia.getTitle());
+                int dialogResponse = JOptionPane.showConfirmDialog(mainFrame, message,"Confirmation",
                         JOptionPane.OK_CANCEL_OPTION);
                 if (dialogResponse != JOptionPane.YES_OPTION) {
                     return;
                 }
 
-                ServerResponse serverResponse = UserListController.deleteMultimediaFromList(
-                        MainFrame.getInstance().getUser(), userList, multimedia);
+                ServerResponse serverResponse = UserListController.deleteMultimediaFromList(user, userList, multimedia);
 
-                if (serverResponse.getStatus() == 200) {
-                    JOptionPane.showMessageDialog(
-                            MainFrame.getInstance(),
-                            "\"" + multimedia.getTitle() + "\" has successfully removed from the list.",
-                            "Success",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    removeMultimediaItemFromList(multimediaListItem);
-                } else {
+                if (serverResponse.getStatus() != 200) {
                     String defaultErrorMessage = "Couldn't remove \"" + multimedia.getTitle() + "\" from the list.";
                     processErrorMessage(serverResponse, defaultErrorMessage);
+                } else {
+                    message = String.format("\"%s\" has been modified successfully.", multimedia.getTitle());
+                    JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                    Event event = new Event(EventType.REMOVE_MULTIMEDIA,
+                            Map.of("userList", userList, "multimediaListItem", multimediaListItem));
+                    ViewController.getInstance().notifyView("userListPanel", event);
                 }
 
             }));
             btnConfig.addActionListener(_ -> {
-                MainFrame mainFrame = MainFrame.getInstance();
                 ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimediaListItem, userList);
                 dialog.setVisible(true);
 
@@ -314,13 +330,12 @@ public class CollapsableUserListPanel extends JPanel {
 
                 // Send the information to the server
 
-                ServerResponse response = UserListController.modifyMultimediaAttributes(mainFrame.getUser(),
-                        userList, multimediaListItem);
+                ServerResponse response =
+                        UserListController.modifyMultimediaAttributes(user, userList, multimediaListItem);
                 if (response.getStatus() != 200) {
                     processErrorMessage(response, "Couldn't modify the multimedia.");
                 } else {
-                    String message = String.format("\"%s\" has been modified successfully.",
-                            multimedia.getTitle());
+                    String message = String.format("\"%s\" has been modified successfully.", multimedia.getTitle());
                     JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
 
                     MultimediaStatus status = MultimediaStatus.valueOf(response.getData().get("status").toString());
@@ -333,19 +348,18 @@ public class CollapsableUserListPanel extends JPanel {
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    userListsPanel.showDetailPanel(new DetailMultimediaPanel(multimedia));
+                    DetailMultimediaPanel detailMultimediaPanel = new DetailMultimediaPanel(userListPanel, multimedia);
+                    Event event = new Event(EventType.SHOW_DETAIL_PANEL,
+                            Map.of("detailPanel", detailMultimediaPanel));
+                    ViewController.getInstance().notifyView("userListPanel", event);
                 }
             });
         }
 
         private void updateMultimediaAttributes() {
             lblStatus.setText(multimediaListItem.getStatus().toString());
-            if (multimediaListItem.getMultimedia().getMultimediaType() == MultimediaType.TV_SHOW){
-                String episodeString = String.join(
-                        "/",
-                        String.valueOf(multimediaListItem.getCurrentEpisode()),
-                        String.valueOf(((TvShow) multimediaListItem.getMultimedia()).getTotalEpisodes()));
-
+            if (multimedia instanceof TvShow tvShow){
+                String episodeString = multimediaListItem.getCurrentEpisode() + "/" + tvShow.getTotalEpisodes();
                 lblCurrentEpisode.setText(episodeString);
             }
 

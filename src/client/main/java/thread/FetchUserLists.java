@@ -1,6 +1,9 @@
 package thread;
 
 import controller.UserListController;
+import controller.ViewController;
+import event.Event;
+import event.EventType;
 import model.*;
 
 import java.util.*;
@@ -18,6 +21,10 @@ public class FetchUserLists implements Runnable{
         List<UserList> userLists = getUpdatedUserLists();
 
         user.setLists(userLists);
+
+        Event event = new Event(EventType.CREATE_USER_LIST_ITEMS, Map.of("userLists", userLists));
+        ViewController.getInstance().notifyView("userListPanel", event);
+
         List<Multimedia> multimediaList = userLists.stream()
                 .flatMap(list -> list.getMultimediaList().stream().map(MultimediaListItem::getMultimedia))
                 .toList();

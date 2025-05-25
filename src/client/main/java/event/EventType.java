@@ -1,0 +1,10 @@
+package event;
+
+public enum EventType {
+    ADD_MULTIMEDIA,
+    REMOVE_MULTIMEDIA,
+    SHOW_DETAIL_PANEL,
+    HIDE_DETAIL_PANEL,
+    CREATE_USER_LIST_ITEMS,
+    DELETE_USER_LIST,
+}

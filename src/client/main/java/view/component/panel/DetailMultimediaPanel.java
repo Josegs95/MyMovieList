@@ -1,8 +1,10 @@
 package view.component.panel;
 
 import controller.ApiController;
-import controller.SearchController;
 import controller.UserListController;
+import controller.ViewController;
+import event.Event;
+import event.EventType;
 import lib.ScrollablePanel;
 import lib.StretchIcon;
 import model.*;
@@ -17,42 +19,37 @@ import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DetailMultimediaPanel extends JPanel {
 
-    private final Multimedia multimedia;
-
     private final MainFrame mainFrame;
     private final User user;
+    private final Multimedia multimedia;
 
+    private final JPanel parent;
     private JButton btnBack;
     private JButton btnAddToList;
     private JButton btnRemoveFromList;
 
     private List<UserList> userListsWithMultimedia;
 
-    public DetailMultimediaPanel(Multimedia multimedia) {
+    public DetailMultimediaPanel(JPanel parent, Multimedia multimedia) {
         this.multimedia = multimedia;
-
         this.mainFrame = MainFrame.getInstance();
         this.user = mainFrame.getUser();
 
-        init();
-    }
+        this.parent = parent;
 
-    private void init() {
         createUI();
         createListeners();
         updatePage();
     }
 
-    public Multimedia getMultimedia() {
-        return multimedia;
-    }
-
     public void updatePage() {
-        userListsWithMultimedia = user.getUserListsWhichContainsMultimedia(multimedia);
+        userListsWithMultimedia = user.getListsWithMultimedia(multimedia);
 
         btnRemoveFromList.setEnabled(!userListsWithMultimedia.isEmpty());
         btnAddToList.setEnabled(user.getLists().size() > userListsWithMultimedia.size());
@@ -216,50 +213,48 @@ public class DetailMultimediaPanel extends JPanel {
     }
 
     private void createListeners() {
-        btnBack.addActionListener(_ -> SearchController.backButtonFromDetailPanel());
-        btnAddToList.addActionListener(_ -> {
-            // Error if the user has no lists
-
-            if (user.getLists().isEmpty()) {
-                JOptionPane.showMessageDialog(
-                        mainFrame,
-                        "You have not created any list yet to add this multimedia.",
-                        "Add multimedia to a list",
-                        JOptionPane.WARNING_MESSAGE
-                );
-                return;
+        btnBack.addActionListener(_ -> {
+            Event event = new Event(EventType.HIDE_DETAIL_PANEL, new HashMap<>());
+            if (parent instanceof SearchPanel) {
+                ViewController.getInstance().notifyView("searchPanel", event);
+            } else if (parent instanceof UserListPanel) {
+                ViewController.getInstance().notifyView("userListPanel", event);
             }
-
+        });
+        btnAddToList.addActionListener(_ -> {
             // Show dialog to configure the multimedia
-
-            MultimediaListItem multimediaListItem =
-                    new MultimediaListItem(multimedia, MultimediaStatus.PLAN_TO_WATCH, 0);
-            ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimediaListItem);
+            ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimedia);
             dialog.setVisible(true);
 
             if (dialog.isCancelled()) {
                 return;
             }
 
-            UserList selectedList = dialog.getMultimediaList();
-            MultimediaStatus selectedStatus = dialog.getSelectedMultimediaStatus();
-            int selectedCurrentEpisode = dialog.getSelectedCurrentEpisode();
-            multimediaListItem = new MultimediaListItem(multimedia, selectedStatus, selectedCurrentEpisode);
+            UserList selectedList = dialog.getSelectedList();
+            MultimediaStatus status = dialog.getSelectedMultimediaStatus();
+            int currentEpisode = dialog.getSelectedCurrentEpisode();
+            MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia, status, currentEpisode);
 
             // Send the information to the server
-
             ServerResponse response = UserListController.addMultimediaToList(user, selectedList, multimediaListItem);
             if (response.getStatus() != 200) {
                 processServerError(response, "Couldn't add the multimedia to the list");
             } else {
+                // Show 'success' message to user
                 String message = String.format("\"%s\" has been added to \"%s\" list successfully.",
                         multimedia.getTitle(), selectedList.getListName());
                 JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                int currentEpisode = (int) (response.getData().get("currentEpisode"));
-                MultimediaStatus status = MultimediaStatus.valueOf(response.getData().get("status").toString());
+                // Get data from server and update UI and model
+                currentEpisode = (int) (response.getData().get("currentEpisode"));
+                status = MultimediaStatus.valueOf(response.getData().get("status").toString());
+                multimediaListItem.setStatus(status);
+                multimediaListItem.setCurrentEpisode(currentEpisode);
 
-                selectedList.getMultimediaList().add(new MultimediaListItem(multimedia, status, currentEpisode));
+                Event event = new Event(EventType.ADD_MULTIMEDIA,
+                        Map.of("userList", selectedList, "multimediaListItem", multimediaListItem));
+                ViewController.getInstance().notifyView("userListPanel", event);
+
                 updatePage();
             }
         });
@@ -275,15 +270,20 @@ public class DetailMultimediaPanel extends JPanel {
             ServerResponse response = UserListController.deleteMultimediaFromList(user, selectedList, multimedia);
             if (response.getStatus() != 200) {
                 processServerError(response, "Couldn't remove the multimedia from the list");
-                return;
-            }
+            } else {
+                // Show 'success' message to user
+                String message = String.format("'%s' successfully removed from '%s' list",
+                        multimedia.getTitle(), selectedList.getListName());
+                JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
 
-            String message = String.format("'%s' successfully removed from '%s' list",
-                    multimedia.getTitle(), selectedList.getListName());
-            JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
-            selectedList.removeMultimedia(multimedia);
-            mainFrame.updateCentralPanelUI();
-            updatePage();
+                // Update UI and model
+                MultimediaListItem mli = selectedList.getMultimediaListItem(multimedia);
+                Event event = new Event(EventType.REMOVE_MULTIMEDIA,
+                        Map.of("userList", selectedList, "multimediaListItem", mli));
+                ViewController.getInstance().notifyView("userListPanel", event);
+
+                updatePage();
+            }
         });
     }
 

@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import json.Parser;
 import model.Multimedia;
 import thread.FetchDataFromAPI;
-import view.MainFrame;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,9 +25,5 @@ public class SearchController {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static void backButtonFromDetailPanel() {
-        MainFrame.getInstance().removeDetailPanel();
     }
 }

@@ -2,11 +2,14 @@ package view.component.panel;
 
 import controller.ApiController;
 import controller.SearchController;
+import event.Event;
+import event.EventListener;
 import lib.ScrollablePanel;
 import lib.StretchIcon;
 import model.Movie;
 import model.Multimedia;
 import net.miginfocom.swing.MigLayout;
+import view.MainFrame;
 import view.component.MySearchTextField;
 
 import javax.swing.*;
@@ -19,11 +22,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class SearchPanel extends JPanel {
+public class SearchPanel extends JPanel implements EventListener {
 
-    private static SearchPanel instance;
+    private final MainFrame mainFrame;
+
     private MySearchTextField txfCentralSearch;
 
     private JPanel pnlResultList;
@@ -31,45 +36,25 @@ public class SearchPanel extends JPanel {
     private JScrollPane scrollPaneResult;
     private JButton btnSearch;
 
-    private boolean detailedView;
-
-    private SearchPanel() {
-        super(new MigLayout(
-                "ins 0, fill",
-                "[fill]",
-                "[fill]"
-        ));
-
-        detailedView = false;
+    public SearchPanel(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
 
         createUI();
         createListeners();
     }
 
-    public static synchronized SearchPanel getInstance() {
-        if (instance == null)
-            instance = new SearchPanel();
-
-        return instance;
-    }
-
-    public void removeDetailPanel() {
-        remove(0);
-        add(pnlResultList);
-        detailedView = false;
-        txfCentralSearch.requestFocusInWindow();
-
-        revalidate();
-        repaint();
-    }
-
     public void updateState() {
-        if (detailedView) {
-            ((DetailMultimediaPanel) getComponent(0)).updatePage();
+        if (getComponent(0) instanceof DetailMultimediaPanel detailPanel) {
+            detailPanel.updatePage();
         }
     }
 
     private void createUI() {
+        setLayout(new MigLayout(
+                "ins 0, fill",
+                "[fill]",
+                "[fill]"
+        ));
         setBorder(new LineBorder(Color.BLACK, 1, false));
 
         pnlResultList = new JPanel(new MigLayout(
@@ -120,10 +105,8 @@ public class SearchPanel extends JPanel {
             String searchString = txfCentralSearch.getText().strip();
             List<Multimedia> multiList = SearchController.searchMultimediaByKeyword(searchString);
             if (multiList.isEmpty()) {
-                JOptionPane.showMessageDialog(SearchPanel.this.getParent(),
-                        "No se ha encontrado resultados",
-                        "No hay resultados",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(mainFrame,"No se ha encontrado resultados",
+                        "No hay resultados", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 addResultPanel(multiList);
             }
@@ -135,21 +118,12 @@ public class SearchPanel extends JPanel {
     private void addResultPanel(List<Multimedia> multiList) {
         pnlInnerResultList.removeAll();
         try {
-            for (Multimedia multi : multiList) {
-                JPanel panel = createListItem(multi);
-                panel.setBorder(LineBorder.createGrayLineBorder());
-                panel.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        showDetailPanel(new DetailMultimediaPanel(multi));
-                    }
-                });
-                pnlInnerResultList.add(panel);
+            for (Multimedia multimedia : multiList) {
+                pnlInnerResultList.add(createListItem(multimedia));
             }
 
             // Se puede borrar. Está para esperar a que las imágenes carguen un poco
             Thread.sleep(500);
-
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -161,20 +135,20 @@ public class SearchPanel extends JPanel {
         repaint();
     }
 
-    private JPanel createListItem(Multimedia multi) throws MalformedURLException {
+    private JPanel createListItem(Multimedia multimedia) throws MalformedURLException {
         JPanel panel = new JPanel(new MigLayout(
                 "fill",
                 "[fill, 15%][fill, 70%][fill, 15%]",
                 "[fill]"
         ));
+        panel.setBorder(LineBorder.createGrayLineBorder());
 
-        Color backgroundColor = multi instanceof Movie ?
+        Color backgroundColor = multimedia instanceof Movie ?
                 new Color(250, 219, 111) : new Color(132, 182, 244);
         panel.setBackground(backgroundColor);
 
-
         String baseURLForPosters = ApiController.getBaseURLForPosters(true);
-        String posterUrlString = multi.getPosterUrl();
+        String posterUrlString = multimedia.getPosterUrl();
         JLabel lblPoster = new JLabel();
         if (posterUrlString == null) {
             lblPoster.setText("No Image");
@@ -185,23 +159,51 @@ public class SearchPanel extends JPanel {
 
             lblPoster.setText("Loading Image");
         }
-        JLabel lblTitle = new JLabel(String.format("<html><p>%s</p></html>", multi.getTitle()));
-        JLabel lblScore = new JLabel(multi.getScore(), SwingConstants.CENTER);
+        JLabel lblTitle = new JLabel(String.format("<html><p>%s</p></html>", multimedia.getTitle()));
+        JLabel lblScore = new JLabel(multimedia.getScore(), SwingConstants.CENTER);
 
         panel.add(lblPoster);
         panel.add(lblTitle);
         panel.add(lblScore);
 
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showDetailPanel(new DetailMultimediaPanel(SearchPanel.this, multimedia));
+            }
+        });
+
         return panel;
     }
 
-    private void showDetailPanel(DetailMultimediaPanel panel) {
-        remove(0);
-        add(panel);
-        detailedView = true;
+    private void showDetailPanel(DetailMultimediaPanel detailPanel) {
+        removeAll();
+        add(detailPanel);
 
         revalidate();
         repaint();
+    }
+
+    private void removeDetailPanel() {
+        removeAll();
+        add(pnlResultList);
+        txfCentralSearch.requestFocusInWindow();
+
+        revalidate();
+        repaint();
+    }
+
+    @Override
+    public void onEvent(Event event) {
+        Map<String, Object> data = event.data();
+        switch (event.type()) {
+            case SHOW_DETAIL_PANEL -> {
+                DetailMultimediaPanel panel = (DetailMultimediaPanel) data.get("detailPanel");
+
+                showDetailPanel(panel);
+            }
+            case HIDE_DETAIL_PANEL -> removeDetailPanel();
+        }
     }
 
     private static class ImageLoaderWorker extends SwingWorker<StretchIcon, Void> {
@@ -216,7 +218,6 @@ public class SearchPanel extends JPanel {
             this.lblPoster = lblPoster;
             this.posterUrl = posterUrl;
         }
-
 
         @Override
         protected StretchIcon doInBackground(){

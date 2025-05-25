@@ -16,20 +16,18 @@ public class User {
         this.lists = new ArrayList<>();
     }
 
-    public List<UserList> getUserListsWhichContainsMultimedia(Multimedia multimedia){
-        List<UserList> auxLists = new ArrayList<>();
+    public List<UserList> getListsWithMultimedia(Multimedia multimedia){
+        return lists.stream()
+                .filter(userList -> userList.getMultimediaList().stream()
+                        .anyMatch(item -> item.getMultimedia().equals(multimedia)))
+                .toList();
+    }
 
-        userListsLoop :
-        for (UserList userList : lists) {
-            for (MultimediaListItem multimediaListItem : userList.getMultimediaList()) {
-                if (multimediaListItem.getMultimedia().equals(multimedia)) {
-                    auxLists.add(userList);
-                    continue userListsLoop;
-                }
-            }
-        }
-
-        return auxLists;
+    public List<UserList> getListsWithoutMultimedia(Multimedia multimedia){
+        return lists.stream()
+                .filter(userList -> userList.getMultimediaList().stream()
+                        .noneMatch(item -> item.getMultimedia().equals(multimedia)))
+                .toList();
     }
 
     public void setLists(List<UserList> lists) {

@@ -13,11 +13,11 @@ import java.util.List;
 public class ConfigureMultimediaDialog extends JDialog {
 
     private final MainFrame mainFrame;
+    private final User user;
     private final MultimediaListItem multimediaListItem;
     private final Multimedia multimedia;
     private final MultimediaType multimediaType;
-    private final User user;
-    private final UserList multimediaList;
+    private final UserList userList;
 
     private JComboBox<UserList> cmbLists;
     private JComboBox<MultimediaStatus> cmbStatus;
@@ -27,19 +27,19 @@ public class ConfigureMultimediaDialog extends JDialog {
 
     private boolean cancelled = false;
 
-    public ConfigureMultimediaDialog(MainFrame mainFrame, MultimediaListItem multimediaListItem) {
-        this(mainFrame, multimediaListItem,null);
+    public ConfigureMultimediaDialog(MainFrame mainFrame, Multimedia multimedia) {
+        this(mainFrame, new MultimediaListItem(multimedia, MultimediaStatus.PLAN_TO_WATCH, 0),null);
     }
 
     public ConfigureMultimediaDialog(MainFrame mainFrame, MultimediaListItem multimediaListItem, UserList userList) {
         super(mainFrame, true);
 
         this.mainFrame = mainFrame;
+        this.user = mainFrame.getUser();
         this.multimediaListItem = multimediaListItem;
         this.multimedia = multimediaListItem.getMultimedia();
         this.multimediaType = multimedia.getMultimediaType();
-        this.user = mainFrame.getUser();
-        this.multimediaList = userList;
+        this.userList = userList;
 
         createUI();
         createListenersForComponents();
@@ -49,7 +49,7 @@ public class ConfigureMultimediaDialog extends JDialog {
         return cancelled;
     }
 
-    public UserList getMultimediaList() {
+    public UserList getSelectedList() {
         if (cancelled || cmbLists.getSelectedItem() == null) {
             return null;
         }
@@ -80,13 +80,6 @@ public class ConfigureMultimediaDialog extends JDialog {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         getContentPane().setBackground(new Color(223, 223, 223));
         setTitle("Configuration");
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                cancelled = true;
-                ConfigureMultimediaDialog.this.dispose();
-            }
-        });
 
         setLayout(new MigLayout(
                 "ins 10 20 10 20, fill",
@@ -100,14 +93,14 @@ public class ConfigureMultimediaDialog extends JDialog {
         lblLists.setHorizontalAlignment(SwingConstants.RIGHT);
 
 
-        if (multimediaList == null) {
-            List<UserList> lists = user.getLists();
+        if (userList == null) {
+            List<UserList> lists = user.getListsWithoutMultimedia(multimedia);
 
             cmbLists = new JComboBox<>(lists.toArray(UserList[]::new));
             cmbLists.setSelectedItem(lists.getFirst());
         } else {
-            cmbLists = new JComboBox<>(new UserList[] {multimediaList});
-            cmbLists.setSelectedItem(multimediaList);
+            cmbLists = new JComboBox<>(new UserList[] {userList});
+            cmbLists.setSelectedItem(userList);
             cmbLists.setEnabled(false);
         }
 
@@ -134,11 +127,10 @@ public class ConfigureMultimediaDialog extends JDialog {
         pnlSpinnerEpisode.setOpaque(false);
 
         int totalEpisodes = 0;
-        if (multimediaType == MultimediaType.TV_SHOW) {
-            totalEpisodes = ((TvShow) multimedia).getTotalEpisodes();
+        if (multimedia instanceof TvShow tvShow) {
+            totalEpisodes = tvShow.getTotalEpisodes();
         }
-        spnEpisode = new JSpinner(
-                new SpinnerNumberModel(0, 0, totalEpisodes, 1));
+        spnEpisode = new JSpinner(new SpinnerNumberModel(0, 0, totalEpisodes, 1));
         JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spnEpisode.getEditor();
         editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
         spnEpisode.setValue(multimediaListItem.getCurrentEpisode());
@@ -209,5 +201,13 @@ public class ConfigureMultimediaDialog extends JDialog {
         });
 
         btnAccept.addActionListener(_ -> ConfigureMultimediaDialog.this.dispose());
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                cancelled = true;
+                ConfigureMultimediaDialog.this.dispose();
+            }
+        });
     }
 }

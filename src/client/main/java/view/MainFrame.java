@@ -1,11 +1,12 @@
 package view;
 
+import controller.ViewController;
 import model.User;
 import net.miginfocom.swing.MigLayout;
 import thread.FetchUserLists;
 import view.component.dialog.auth.LoginDialog;
 import view.component.panel.SearchPanel;
-import view.component.panel.UserListsPanel;
+import view.component.panel.UserListPanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -15,14 +16,14 @@ import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame{
 
-    private static MainFrame instance;
+    private static volatile MainFrame instance;
     private User user;
 
     private JPanel pnlCentral;
     private JButton btnLateralSearch;
     private JButton btnLateralLists;
-    private static SearchPanel searchPanel;
-    private static UserListsPanel userListsPanel;
+    private SearchPanel searchPanel;
+    private UserListPanel userListPanel;
 
     private static final String APP_TITLE = "MyMovieList";
 
@@ -41,9 +42,13 @@ public class MainFrame extends JFrame{
         createListeners();
     }
 
-    public static synchronized MainFrame getInstance(){
+    public static MainFrame getInstance(){
         if (instance == null) {
-            instance = new MainFrame(true);
+            synchronized (MainFrame.class) {
+                if (instance == null) {
+                    instance = new MainFrame(true);
+                }
+            }
         }
 
         return instance;
@@ -56,22 +61,6 @@ public class MainFrame extends JFrame{
 
         revalidate();
         repaint();
-    }
-
-    public void removeDetailPanel() {
-        if (pnlCentral == searchPanel) {
-            searchPanel.removeDetailPanel();
-        } else if (pnlCentral == userListsPanel) {
-            userListsPanel.removeDetailPanel();
-        }
-    }
-
-    public void updateCentralPanelUI() {
-        if (pnlCentral == searchPanel) {
-            searchPanel.updateState();
-        } else if (pnlCentral == userListsPanel) {
-            userListsPanel.updateUIStatus();
-        }
     }
 
     public void setUser(User user){
@@ -98,8 +87,11 @@ public class MainFrame extends JFrame{
                 "[fill, 22%]5[fill, 78%]",
                 "[fill]"
         ));
-        searchPanel = SearchPanel.getInstance();
-        userListsPanel = new UserListsPanel(this);
+        searchPanel = new SearchPanel(this);
+        userListPanel = new UserListPanel(this);
+
+        ViewController.getInstance().registerView("searchPanel", searchPanel);
+        ViewController.getInstance().registerView("userListPanel", userListPanel);
 
         // Set central panel to "search mode"
 
@@ -171,13 +163,12 @@ public class MainFrame extends JFrame{
                 changeCentralPanel(searchPanel);
                 searchPanel.updateState();
             }
-
         });
 
         btnLateralLists.addActionListener(_ -> {
-            if (pnlCentral != userListsPanel) {
-                changeCentralPanel(userListsPanel);
-                userListsPanel.updateUIStatus();
+            if (pnlCentral != userListPanel) {
+                changeCentralPanel(userListPanel);
+                userListPanel.updateState();
             }
         });
 

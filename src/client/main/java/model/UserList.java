@@ -3,6 +3,7 @@ package model;
 import java.util.Set;
 
 public class UserList {
+
     private String listName;
     private final Set<MultimediaListItem> multimediaList;
 
@@ -11,14 +12,14 @@ public class UserList {
         this.multimediaList = multimediaList;
     }
 
-    public boolean removeMultimedia(Multimedia multimedia) {
-        for (MultimediaListItem multimediaListItem : multimediaList) {
-            if (multimediaListItem.getMultimedia().equals(multimedia)) {
-                return multimediaList.remove(multimediaListItem);
-            }
-        }
+    public void removeMultimediaListItem(MultimediaListItem mli) {
+        multimediaList.remove(mli);
+    }
 
-        return false;
+    public MultimediaListItem getMultimediaListItem(Multimedia multimedia) {
+        return multimediaList.stream()
+                .filter(mli -> mli.getMultimedia().equals(multimedia))
+                .findFirst().orElseThrow();
     }
 
     public String getListName() {
