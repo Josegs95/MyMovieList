@@ -1,24 +1,17 @@
-<h1>Finished. Adding optional features in a future (26/05/25)</h1>
-<h2>About</h2>
-Second portfolio project. This time, it's my final project of my "CFGS" in spanish (I think it's "ASVL" in english). I almost finish it in that time but it's so outdated, so I will create it again from scratch.
+# 🎬 MyMovieList
 
-The project is called "MyMovieList". It's based in the famous anime/manga web page [MyAnimeList](https://myanimelist.net). The application consists in let their users to
-create lists of movies/tv shows to help them organize which one the user want to see in the future, or already saw etc. The application show detailed information of movies/
-tv shows obviosly.
+> 🚧 Currently, in development of version 2.0. This version will bring several features like Hibernate, SSL for 
+> client-server communication or the introduction of Docker to try the application anytime/anywhere!
 
-In this project I will create a client-server application, use of a DB (MySQL) where save users and all their data. The application uses concurrency, user interfaces and API usage too. For the API, the application will work with JSON files.
+## About
+This is my second portfolio project, and also my final project for my "CFGS" (Advanced Vocational Training).  
+The original version was nearly complete but outdated, so I'm rebuilding it from scratch.
 
-<h2>To-Do:</h2>
+The project is called **MyMovieList**. It's based in the famous anime/manga web page [MyAnimeList](https://myanimelist.net). The app 
+allows users to create personalized lists of movies and TV shows to keep track of what they’ve watched or plan to watch.  
+It also provides detailed information about each title using data from the TMDB API.
 
-- (Optional):
-  - Proccess all pages of each API request
-  - Add Guest session compatibility for the API: [Link](https://developer.themoviedb.org/docs/authentication-guest-sessions)
-  - Something to view the multimedia's poster bigger
-  - Use TSL/SSL
-  - Use/Investigate JavaFX instead raw Swing
-
-
-<h2>Credits:</h2>
+## Credits:
 
 - TMDB API. This is [their site](https://themoviedb.org).
 - MigLayout. GitHub [repository](https://github.com/mikaelgrev/miglayout).
