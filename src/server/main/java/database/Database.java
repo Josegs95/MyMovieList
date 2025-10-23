@@ -2,7 +2,6 @@ package database;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import exception.DatabaseException;
-import file.ApplicationProperty;
 import security.Security;
 
 import javax.naming.AuthenticationException;
@@ -17,14 +16,12 @@ public class Database {
     private static final String DB_PASS;
 
     static {
-        Map<String, String> sysProperties = ApplicationProperty.getProperties();
+        DB_NAME = System.getProperty("DB_NAME");
+        DB_HOST = System.getProperty("DB_HOST", "localhost");
+        DB_PORT = System.getProperty("DB_PORT", "3306");
 
-        DB_NAME = sysProperties.getOrDefault("DB_NAME", ApplicationProperty.getApplicationName());
-        DB_HOST = sysProperties.getOrDefault("DB_HOST", "localhost");
-        DB_PORT = sysProperties.getOrDefault("DB_PORT", "3306");
-
-        DB_USER = sysProperties.get("DB_USER");
-        DB_PASS = sysProperties.get("DB_PASS");
+        DB_USER = System.getProperty("DB_USER");
+        DB_PASS = System.getProperty("DB_PASS");
     }
 
     private Database(){}

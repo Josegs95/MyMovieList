@@ -5,6 +5,7 @@ target/
 README.md
 TO-DO.txt
 properties.txt
+*.sql
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

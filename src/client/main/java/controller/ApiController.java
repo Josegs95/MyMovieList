@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import file.ApplicationProperty;
 import model.Movie;
 import model.Multimedia;
 import model.TvShow;
@@ -29,10 +28,8 @@ public class ApiController {
     private static Map<String, JsonElement> API_CONFIGURATION;
 
     static {
-        Map<String, String> properties = ApplicationProperty.getProperties();
-
-        API_TOKEN = properties.getOrDefault("API_READ_ACCESS_TOKEN", "");
-        LANGUAGE = properties.getOrDefault("LANGUAGE", "en-GB");
+        API_TOKEN = System.getProperty("API_READ_ACCESS_TOKEN", "");
+        LANGUAGE = System.getProperty("LANGUAGE", "en-GB");
     }
 
     public static JsonObject searchMultimedia(String multiName) throws IOException,

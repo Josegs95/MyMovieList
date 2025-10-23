@@ -1,4 +1,4 @@
-import file.ApplicationProperty;
+import init.EnvironmentVariables;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -8,8 +8,14 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    public Server(){
-        ApplicationProperty.getProperties();
+    public static int PORT;
+    public static String HOST;
+
+    public Server() {
+        EnvironmentVariables.loadEnvironmentVariables();
+
+        PORT = Integer.parseInt(System.getProperty("SERVER_PORT"));
+        HOST = System.getProperty("SERVER_HOST");
     }
 
     public static void main(String[] args) {
@@ -17,11 +23,10 @@ public class Server {
     }
 
     private void init(){
-        int port = ApplicationProperty.getPort();
-        try (ServerSocket serverSocket = new ServerSocket(port);
+        try (ServerSocket serverSocket = new ServerSocket(PORT);
              ExecutorService executor = Executors.newCachedThreadPool()){
 
-            System.out.println("Escuchando en el puerto: " + port);
+            System.out.println("Escuchando en el puerto: " + PORT);
             while(true){
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Ha llegado un cliente");

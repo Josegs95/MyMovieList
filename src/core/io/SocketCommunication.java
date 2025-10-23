@@ -1,6 +1,5 @@
 package io;
 
-import file.ApplicationProperty;
 import model.ServerResponse;
 
 import java.io.DataInputStream;
@@ -31,7 +30,7 @@ public class SocketCommunication implements AutoCloseable {
     }
 
     public SocketCommunication() throws IOException {
-        this(new Socket(ApplicationProperty.getHost(), ApplicationProperty.getPort()));
+        this(new Socket(System.getProperty("SERVER_HOST"), Integer.parseInt(System.getProperty("SERVER_PORT"))));
     }
 
     public ServerResponse writeToServer(Map<String, Object> messageData, MessageType messageType)

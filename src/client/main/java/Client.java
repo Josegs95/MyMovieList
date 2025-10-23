@@ -1,7 +1,6 @@
 import controller.ApiController;
-import file.ApplicationProperty;
+import init.EnvironmentVariables;
 import view.MainFrame;
-import view.component.dialog.ConfigureMultimediaDialog;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -9,7 +8,7 @@ import java.io.IOException;
 public class Client {
 
     public Client() {
-        ApplicationProperty.getProperties();
+        EnvironmentVariables.loadEnvironmentVariables();
     }
 
     public static void main(String[] args) {
