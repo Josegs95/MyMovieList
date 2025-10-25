@@ -6,11 +6,11 @@ services:
     env_file:
       - .env
     environment:
-      MYSQL_DB: MyMovieList
+      MYSQL_DATABASE: MyMovieList
       MYSQL_USER: user
       MYSQL_PASSWORD: pass
     ports:
-      - "3306:3306"
+      - "${DB_PORT:-3306}:3306"
 
   api:
     build: .
