@@ -17,8 +17,8 @@ public class Database {
 
     static {
         DB_NAME = System.getProperty("DB_NAME");
-        DB_HOST = System.getProperty("DB_HOST", "localhost");
-        DB_PORT = System.getProperty("DB_PORT", "3306");
+        DB_HOST = System.getProperty("DB_HOST");
+        DB_PORT = System.getProperty("DB_PORT");
 
         DB_USER = System.getProperty("DB_USER");
         DB_PASS = System.getProperty("DB_PASS");
@@ -401,9 +401,12 @@ public class Database {
             );
         } catch (SQLException e) {
             if (e instanceof CommunicationsException){
-                RuntimeException ex = new RuntimeException("MySQL service might be down");
-                ex.setStackTrace(new StackTraceElement[]{});
-                throw ex;
+//                RuntimeException ex = new RuntimeException("MySQL service might be down");
+//                ex.setStackTrace(new StackTraceElement[]{});
+//                throw ex;
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+                throw new RuntimeException("MySQL service might be down");
             } else {
                 throw new RuntimeException(e);
             }

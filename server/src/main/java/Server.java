@@ -14,8 +14,8 @@ public class Server {
     public Server() {
         EnvironmentVariables.loadEnvironmentVariables();
 
-        PORT = Integer.parseInt(System.getProperty("SERVER_PORT", "7776"));
-        HOST = System.getProperty("SERVER_HOST", "LOCALHOST");
+        PORT = Integer.parseInt(System.getProperty("SERVER_PORT"));
+        HOST = System.getProperty("SERVER_HOST");
     }
 
     public static void main(String[] args) {

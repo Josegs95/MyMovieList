@@ -4,68 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Jackson library for GSON, Docker and some file architecture improvement">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/MyMovieList_Model.mwb" beforeDir="false" afterPath="$PROJECT_DIR$/doc/MyMovieList_Model.mwb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/controller/ApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/controller/ApiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/controller/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/controller/AuthenticationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/controller/SearchController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/controller/UserListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/controller/UserListController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/controller/ViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/controller/ViewController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/event/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/event/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/event/EventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/event/EventListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/event/EventType.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/event/EventType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/model/Movie.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/model/Movie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/model/Multimedia.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/model/Multimedia.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/model/MultimediaListItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/model/MultimediaListItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/model/MultimediaStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/model/MultimediaStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/model/MultimediaType.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/model/MultimediaType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/model/ServerResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/model/TvShow.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/model/TvShow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/model/UserList.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/model/UserList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/thread/FetchDataFromAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/thread/FetchDataFromAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/thread/FetchUserLists.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/thread/FetchUserLists.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/MainFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/MySearchTextField.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/MySearchTextField.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/dialog/ConfigureMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/ConfigureMultimediaDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/dialog/RemoveMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/RemoveMultimediaDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/dialog/auth/AuthenticationDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/auth/AuthenticationDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/dialog/auth/LoginDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/auth/LoginDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/dialog/auth/RegisterDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/auth/RegisterDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/panel/CollapsableUserListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/panel/CollapsableUserListPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/panel/DetailMultimediaPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/panel/DetailMultimediaPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/panel/SearchPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/panel/SearchPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/java/view/component/panel/UserListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/view/component/panel/UserListPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/resources/images/config.png" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/resources/images/config.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/resources/images/delete.png" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/resources/images/delete.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/main/resources/images/rename.png" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/resources/images/rename.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/exception/DatabaseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/DatabaseException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/exception/RegisterValidationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/RegisterValidationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/init/EnvironmentVariables.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/init/EnvironmentVariables.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/io/MessageFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/io/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/MessageType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/io/SocketCommunication.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/SocketCommunication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/json/JSONMessageProtocol.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/json/Parser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/lib/RelativeLayout.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/lib/RelativeLayout.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/lib/ScrollablePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/lib/ScrollablePanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/lib/ScrollablePanelDemo.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/lib/ScrollablePanelDemo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/lib/ShrinkIcon.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/lib/ShrinkIcon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/lib/StretchIcon.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/lib/StretchIcon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/security/Security.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/security/Security.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server/main/java/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server/main/java/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server/main/java/database/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/database/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/database/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/database/Database.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,49 +19,49 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Josegs95"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Josegs95&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:Josegs95/MyMovieList.git",
-    "accountId": "fad15074-872b-4dad-be62-63f2b0bd0594"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Josegs95/MyMovieList.git&quot;,
+    &quot;accountId&quot;: &quot;fad15074-872b-4dad-be62-63f2b0bd0594&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="ProjectErrors" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="34Ygok3gQOrVvvfFM0yuLu8fnB3" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Client.executor": "Run",
-    "Application.Server.executor": "Run",
-    "Maven.MyMovieList [clean].executor": "Run",
-    "Maven.MyMovieList [install].executor": "Run",
-    "Maven.MyMovieList [package].executor": "Run",
-    "Maven.server [clean].executor": "Run",
-    "Maven.server [package].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "development",
-    "kotlin-language-version-configured": "true",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Client.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Server.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.MyMovieList [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.MyMovieList [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.MyMovieList [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.server [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.server [package].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;development&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Application.Server">
+}</component>
+  <component name="RunManager" selected="Application.Client">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client" />
       <module name="client" />
@@ -134,8 +78,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Server" />
         <item itemvalue="Application.Client" />
+        <item itemvalue="Application.Server" />
       </list>
     </recent_temporary>
   </component>
@@ -148,6 +92,30 @@
       <option name="presentableId" value="Default" />
       <updated>1761396098081</updated>
     </task>
+    <task id="LOCAL-00001" summary="Jackson library for GSON, Docker and some file architecture improvement">
+      <option name="closed" value="true" />
+      <created>1761425346776</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1761425346776</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Jackson library for GSON, Docker and some file architecture improvement" />
+    <option name="LAST_COMMIT_MESSAGE" value="Jackson library for GSON, Docker and some file architecture improvement" />
   </component>
 </project>

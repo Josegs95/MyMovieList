@@ -14,7 +14,6 @@ RUN mvn dependency:go-offline
 COPY client/src ./client/src
 COPY core/src ./core/src
 COPY server/src ./server/src
-COPY ./.env ./.env
 
 RUN mvn -pl server -am clean package -DskipTests
 
