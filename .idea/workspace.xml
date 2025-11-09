@@ -4,17 +4,62 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Jackson library for GSON, Docker and some file architecture improvement">
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Fixed docker files to work both locally and with a container">
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/Movie.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/TvShow.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/Multimedia.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaListItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaListItemKey.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/UserList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/config/HibernateUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaDAOImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaListItemDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaListItemDAOImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserDAOImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserListDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserListDAOImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/MultimediaListItemService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/MultimediaService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/controller/UserListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/controller/UserListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/MySearchTextField.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/MySearchTextField.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/ConfigureMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/ConfigureMultimediaDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/RemoveMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/RemoveMultimediaDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/auth/AuthenticationDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/AuthenticationDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/auth/LoginDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/LoginDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/auth/RegisterDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/RegisterDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/panel/CollapsableUserListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/CollapsableUserListPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/panel/DetailMultimediaPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/DetailMultimediaPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/panel/SearchPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/SearchPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/panel/UserListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/UserListPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/database/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/database/Database.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -32,7 +77,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -51,6 +96,7 @@
     &quot;Maven.MyMovieList [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.MyMovieList [package].executor&quot;: &quot;Run&quot;,
     &quot;Maven.server [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.server [deploy].executor&quot;: &quot;Run&quot;,
     &quot;Maven.server [package].executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -58,10 +104,11 @@
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.Client">
+  <component name="RunManager" selected="Application.Server">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client" />
       <module name="client" />
@@ -78,8 +125,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Client" />
         <item itemvalue="Application.Server" />
+        <item itemvalue="Application.Client" />
       </list>
     </recent_temporary>
   </component>
@@ -100,7 +147,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761425346776</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Fixed docker files to work both locally and with a container">
+      <option name="closed" value="true" />
+      <created>1761682828152</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1761682828152</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -116,6 +171,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Jackson library for GSON, Docker and some file architecture improvement" />
-    <option name="LAST_COMMIT_MESSAGE" value="Jackson library for GSON, Docker and some file architecture improvement" />
+    <MESSAGE value="Fixed docker files to work both locally and with a container" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed docker files to work both locally and with a container" />
   </component>
 </project>

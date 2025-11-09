@@ -1,6 +1,6 @@
 import controller.ApiController;
 import init.EnvironmentVariables;
-import view.MainFrame;
+import ui.view.MainFrame;
 
 import javax.swing.*;
 

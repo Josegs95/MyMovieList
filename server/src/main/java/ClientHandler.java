@@ -3,6 +3,8 @@ import exception.DatabaseException;
 import model.Message;
 import protocol.MessageType;
 import protocol.SocketCommunication;
+import service.UserListService;
+import service.UserService;
 import tools.jackson.databind.ObjectMapper;
 
 import javax.naming.AuthenticationException;
@@ -15,6 +17,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ClientHandler implements Runnable{
+
+    private static final UserService USER_SERVICE = new UserService();
+    private static final UserListService USER_LIST_SERVICE = new UserListService();
+
     final private Socket SOCKET;
 
     private Map<String, Object> clientData;
@@ -108,9 +114,7 @@ public class ClientHandler implements Runnable{
                 .orElse(null);
         System.out.println("Un usuario se quiere registrar");
 
-        if (!Database.registerUser(username, password, email)) {
-            throw new DatabaseException("Couldn't register the user cause unknown reasons");
-        }
+        USER_SERVICE.register(username, password, email);
     }
 
     private Integer loginUser() throws DatabaseException {
@@ -118,7 +122,7 @@ public class ClientHandler implements Runnable{
         String password = clientData.get("password").toString();
         System.out.printf("El usuario '%s' quiere identificarse%n", username);
 
-        return Database.loginUser(username, password);
+        return USER_SERVICE.login(username, password);
     }
 
     private void createUserList() throws AuthenticationException,

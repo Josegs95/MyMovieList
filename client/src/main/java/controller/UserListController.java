@@ -3,7 +3,7 @@ package controller;
 import model.*;
 import protocol.MessageType;
 import protocol.SocketCommunication;
-import view.MainFrame;
+import ui.view.MainFrame;
 
 import java.io.IOException;
 import java.util.HashMap;

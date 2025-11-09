@@ -1,3 +1,4 @@
+import config.HibernateUtil;
 import init.EnvironmentVariables;
 
 import java.io.IOException;
@@ -34,6 +35,8 @@ public class Server {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            HibernateUtil.shutdown();
         }
     }
 }
