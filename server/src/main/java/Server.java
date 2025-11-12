@@ -1,5 +1,7 @@
 import config.HibernateUtil;
 import init.EnvironmentVariables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,6 +13,8 @@ public class Server {
 
     public static int PORT;
     public static String HOST;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
     public Server() {
         EnvironmentVariables.loadEnvironmentVariables();
@@ -24,13 +28,17 @@ public class Server {
     }
 
     private void init(){
+        createDatabaseConnection();
+
         try (ServerSocket serverSocket = new ServerSocket(PORT);
              ExecutorService executor = Executors.newCachedThreadPool()){
 
-            System.out.println("Escuchando en el puerto: " + PORT);
+            LOGGER.info("Escuchando en el puerto: {}", PORT);
+
             while(true){
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Ha llegado un cliente");
+                LOGGER.info("Ha llegado un cliente");
                 executor.execute(new ClientHandler(clientSocket));
             }
         } catch (IOException e) {
@@ -38,5 +46,14 @@ public class Server {
         } finally {
             HibernateUtil.shutdown();
         }
+    }
+
+    private void createDatabaseConnection() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.info("Shutdown hook activado. Cerrando Hibernate...");
+            HibernateUtil.shutdown();
+        }));
+
+        HibernateUtil.load();
     }
 }

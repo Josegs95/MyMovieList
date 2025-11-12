@@ -9,7 +9,7 @@ import java.util.Properties;
 
 public class HibernateUtil {
 
-    private static final SessionFactory SESSION_FACTORY = buildSessionFactory();
+    private static SessionFactory SESSION_FACTORY;
 
     private static SessionFactory buildSessionFactory() {
         try {
@@ -18,7 +18,7 @@ public class HibernateUtil {
             Properties properties = new Properties();
             properties.put("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
 
-            String jdbcURL = String.format("jdbc:mysql://%s:%s/%s",
+            String jdbcURL = String.format("jdbc:mysql://%s:%s/%s?createDatabaseIfNotExist=true",
                     System.getProperty("DB_HOST"),
                     System.getProperty("DB_PORT"),
                     System.getProperty("DB_NAME"));
@@ -47,11 +47,18 @@ public class HibernateUtil {
         }
     }
 
+    public static void load() {
+        SESSION_FACTORY = buildSessionFactory();
+    }
+
     public static SessionFactory getSessionFactory() {
         return SESSION_FACTORY;
     }
 
     public static void shutdown() {
-        getSessionFactory().close();
+        if (SESSION_FACTORY != null && SESSION_FACTORY.isOpen()) {
+            getSessionFactory().close();
+        }
+
     }
 }

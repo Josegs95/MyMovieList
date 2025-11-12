@@ -1,8 +1,8 @@
 package controller;
 
 import model.Movie;
-import model.Multimedia;
 import model.TvShow;
+import model.entity.Multimedia;
 import service.ApiService;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;

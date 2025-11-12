@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Table(name = "app_multimedia")
 public class Multimedia {
 
     @Id
@@ -20,7 +21,7 @@ public class Multimedia {
     @Column(name = "total_episodes")
     private Integer totalEpisodes;
 
-    @Column(name = "multimedia_type")
+    @Column(name = "multimedia_type", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private MultimediaType multimediaType;
 

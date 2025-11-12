@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- ==== APPENDER CONSOLE ==== -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ==== NIVELES DE LOG ==== -->
+
+    <!-- Mostrar SQL generado por Hibernate -->
+    <logger name="org.hibernate.SQL" level="INFO"/>
+
+    <!-- Silenciar el generador de schema (donde salen los WARN de DROP) -->
+    <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="ERROR"/>
+
+    <!-- Silenciar los avisos del bytecode enhancer -->
+    <logger name="org.hibernate.bytecode" level="ERROR"/>
+    <logger name="org.hibernate.ormbytecode" level="ERROR"/>
+    <logger name="org.hibernate.orm.bytecode" level="ERROR"/>
+    <logger name="org.hibernate.ormbytecode.interceptor" level="ERROR"/>
+
+    <!-- Opcional: suprimir logs DEBUG del core -->
+    <logger name="org.hibernate.engine.jdbc.spi.SqlExceptionHelper" level="ERROR"/>
+    <logger name="org.hibernate" level="WARN"/>
+
+    <!-- ==== NIVEL GLOBAL ==== -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

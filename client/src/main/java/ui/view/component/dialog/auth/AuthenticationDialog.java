@@ -1,4 +1,4 @@
-package view.component.dialog.auth;
+package ui.view.component.dialog.auth;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -8,50 +8,19 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class AuthenticationDialog extends JDialog{
 
     private final Window parentWindow;
-
-    private Map<String, JTextField> textFieldMap;
     private JButton btnDefault;
-    private boolean loginSuccess = false;
+    private JTextField txtUsername;
+    private JPasswordField txtPassword;
 
     AuthenticationDialog(Window owner, Dialog.ModalityType modalityType){
         super(owner, modalityType);
 
         parentWindow = owner;
         init();
-    }
-
-    public boolean isLoginSuccess(){
-        return loginSuccess;
-    }
-
-    protected Map<String, JTextField> getTextFieldMap() {
-        return textFieldMap;
-    }
-
-    protected void setLoginSuccess(){
-        loginSuccess = true;
-    }
-
-    protected void setDefaultButton(JButton button){
-        btnDefault = button;
-    }
-
-    protected void setTextFieldListeners(Map<String, JTextField> textFieldMap){
-        for (JTextField textField : textFieldMap.values()){
-            textField.addActionListener(_ -> btnDefault.doClick());
-            textField.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    textField.selectAll();
-                }
-            });
-        }
     }
 
     private void init() {
@@ -68,8 +37,6 @@ public abstract class AuthenticationDialog extends JDialog{
 
         //Components
 
-        textFieldMap = new HashMap<>();
-
         //Username
         JPanel pnlUsername = new JPanel(new MigLayout(
                 "fill, flowy",
@@ -80,10 +47,10 @@ public abstract class AuthenticationDialog extends JDialog{
 
         JLabel lblUsername = new JLabel("Username");
 
-        JTextField txfUsername = new JTextField(null, 20);
+        txtUsername = new JTextField(null, 20);
 
         pnlUsername.add(lblUsername);
-        pnlUsername.add(txfUsername);
+        pnlUsername.add(txtUsername);
 
         //Password
         JPanel pnlPassword = new JPanel(new MigLayout(
@@ -95,13 +62,10 @@ public abstract class AuthenticationDialog extends JDialog{
 
         JLabel lblPassword = new JLabel("Password");
 
-        JPasswordField psfPassword = new JPasswordField(null, 20);
+        txtPassword = new JPasswordField(null, 20);
 
         pnlPassword.add(lblPassword);
-        pnlPassword.add(psfPassword);
-
-        textFieldMap.put("Username", txfUsername);
-        textFieldMap.put("Password", psfPassword);
+        pnlPassword.add(txtPassword);
 
         //Listeners
 
@@ -111,6 +75,51 @@ public abstract class AuthenticationDialog extends JDialog{
 
         add(pnlUsername);
         add(pnlPassword);
+    }
+
+    protected void setTextFieldListeners(){
+        getTextFieldUsername().addActionListener(_ -> getBtnDefault().doClick());
+        getTextFieldUsername().addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                getTextFieldUsername().selectAll();
+            }
+        });
+        getTextFieldPassword().addActionListener(_ -> getBtnDefault().doClick());
+        getTextFieldPassword().addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                getTextFieldPassword().selectAll();
+            }
+        });
+    }
+
+    public String getUsername() {
+        return txtUsername.getText().strip();
+    }
+
+    public void setUsername(String username) {
+        txtUsername.setText(username);
+    }
+
+    public String getPassword() {
+        return new String(txtPassword.getPassword()).strip();
+    }
+
+    public JButton getBtnDefault() {
+        return btnDefault;
+    }
+
+    public void setDefaultButton(JButton button){
+        btnDefault = button;
+    }
+
+    public JTextField getTextFieldUsername() {
+        return txtUsername;
+    }
+
+    public JPasswordField getTextFieldPassword() {
+        return txtPassword;
     }
 
     private static class AuthenticationWindowListener extends WindowAdapter {
@@ -131,7 +140,7 @@ public abstract class AuthenticationDialog extends JDialog{
         @Override
         public void windowClosed(WindowEvent e) {
             if (parent instanceof JFrame){
-                if (instance instanceof LoginDialog && !((LoginDialog) instance).isLoginSuccess())
+                if (instance instanceof LoginDialog dialog && !dialog.isLoginSuccess())
                     parent.dispose();
             }
 

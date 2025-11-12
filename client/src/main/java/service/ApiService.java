@@ -1,8 +1,8 @@
 package service;
 
 import model.Movie;
-import model.Multimedia;
 import model.TvShow;
+import model.entity.Multimedia;
 import thread.FetchDataFromAPI;
 import tools.jackson.databind.JsonNode;
 
@@ -50,16 +50,12 @@ public class ApiService {
 
             if (mediaType.equals("movie")) {
                 multimediaList.add(new Movie(
-                        id,
-                        title,
                         posterURL,
                         LocalDate.parse(releaseDate),
                         score,
                         popularity));
             } else {
                 multimediaList.add(new TvShow(
-                        id,
-                        title,
                         posterURL,
                         LocalDate.parse(releaseDate),
                         score,

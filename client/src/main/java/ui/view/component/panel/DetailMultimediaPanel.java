@@ -1,4 +1,4 @@
-package view.component.panel;
+package ui.view.component.panel;
 
 import controller.ApiController;
 import controller.UserListController;
@@ -8,10 +8,11 @@ import event.EventType;
 import lib.ScrollablePanel;
 import lib.StretchIcon;
 import model.*;
+import model.entity.*;
 import net.miginfocom.swing.MigLayout;
-import view.MainFrame;
-import view.component.dialog.ConfigureMultimediaDialog;
-import view.component.dialog.RemoveMultimediaDialog;
+import ui.view.MainFrame;
+import ui.view.component.dialog.ConfigureMultimediaDialog;
+import ui.view.component.dialog.RemoveMultimediaDialog;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -49,10 +50,11 @@ public class DetailMultimediaPanel extends JPanel {
     }
 
     public void updatePage() {
-        userListsWithMultimedia = user.getListsWithMultimedia(multimedia);
+//        userListsWithMultimedia = user.getListsWithMultimedia(multimedia);
+        userListsWithMultimedia = user.getMultimediaLists();
 
         btnRemoveFromList.setEnabled(!userListsWithMultimedia.isEmpty());
-        btnAddToList.setEnabled(user.getLists().size() > userListsWithMultimedia.size());
+        btnAddToList.setEnabled(user.getMultimediaLists().size() > userListsWithMultimedia.size());
 
         revalidate();
         repaint();
@@ -76,16 +78,17 @@ public class DetailMultimediaPanel extends JPanel {
         ));
         pnlLateral.setOpaque(false);
 
-        String baseUrlPoster = ApiController.getBaseURLForPosters(true);
-        StretchIcon iconPoster;
-        try {
-            iconPoster = new StretchIcon(
-                    URI.create(baseUrlPoster + multimedia.getPosterUrl()).toURL(),
-                    true);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-        JLabel lblPoster = new JLabel(iconPoster);
+//        String baseUrlPoster = ApiController.getBaseURLForPosters(true);
+//        StretchIcon iconPoster;
+//        try {
+//            iconPoster = new StretchIcon(
+//                    URI.create(baseUrlPoster + multimedia.getPosterUrl()).toURL(),
+//                    true);
+//        } catch (MalformedURLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        JLabel lblPoster = new JLabel(iconPoster);
+        JLabel lblPoster = new JLabel("<Poster>");
         lblPoster.setBorder(LineBorder.createBlackLineBorder());
 
         pnlLateral.add(lblPoster);
@@ -101,7 +104,8 @@ public class DetailMultimediaPanel extends JPanel {
 
         //Title & Score
 
-        LocalDate releaseDate = multimedia.getReleaseDate();
+//        LocalDate releaseDate = multimedia.getReleaseDate();
+        LocalDate releaseDate = LocalDate.now();
 
         String titleText = multimedia.getTitle();
         if (releaseDate != null) {
@@ -114,7 +118,8 @@ public class DetailMultimediaPanel extends JPanel {
         lblTitle.setFont(titleFont);
         lblTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
-        JLabel lblScore = new JLabel(multimedia.getScore(), SwingConstants.CENTER);
+//        JLabel lblScore = new JLabel(multimedia.getScore(), SwingConstants.CENTER);
+        JLabel lblScore = new JLabel("<Score>", SwingConstants.CENTER);
         lblScore.setFont(titleFont);
 
         //Release date & Country
@@ -122,7 +127,8 @@ public class DetailMultimediaPanel extends JPanel {
         String releaseDateString = releaseDate != null ? releaseDate.toString() : "Unknown";
         JLabel lblReleaseDate = new JLabel(String.format("Release Date: %s", releaseDateString));
 
-        JLabel lblCountry = new JLabel(String.format("Country: %s", multimedia.getCountry()), SwingConstants.CENTER);
+//        JLabel lblCountry = new JLabel(String.format("Country: %s", multimedia.getCountry()), SwingConstants.CENTER);
+        JLabel lblCountry = new JLabel("<Country>", SwingConstants.CENTER);
 
         //Duration & Status
 
@@ -142,8 +148,9 @@ public class DetailMultimediaPanel extends JPanel {
         pnlSynopsis.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
         pnlSynopsis.setOpaque(false);
 
-        String synopsis = String.format("<html><p style=\"text-align: center\">Synopsis: %s</p></html>",
-                multimedia.getSynopsis());
+//        String synopsis = String.format("<html><p style=\"text-align: center\">Synopsis: %s</p></html>",
+//                multimedia.getSynopsis());
+        String synopsis = "<Sinopsis>";
         JLabel lblSynopsis = new JLabel(synopsis, SwingConstants.CENTER);
 
         pnlSynopsis.add(lblSynopsis);
@@ -155,7 +162,8 @@ public class DetailMultimediaPanel extends JPanel {
 
         //Genre List
 
-        String genres = String.join(", ", multimedia.getGenreList());
+//        String genres = String.join(", ", multimedia.getGenreList());
+        String genres = "<Genres>";
         JLabel lblGenres = new JLabel(String.format("Genres: %s", genres), SwingConstants.CENTER);
 
         //Episode & Season count
@@ -233,7 +241,7 @@ public class DetailMultimediaPanel extends JPanel {
             UserList selectedList = dialog.getSelectedList();
             MultimediaStatus status = dialog.getSelectedMultimediaStatus();
             int currentEpisode = dialog.getSelectedCurrentEpisode();
-            MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia, status, currentEpisode);
+            MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia, selectedList, status, currentEpisode);
 
             // Send the information to the server
             Message response = UserListController.addMultimediaToList(user, selectedList, multimediaListItem);
@@ -242,7 +250,7 @@ public class DetailMultimediaPanel extends JPanel {
             } else {
                 // Show 'success' message to user
                 String message = String.format("\"%s\" has been added to \"%s\" list successfully.",
-                        multimedia.getTitle(), selectedList.getListName());
+                        multimedia.getTitle(), selectedList.getName());
                 JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 // Get data from server and update UI and model
@@ -273,14 +281,14 @@ public class DetailMultimediaPanel extends JPanel {
             } else {
                 // Show 'success' message to user
                 String message = String.format("'%s' successfully removed from '%s' list",
-                        multimedia.getTitle(), selectedList.getListName());
+                        multimedia.getTitle(), selectedList.getName());
                 JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 // Update UI and model
-                MultimediaListItem mli = selectedList.getMultimediaListItem(multimedia);
-                Event event = new Event(EventType.REMOVE_MULTIMEDIA,
-                        Map.of("userList", selectedList, "multimediaListItem", mli));
-                ViewController.getInstance().notifyView("userListPanel", event);
+//                MultimediaListItem mli = selectedList.getMultimediaListItem(multimedia);
+//                Event event = new Event(EventType.REMOVE_MULTIMEDIA,
+//                        Map.of("userList", selectedList, "multimediaListItem", mli));
+//                ViewController.getInstance().notifyView("userListPanel", event);
 
                 updatePage();
             }

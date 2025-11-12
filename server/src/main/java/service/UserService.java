@@ -3,6 +3,7 @@ package service;
 import config.HibernateUtil;
 import dao.UserDAO;
 import dao.UserDAOImpl;
+import exception.BadCredentialsException;
 import model.entity.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -18,53 +19,55 @@ public class UserService {
         this.userDAO = new UserDAOImpl();
     }
 
-    public User register(String username, String password, String email) {
-        Transaction transaction = null;
+    public void register(String username, String password, String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
 
-            User user = userDAO.findByUsername(session, username);
-            if (user != null) {
-                throw new RuntimeException("That username is already in use.");
+                User user = userDAO.findByUsername(session, username);
+                if (user != null) {
+                    throw new RuntimeException("That username is already in use.");
+                }
+
+                int salt = new Random().nextInt();
+                String securedPassword = Security.hashString(password, salt);
+                user = new User(username, securedPassword, email, salt);
+
+                userDAO.create(session, user);
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                throw e;
             }
-
-            int salt = new Random().nextInt();
-            String securedPassword = Security.hashString(password, salt);
-            user = new User(username, securedPassword, email, salt);
-
-            user = userDAO.create(session, user);
-            transaction.commit();
-
-            return user;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            return null;
         }
     }
 
     public Integer login(String username, String password) {
-        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
 
-            User user = userDAO.findByUsername(session, username);
-            if (user == null) {
-                throw new RuntimeException("It doesn't exists a user with that username.");
-            }
+                User user = userDAO.findByUsername(session, username);
+                if (user == null) {
+                    throw new BadCredentialsException("It doesn't exists a user with that username.");
+                }
 
-            if (!user.getPassword().equals(Security.hashString(password, user.getSessionToken()))) {
-                throw new RuntimeException("Wrong password");
-            }
-            transaction.commit();
+                if (!user.getPassword().equals(Security.hashString(password, user.getSessionToken()))) {
+                    throw new BadCredentialsException("Wrong password");
+                }
+                transaction.commit();
 
-            return user.getSessionToken();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+                return user.getSessionToken();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                throw e;
             }
-            return null;
         }
     }
 

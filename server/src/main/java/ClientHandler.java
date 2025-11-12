@@ -1,6 +1,9 @@
 import database.Database;
+import exception.BadCredentialsException;
 import exception.DatabaseException;
 import model.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import protocol.MessageType;
 import protocol.SocketCommunication;
 import service.UserListService;
@@ -18,6 +21,7 @@ import java.util.Optional;
 
 public class ClientHandler implements Runnable{
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientHandler.class);
     private static final UserService USER_SERVICE = new UserService();
     private static final UserListService USER_LIST_SERVICE = new UserListService();
 
@@ -27,8 +31,9 @@ public class ClientHandler implements Runnable{
     private final ObjectMapper mapper;
 
     public ClientHandler(Socket socket){
-        if (socket == null)
+        if (socket == null) {
             throw new NullPointerException("The object 'socket' can not be null");
+        }
 
         this.SOCKET = socket;
         mapper = new ObjectMapper();
@@ -41,31 +46,16 @@ public class ClientHandler implements Runnable{
         Long status;
         Map<String, Object> serverResponseData = new HashMap<>();
         try{
-            Message clientMessage = mapper.readValue(socketCommunication.readStringFromSocket(), Message.class);
-            if (clientMessage.messageType() != MessageType.KNOCK){
-                return;
-            }
-
-            socketCommunication.writeToClient(MessageType.KNOCK, 200L, null);
+            knockMessage(socketCommunication);
 
             String clientJSONMessage = socketCommunication.readStringFromSocket();
-            clientMessage = mapper.readValue(clientJSONMessage, Message.class);
+            Message clientMessage = mapper.readValue(clientJSONMessage, Message.class);
             messageType = clientMessage.messageType();
             clientData = clientMessage.content();
 
-            System.out.println("From client: " + clientJSONMessage);
-
             switch (messageType){
                 case TEST -> System.out.println("Es un mensaje de tipo Test");
-                case LOGIN -> {
-                    Integer sessionToken = loginUser();
-                    if (sessionToken == null)
-                        serverResponseData.put("login", false);
-                    else {
-                        serverResponseData.put("login", true);
-                        serverResponseData.put("token", sessionToken);
-                    }
-                }
+                case LOGIN -> serverResponseData.put("token", loginUser());
                 case REGISTER -> registerUser();
                 case CREATE_USER_LIST -> createUserList();
                 case RENAME_USER_LIST -> renameUserList();
@@ -82,45 +72,48 @@ public class ClientHandler implements Runnable{
             }
 
             status = 200L;
-            socketCommunication.writeToClient(messageType, status, serverResponseData);
-        } catch (AuthenticationException | IOException e) {
-            throw new RuntimeException(e);
-        } catch (DatabaseException |SQLException e) {
+        } catch (BadCredentialsException e) {
+            status = 401L;
+            serverResponseData.put("error_message", "Error, bad credentials provided");
+            LOGGER.info(e.getMessage());
+        } catch (RuntimeException e) {
+            status = 400L;
+            serverResponseData.put("error_message", e.getMessage());
+        } catch (Exception e) {
             status = 500L;
+            serverResponseData.put("error_message", e.getMessage());
+        }
 
-            if (e instanceof DatabaseException) {
-                serverResponseData.put("error_code", ((DatabaseException) e).getErrorCode());
-                serverResponseData.put("error_message", e.getMessage());
-            } else {
-                serverResponseData.put("error_message", "Unknown error in the server database");
-            }
-
-            try {
-                socketCommunication.writeToClient(messageType, status, serverResponseData);
-                if (!(e instanceof DatabaseException)) {
-                    throw new RuntimeException(e);
-                }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+        try {
+            socketCommunication.writeToClient(messageType, status, serverResponseData);
+        } catch (IOException ex) {
+            LOGGER.error("Couldn't send the message. Disconnected client: {}", ex.getMessage());
         }
     }
 
-    private void registerUser() throws SQLException, DatabaseException {
+    private void knockMessage(SocketCommunication socketCommunication) throws IOException {
+        Message clientMessage = mapper.readValue(socketCommunication.readStringFromSocket(), Message.class);
+        if (clientMessage.messageType() != MessageType.KNOCK){
+            throw new RuntimeException("Message with unknown comm protocol");
+        }
+
+        socketCommunication.writeToClient(MessageType.KNOCK, 200L, null);
+    }
+
+    private void registerUser() {
         String username = clientData.get("username").toString();
         String password = clientData.get("password").toString();
         String email = Optional.ofNullable(clientData.get("email"))
                 .map(Object::toString)
                 .orElse(null);
-        System.out.println("Un usuario se quiere registrar");
 
         USER_SERVICE.register(username, password, email);
     }
 
-    private Integer loginUser() throws DatabaseException {
+    private Integer loginUser() {
         String username = clientData.get("username").toString();
         String password = clientData.get("password").toString();
-        System.out.printf("El usuario '%s' quiere identificarse%n", username);
+        LOGGER.info("El usuario '{}' quiere identificarse", username);
 
         return USER_SERVICE.login(username, password);
     }

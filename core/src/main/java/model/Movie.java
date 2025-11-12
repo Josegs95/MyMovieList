@@ -19,7 +19,7 @@ public class Movie extends Multimedia {
     public Movie() {
     }
 
-    public Movie(String posterUrl, String score, LocalDate releaseDate, Double popularity) {
+    public Movie(String posterUrl, LocalDate releaseDate, String score, Double popularity) {
         this.posterUrl = posterUrl;
         this.score = score;
         this.releaseDate = releaseDate;

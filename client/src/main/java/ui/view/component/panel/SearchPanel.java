@@ -1,4 +1,4 @@
-package view.component.panel;
+package ui.view.component.panel;
 
 import controller.ApiController;
 import event.Event;
@@ -6,10 +6,10 @@ import event.EventListener;
 import lib.ScrollablePanel;
 import lib.StretchIcon;
 import model.Movie;
-import model.Multimedia;
+import model.entity.Multimedia;
 import net.miginfocom.swing.MigLayout;
-import view.MainFrame;
-import view.component.MySearchTextField;
+import ui.view.MainFrame;
+import ui.view.component.MySearchTextField;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -147,7 +147,8 @@ public class SearchPanel extends JPanel implements EventListener {
         panel.setBackground(backgroundColor);
 
         String baseURLForPosters = ApiController.getBaseURLForPosters(true);
-        String posterUrlString = multimedia.getPosterUrl();
+//        String posterUrlString = multimedia.getPosterUrl();
+        String posterUrlString = "<Poster>";
         JLabel lblPoster = new JLabel();
         if (posterUrlString == null) {
             lblPoster.setText("No Image");
@@ -159,7 +160,8 @@ public class SearchPanel extends JPanel implements EventListener {
             lblPoster.setText("Loading Image");
         }
         JLabel lblTitle = new JLabel(String.format("<html><p>%s</p></html>", multimedia.getTitle()));
-        JLabel lblScore = new JLabel(multimedia.getScore(), SwingConstants.CENTER);
+//        JLabel lblScore = new JLabel(multimedia.getScore(), SwingConstants.CENTER);
+        JLabel lblScore = new JLabel("<Score>", SwingConstants.CENTER);
 
         panel.add(lblPoster);
         panel.add(lblTitle);

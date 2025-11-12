@@ -1,12 +1,14 @@
-package view;
+package ui.view;
 
 import controller.ViewController;
-import model.User;
+import model.entity.User;
 import net.miginfocom.swing.MigLayout;
+import service.AuthService;
 import thread.FetchUserLists;
-import view.component.dialog.auth.LoginDialog;
-import view.component.panel.SearchPanel;
-import view.component.panel.UserListPanel;
+import ui.controller.LoginUIController;
+import ui.view.component.dialog.auth.LoginDialog;
+import ui.view.component.panel.SearchPanel;
+import ui.view.component.panel.UserListPanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -26,16 +28,13 @@ public class MainFrame extends JFrame{
     private UserListPanel userListPanel;
 
     private static final String APP_TITLE = "MyMovieList";
+    private static final boolean LOGIN = true;
 
-    private MainFrame(boolean withLogin) {
+    private MainFrame() {
         initFrame();
 
-        if (withLogin) {
-            LoginDialog dialog = new LoginDialog(this, true);
-            if (dialog.isLoginSuccess()) {
-                user = dialog.getLoggedUser();
-                new Thread(new FetchUserLists(user)).start();
-            }
+        if (LOGIN) {
+            doLogin();
         }
 
         finishInit();
@@ -46,7 +45,7 @@ public class MainFrame extends JFrame{
         if (instance == null) {
             synchronized (MainFrame.class) {
                 if (instance == null) {
-                    instance = new MainFrame(true);
+                    instance = new MainFrame();
                 }
             }
         }
@@ -173,6 +172,17 @@ public class MainFrame extends JFrame{
         });
 
         addWindowListener(new MainWindowListener(this));
+    }
+
+    private void doLogin() {
+        LoginDialog loginDialog = new LoginDialog(this);
+        new LoginUIController(loginDialog, new AuthService());
+        loginDialog.setVisible(true);
+
+        if (loginDialog.isLoginSuccess()) {
+            this.user = loginDialog.getLoggedUser();
+//            new Thread(new FetchUserLists(user)).start();
+        }
     }
 
     private static class MainWindowListener extends WindowAdapter {

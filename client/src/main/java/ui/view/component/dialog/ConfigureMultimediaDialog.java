@@ -1,8 +1,9 @@
-package view.component.dialog;
+package ui.view.component.dialog;
 
 import model.*;
+import model.entity.*;
 import net.miginfocom.swing.MigLayout;
-import view.MainFrame;
+import ui.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,10 +29,10 @@ public class ConfigureMultimediaDialog extends JDialog {
     private boolean cancelled = false;
 
     public ConfigureMultimediaDialog(MainFrame mainFrame, Multimedia multimedia) {
-        this(mainFrame, new MultimediaListItem(multimedia, MultimediaStatus.PLAN_TO_WATCH, 0),null);
+        this(mainFrame, new MultimediaListItem(multimedia, null, MultimediaStatus.PLAN_TO_WATCH, 0));
     }
 
-    public ConfigureMultimediaDialog(MainFrame mainFrame, MultimediaListItem multimediaListItem, UserList userList) {
+    public ConfigureMultimediaDialog(MainFrame mainFrame, MultimediaListItem multimediaListItem) {
         super(mainFrame, true);
 
         this.mainFrame = mainFrame;
@@ -39,7 +40,7 @@ public class ConfigureMultimediaDialog extends JDialog {
         this.multimediaListItem = multimediaListItem;
         this.multimedia = multimediaListItem.getMultimedia();
         this.multimediaType = multimedia.getMultimediaType();
-        this.userList = userList;
+        this.userList = multimediaListItem.getList();
 
         createUI();
         createListenersForComponents();
@@ -94,7 +95,8 @@ public class ConfigureMultimediaDialog extends JDialog {
 
 
         if (userList == null) {
-            List<UserList> lists = user.getListsWithoutMultimedia(multimedia);
+//            List<UserList> lists = user.getListsWithoutMultimedia(multimedia);
+            List<UserList> lists = user.getMultimediaLists();
 
             cmbLists = new JComboBox<>(lists.toArray(UserList[]::new));
             cmbLists.setSelectedItem(lists.getFirst());

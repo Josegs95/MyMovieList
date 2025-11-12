@@ -1,6 +1,8 @@
 package controller;
 
-import model.*;
+import model.Message;
+import model.TvShow;
+import model.entity.*;
 import protocol.MessageType;
 import protocol.SocketCommunication;
 import ui.view.MainFrame;
@@ -69,14 +71,14 @@ public class UserListController {
         multimediaData.put("apiId", multimedia.getId());
         multimediaData.put("title", multimedia.getTitle());
         multimediaData.put("type", multimedia.getMultimediaType());
-        if (multimedia instanceof Movie) {
+        if (multimedia.getMultimediaType() == MultimediaType.MOVIE) {
             multimediaData.put("totalEpisodes", 1);
         } else {
             multimediaData.put("totalEpisodes", ((TvShow) multimedia).getTotalEpisodes());
         }
 
         userData.put("multimedia", multimediaData);
-        userData.put("listName", userList.getListName());
+        userData.put("listName", userList.getName());
         userData.put("status", multimediaListItem.getStatus());
         userData.put("currentEpisode", multimediaListItem.getCurrentEpisode());
 
@@ -97,14 +99,14 @@ public class UserListController {
         multimediaData.put("apiId", multimedia.getId());
         multimediaData.put("title", multimedia.getTitle());
         multimediaData.put("type", multimedia.getMultimediaType());
-        if (multimedia instanceof Movie) {
+        if (multimedia.getMultimediaType() == MultimediaType.MOVIE) {
             multimediaData.put("totalEpisodes", 1);
         } else {
             multimediaData.put("totalEpisodes", ((TvShow) multimedia).getTotalEpisodes());
         }
 
         userData.put("multimedia", multimediaData);
-        userData.put("listName", userList.getListName());
+        userData.put("listName", userList.getName());
         userData.put("status", multimediaListItem.getStatus());
         userData.put("currentEpisode", multimediaListItem.getCurrentEpisode());
 
@@ -124,7 +126,7 @@ public class UserListController {
         multimediaData.put("type", multimedia.getMultimediaType());
 
         userData.put("multimedia", multimediaData);
-        userData.put("listName", userList.getListName());
+        userData.put("listName", userList.getName());
 
         try(SocketCommunication socketCommunication = new SocketCommunication()) {
 

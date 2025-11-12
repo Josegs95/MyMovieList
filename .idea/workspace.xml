@@ -4,33 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Fixed docker files to work both locally and with a container">
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/Movie.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/TvShow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/Multimedia.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaListItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaListItemKey.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/UserList.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/config/HibernateUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaDAOImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaListItemDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaListItemDAOImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserDAOImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserListDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserListDAOImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/MultimediaListItemService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/MultimediaService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" afterDir="false" />
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Model and Service creation on server side">
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/service/AuthService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/LoginUIController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/RegisterUIController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/util/ErrorHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/CommunicationException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/exception/BadCredentialsException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/resources/logback.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/controller/ApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/controller/ApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/controller/AuthenticationController.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/controller/UserListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/controller/UserListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/model/Movie.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/model/Multimedia.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/model/MultimediaListItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/model/MultimediaStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/model/MultimediaType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/model/TvShow.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/model/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/model/UserList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/service/ApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/ApiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/thread/FetchDataFromAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/thread/FetchDataFromAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/thread/FetchUserLists.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/thread/FetchUserLists.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/view/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/MainFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/MySearchTextField.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/MySearchTextField.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/dialog/ConfigureMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/ConfigureMultimediaDialog.java" afterDir="false" />
@@ -43,9 +39,16 @@
       <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/panel/SearchPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/SearchPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/view/component/panel/UserListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/UserListPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/core/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/model/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/model/Movie.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/Movie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/model/entity/Multimedia.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/Multimedia.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaListItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaListItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/model/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/model/entity/UserList.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/UserList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/config/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/config/HibernateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +80,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -108,7 +111,7 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.Server">
+  <component name="RunManager" selected="Application.Client">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client" />
       <module name="client" />
@@ -125,8 +128,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Server" />
         <item itemvalue="Application.Client" />
+        <item itemvalue="Application.Server" />
       </list>
     </recent_temporary>
   </component>
@@ -155,7 +158,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761682828152</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Model and Service creation on server side">
+      <option name="closed" value="true" />
+      <created>1762710217462</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1762710217462</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -172,6 +183,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Jackson library for GSON, Docker and some file architecture improvement" />
     <MESSAGE value="Fixed docker files to work both locally and with a container" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed docker files to work both locally and with a container" />
+    <MESSAGE value="Model and Service creation on server side" />
+    <option name="LAST_COMMIT_MESSAGE" value="Model and Service creation on server side" />
   </component>
 </project>

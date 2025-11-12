@@ -1,15 +1,15 @@
-package view.component.panel;
+package ui.view.component.panel;
 
 import controller.UserListController;
 import event.Event;
 import event.EventListener;
 import lib.ScrollablePanel;
 import model.Message;
-import model.MultimediaListItem;
-import model.User;
-import model.UserList;
+import model.entity.MultimediaListItem;
+import model.entity.User;
+import model.entity.UserList;
 import net.miginfocom.swing.MigLayout;
-import view.MainFrame;
+import ui.view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -100,8 +100,8 @@ public class UserListPanel extends JPanel implements EventListener {
                 processServerError(serverMessage);
             } else {
                 // Add list to model
-                UserList userList = new UserList(listName, new HashSet<>());
-                user.getLists().add(userList);
+                UserList userList = new UserList(listName, user);
+                user.getMultimediaLists().add(userList);
 
                 // Add list to the UI
                 CollapsableUserListPanel panel = new CollapsableUserListPanel(this, userList);
@@ -138,7 +138,7 @@ public class UserListPanel extends JPanel implements EventListener {
 
     private void removeMultimediaFromList(UserList userList, MultimediaListItem item) {
         // Remove MultimediaListItem from model
-        userList.removeMultimediaListItem(item);
+        userList.getMultimediaList().remove(item);
 
         // Remove MultimediaListItem from the UI
         CollapsableUserListPanel panel = userListViewDict.get(userList);
@@ -179,7 +179,7 @@ public class UserListPanel extends JPanel implements EventListener {
 
     private void deleteUserList(UserList userList) {
         // Delete userList from model
-        user.getLists().remove(userList);
+        user.getMultimediaLists().remove(userList);
 
         // Delete userList from UI
         pnlMultimediaLists.remove(userListViewDict.get(userList));

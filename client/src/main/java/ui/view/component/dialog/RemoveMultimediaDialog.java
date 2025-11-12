@@ -1,9 +1,9 @@
-package view.component.dialog;
+package ui.view.component.dialog;
 
-import model.User;
-import model.UserList;
+import model.entity.User;
+import model.entity.UserList;
 import net.miginfocom.swing.MigLayout;
-import view.MainFrame;
+import ui.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,8 +44,8 @@ public class RemoveMultimediaDialog extends JDialog {
         }
 
         String selectedListName = cmbLists.getSelectedItem().toString();
-        return user.getLists().stream()
-                .filter(userList -> userList.getListName().equals(selectedListName))
+        return user.getMultimediaLists().stream()
+                .filter(userList -> userList.getName().equals(selectedListName))
                 .findFirst()
                 .orElse(null);
     }
@@ -80,7 +80,7 @@ public class RemoveMultimediaDialog extends JDialog {
         JLabel lblLists = new JLabel("Lists:", SwingConstants.RIGHT);
 
         String[] listNames = userLists.stream()
-                .map(UserList::getListName)
+                .map(UserList::getName)
                 .toArray(String[]::new);
 
         cmbLists = new JComboBox<>(listNames);

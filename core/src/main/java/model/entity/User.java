@@ -14,7 +14,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column(nullable = false)
@@ -25,10 +25,16 @@ public class User {
     @Column(name = "salt", nullable = false)
     private Integer sessionToken;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "owner")
     private List<UserList> multimediaLists = new ArrayList<>();
 
     public User() {
+    }
+
+    public User(String username, Integer sessionToken) {
+        this.username = username;
+        this.sessionToken = sessionToken;
     }
 
     public User(String username, String password, String email, Integer sessionToken) {

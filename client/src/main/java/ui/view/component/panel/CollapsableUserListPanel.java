@@ -1,4 +1,4 @@
-package view.component.panel;
+package ui.view.component.panel;
 
 import controller.UserListController;
 import controller.ViewController;
@@ -6,9 +6,10 @@ import event.Event;
 import event.EventType;
 import lib.StretchIcon;
 import model.*;
+import model.entity.*;
 import net.miginfocom.swing.MigLayout;
-import view.MainFrame;
-import view.component.dialog.ConfigureMultimediaDialog;
+import ui.view.MainFrame;
+import ui.view.component.dialog.ConfigureMultimediaDialog;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -71,7 +72,7 @@ public class CollapsableUserListPanel extends JPanel {
     }
 
     public void updateListName() {
-        lblListName.setText(userList.getFullListName());
+        lblListName.setText(userList.getName());
 
         revalidate();
         repaint();
@@ -92,7 +93,7 @@ public class CollapsableUserListPanel extends JPanel {
                 "[fill]"));
         pnlUserList.setBorder(LineBorder.createBlackLineBorder());
 
-        lblListName = new JLabel(userList.getFullListName());
+        lblListName = new JLabel(userList.getName());
         Font labelFont = lblListName.getFont();
         lblListName.setFont(labelFont.deriveFont(14f));
 
@@ -145,17 +146,17 @@ public class CollapsableUserListPanel extends JPanel {
                 return;
             }
 
-            Message serverMessage = UserListController.renameUserList(user, userList.getListName(), newListName);
+            Message serverMessage = UserListController.renameUserList(user, userList.getName(), newListName);
 
             if (serverMessage.status() != 200) {
                 processErrorMessage(serverMessage, String.format("Couldn't rename the list to \"%s\"", newListName));
             } else {
-                userList.setListName(newListName);
+                userList.setName(newListName);
                 updateListName();
             }
         });
         btnDelete.addActionListener(_ ->{
-            String listName = userList.getListName();
+            String listName = userList.getName();
             int dialogResponse = JOptionPane.showConfirmDialog(
                     mainFrame,
                     String.format("¿Are you sure that you want to delete the list \"%s\"?", listName),
@@ -315,7 +316,7 @@ public class CollapsableUserListPanel extends JPanel {
 
             }));
             btnConfig.addActionListener(_ -> {
-                ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimediaListItem, userList);
+                ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimediaListItem);
                 dialog.setVisible(true);
 
                 if (dialog.isCancelled()) {
@@ -324,7 +325,7 @@ public class CollapsableUserListPanel extends JPanel {
 
                 MultimediaStatus selectedStatus = dialog.getSelectedMultimediaStatus();
                 int selectedCurrentEpisode = dialog.getSelectedCurrentEpisode();
-                MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia,
+                MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia, userList,
                         selectedStatus, selectedCurrentEpisode);
 
                 // Send the information to the server
@@ -340,7 +341,7 @@ public class CollapsableUserListPanel extends JPanel {
                     MultimediaStatus status = MultimediaStatus.valueOf(response.content().get("status").toString());
                     int currentEpisode = (int) (response.content().get("currentEpisode"));
 
-                    this.multimediaListItem = new MultimediaListItem(multimedia, status, currentEpisode);
+                    this.multimediaListItem = new MultimediaListItem(multimedia, userList, status, currentEpisode);
                     updateMultimediaAttributes();
                 }
             });

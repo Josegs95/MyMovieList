@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @IdClass(MultimediaListItemKey.class)
+@Table(name = "app_multimedia_list_item")
 public class MultimediaListItem {
 
     @Id
@@ -16,10 +17,11 @@ public class MultimediaListItem {
     @JoinColumn(name = "list_id")
     private UserList list;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MultimediaStatus status;
 
-    @Column(name = "current_episode")
+    @Column(name = "current_episode", nullable = false)
     private Integer currentEpisode;
 
     public MultimediaListItem() {
