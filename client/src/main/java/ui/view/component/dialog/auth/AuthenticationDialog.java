@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public abstract class AuthenticationDialog extends JDialog{
 
@@ -67,12 +65,6 @@ public abstract class AuthenticationDialog extends JDialog{
         pnlPassword.add(lblPassword);
         pnlPassword.add(txtPassword);
 
-        //Listeners
-
-        addWindowListener(new AuthenticationWindowListener(parentWindow, this));
-
-        //Adds
-
         add(pnlUsername);
         add(pnlPassword);
     }
@@ -120,30 +112,5 @@ public abstract class AuthenticationDialog extends JDialog{
 
     public JPasswordField getTextFieldPassword() {
         return txtPassword;
-    }
-
-    private static class AuthenticationWindowListener extends WindowAdapter {
-
-        private final Window parent;
-        private final Window instance;
-
-        public AuthenticationWindowListener(Window parent, Window instance){
-            this.parent = parent;
-            this.instance = instance;
-        }
-
-        @Override
-        public void windowClosing(WindowEvent e) {
-            instance.dispose();
-        }
-
-        @Override
-        public void windowClosed(WindowEvent e) {
-            if (parent instanceof JFrame){
-                if (instance instanceof LoginDialog dialog && !dialog.isLoginSuccess())
-                    parent.dispose();
-            }
-
-        }
     }
 }

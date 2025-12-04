@@ -1,6 +1,5 @@
 package ui.view.component.dialog.auth;
 
-import model.entity.User;
 import net.miginfocom.swing.MigLayout;
 import ui.view.MainFrame;
 
@@ -8,12 +7,11 @@ import javax.swing.*;
 
 public class LoginDialog extends AuthenticationDialog {
 
-    private User user;
-    private boolean loginSuccess = false;
-
     private JButton btnLogin;
     private JButton btnRegister;
     private JButton btnCancel;
+
+    private boolean successful = false;
 
     public LoginDialog(MainFrame mainFrame) {
         super(mainFrame, ModalityType.APPLICATION_MODAL);
@@ -48,6 +46,11 @@ public class LoginDialog extends AuthenticationDialog {
         super.getTextFieldPassword().setText("");
     }
 
+    public void onLoginSuccess() {
+        successful = true;
+        dispose();
+    }
+
     public JButton getBtnLogin() {
         return btnLogin;
     }
@@ -64,23 +67,11 @@ public class LoginDialog extends AuthenticationDialog {
         return super.getUsername();
     }
 
+    public boolean isSuccessful() {
+        return successful;
+    }
+
     public void setUsername(String username){
         super.setUsername(username);
-    }
-
-    public boolean isLoginSuccess() {
-        return loginSuccess;
-    }
-
-    public void setLoginSuccess(boolean loginSuccess) {
-        this.loginSuccess = loginSuccess;
-    }
-
-    public User getLoggedUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

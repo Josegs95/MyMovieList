@@ -14,6 +14,7 @@ public class TvShow extends Multimedia {
     private String synopsis;
     private List<String> genreList;
     private String country;
+
     private String airingStatus;
     private Integer totalEpisodes;
     private Integer totalSeasons;

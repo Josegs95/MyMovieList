@@ -21,7 +21,7 @@ public class MultimediaListItem {
     @Enumerated(EnumType.STRING)
     private MultimediaStatus status;
 
-    @Column(name = "current_episode", nullable = false)
+    @Column(name = "current_episode")
     private Integer currentEpisode;
 
     public MultimediaListItem() {

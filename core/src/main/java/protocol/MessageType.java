@@ -1,26 +1,18 @@
 package protocol;
 
 public enum MessageType {
-    TEST("Test"),
-    KNOCK("Knock"),
-    LOGIN("Login"),
-    REGISTER("Register"),
-    GET_USER_LISTS("Get user lists"),
-    CREATE_USER_LIST("Create user list"),
-    RENAME_USER_LIST("Rename user list"),
-    DELETE_USER_LIST("Delete user list"),
-    ADD_MULTIMEDIA("Add multimedia to list"),
-    MODIFY_MULTIMEDIA("Modify multimedia data in a list"),
-    REMOVE_MULTIMEDIA("Remove multimedia from a list");
+    TEST,
+    KNOCK,
+    LOGIN,
+    REGISTER,
+    GET_USER_LISTS,
+    CREATE_USER_LIST,
+    RENAME_USER_LIST,
+    DELETE_USER_LIST,
+    ADD_MULTIMEDIA,
+    MODIFY_MULTIMEDIA,
+    REMOVE_MULTIMEDIA,
 
-    final private String name;
-
-    MessageType(String name){
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
+    API_SEARCH_MULTIMEDIA,
+    API_DETAIL_MULTIMEDIA;
 }

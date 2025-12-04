@@ -1,26 +1,26 @@
 package ui.view.component.dialog;
 
-import model.*;
-import model.entity.*;
+import context.SessionContext;
+import dto.*;
+import model.entity.MultimediaStatus;
+import model.entity.MultimediaType;
 import net.miginfocom.swing.MigLayout;
 import ui.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.function.Function;
 
 public class ConfigureMultimediaDialog extends JDialog {
 
-    private final MainFrame mainFrame;
-    private final User user;
-    private final MultimediaListItem multimediaListItem;
-    private final Multimedia multimedia;
-    private final MultimediaType multimediaType;
-    private final UserList userList;
+    private static final Color BACKGROUND_COLOR = new Color(223, 223, 223);
 
-    private JComboBox<UserList> cmbLists;
+    private final MainFrame mainFrame;
+    private final MultimediaListItemDTO listItemDTO;
+    private final UserDTO user;
+
+    private JComboBox<UserListDTO> cmbLists;
     private JComboBox<MultimediaStatus> cmbStatus;
     private JSpinner spnEpisode;
     private JButton btnCancel;
@@ -28,58 +28,26 @@ public class ConfigureMultimediaDialog extends JDialog {
 
     private boolean cancelled = false;
 
-    public ConfigureMultimediaDialog(MainFrame mainFrame, Multimedia multimedia) {
-        this(mainFrame, new MultimediaListItem(multimedia, null, MultimediaStatus.PLAN_TO_WATCH, 0));
+    public ConfigureMultimediaDialog(MainFrame mainFrame, MultimediaSummaryDTO summaryDTO) {
+        this(mainFrame, new MultimediaListItemDTO(null, MultimediaStatus.PLAN_TO_WATCH, 1, summaryDTO));
     }
 
-    public ConfigureMultimediaDialog(MainFrame mainFrame, MultimediaListItem multimediaListItem) {
+    public ConfigureMultimediaDialog(MainFrame mainFrame, MultimediaListItemDTO listItemDTO) {
         super(mainFrame, true);
 
         this.mainFrame = mainFrame;
-        this.user = mainFrame.getUser();
-        this.multimediaListItem = multimediaListItem;
-        this.multimedia = multimediaListItem.getMultimedia();
-        this.multimediaType = multimedia.getMultimediaType();
-        this.userList = multimediaListItem.getList();
+        this.listItemDTO = listItemDTO;
+        this.user = SessionContext.getInstance().getUser();
 
         createUI();
-        createListenersForComponents();
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public UserList getSelectedList() {
-        if (cancelled || cmbLists.getSelectedItem() == null) {
-            return null;
-        }
-
-        return (UserList) (cmbLists.getSelectedItem());
-    }
-
-    public MultimediaStatus getSelectedMultimediaStatus() {
-        if (!cancelled) {
-            return (MultimediaStatus) cmbStatus.getSelectedItem();
-        }
-
-        return null;
-    }
-
-    public int getSelectedCurrentEpisode() {
-        if (!cancelled) {
-            return (int) (spnEpisode.getModel().getValue());
-        }
-
-        return -1;
     }
 
     private void createUI() {
-        setSize(300, 250);
+        setSize(350, 250);
         setLocationRelativeTo(mainFrame);
         setResizable(false);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        getContentPane().setBackground(new Color(223, 223, 223));
+        getContentPane().setBackground(BACKGROUND_COLOR);
         setTitle("Configuration");
 
         setLayout(new MigLayout(
@@ -90,32 +58,29 @@ public class ConfigureMultimediaDialog extends JDialog {
 
         // List selector component
 
-        JLabel lblLists = new JLabel("Lists:");
-        lblLists.setHorizontalAlignment(SwingConstants.RIGHT);
+        JLabel lblLists = new JLabel("Lists:",SwingConstants.RIGHT);
 
-
-        if (userList == null) {
-//            List<UserList> lists = user.getListsWithoutMultimedia(multimedia);
-            List<UserList> lists = user.getMultimediaLists();
-
-            cmbLists = new JComboBox<>(lists.toArray(UserList[]::new));
-            cmbLists.setSelectedItem(lists.getFirst());
+        List<UserListDTO> lists;
+        if (listItemDTO.getListId() == null) {
+            lists = getAllListsWithoutMultimedia();
         } else {
-            cmbLists = new JComboBox<>(new UserList[] {userList});
-            cmbLists.setSelectedItem(userList);
+            lists = user.getLists().stream()
+                    .filter(listDTO -> listDTO.id().equals(listItemDTO.getListId()))
+                    .toList();
             cmbLists.setEnabled(false);
         }
-
-        ((JLabel) cmbLists.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+        cmbLists = new JComboBox<>(lists.toArray(UserListDTO[]::new));
+        cmbLists.setRenderer(new SimpleNameRenderer<>(UserListDTO::name));
+        cmbLists.setSelectedItem(lists.getFirst());
 
         // Status selector component
 
         JLabel lblStatus = new JLabel("Status:", SwingConstants.RIGHT);
 
-        MultimediaStatus[] statuses = MultimediaStatus.getMultimediaStatusValues(multimediaType);
+        MultimediaStatus[] statuses = MultimediaStatus.getMultimediaStatusValues(listItemDTO.getMultimedia().getType());
         cmbStatus = new JComboBox<>(statuses);
-        ((JLabel) cmbStatus.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-        cmbStatus.setSelectedItem(multimediaListItem.getStatus());
+        cmbStatus.setRenderer(new SimpleNameRenderer<>(MultimediaStatus::name));
+        cmbStatus.setSelectedItem(listItemDTO.getStatus());
 
         // Current episode selector component
 
@@ -129,20 +94,20 @@ public class ConfigureMultimediaDialog extends JDialog {
         pnlSpinnerEpisode.setOpaque(false);
 
         int totalEpisodes = 0;
-        if (multimedia instanceof TvShow tvShow) {
-            totalEpisodes = tvShow.getTotalEpisodes();
+        if (listItemDTO.getMultimedia() instanceof SeriesSummaryDTO series) {
+            totalEpisodes = series.getTotalEpisodes();
         }
         spnEpisode = new JSpinner(new SpinnerNumberModel(0, 0, totalEpisodes, 1));
         JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spnEpisode.getEditor();
         editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
-        spnEpisode.setValue(multimediaListItem.getCurrentEpisode());
+        spnEpisode.setValue(listItemDTO.getCurrentEpisode());
 
         JLabel lblTotalEpisodes = new JLabel("/ " + totalEpisodes);
 
         pnlSpinnerEpisode.add(spnEpisode);
         pnlSpinnerEpisode.add(lblTotalEpisodes);
 
-        if (multimediaType == MultimediaType.MOVIE) {
+        if (listItemDTO.getMultimedia().getType() == MultimediaType.MOVIE) {
             spnEpisode.setEnabled(false);
             lblCurrentEpisode.setForeground(Color.LIGHT_GRAY);
             lblTotalEpisodes.setText(null);
@@ -174,42 +139,82 @@ public class ConfigureMultimediaDialog extends JDialog {
         add(pnlButtons, "span 2");
     }
 
-    private void createListenersForComponents() {
-        cmbStatus.addActionListener(_ -> {
-            if (cmbStatus.getSelectedItem() == null) {
-                return;
-            }
+    private List<UserListDTO> getAllListsWithoutMultimedia() {
+        return user.getLists().stream()
+                .filter(listDTO -> listDTO.listItems().stream()
+                        .map(MultimediaListItemDTO::getMultimedia)
+                        .noneMatch(multimedia -> multimedia.equals(listItemDTO.getMultimedia())))
+                .toList();
+    }
 
-            MultimediaStatus selectedStatus = (MultimediaStatus) cmbStatus.getSelectedItem();
-            switch (selectedStatus) {
-                case PLAN_TO_WATCH -> spnEpisode.setValue(0);
-                case FINISHED -> spnEpisode.setValue(((SpinnerNumberModel) spnEpisode.getModel()).getMaximum());
-            }
-        });
+    public UserListDTO getSelectedList() {
+        if (isCancelled() || cmbLists.getSelectedItem() == null) {
+            return null;
+        }
 
-        spnEpisode.addChangeListener(_ -> {
-            SpinnerNumberModel spinnerModel = (SpinnerNumberModel) spnEpisode.getModel();
-            int currentValue = (int) spinnerModel.getValue();
-            if (currentValue == 0) {
-                cmbStatus.setSelectedItem(MultimediaStatus.PLAN_TO_WATCH);
-            } else if (currentValue == (Integer) spinnerModel.getMaximum()) {
-                cmbStatus.setSelectedItem(MultimediaStatus.FINISHED);
-            }
-        });
+        return (UserListDTO) (cmbLists.getSelectedItem());
+    }
 
-        btnCancel.addActionListener(_ -> {
-            cancelled = true;
-            ConfigureMultimediaDialog.this.dispose();
-        });
+    public MultimediaStatus getSelectedMultimediaStatus() {
+        if (cancelled) {
+            return null;
+        }
 
-        btnAccept.addActionListener(_ -> ConfigureMultimediaDialog.this.dispose());
+        return (MultimediaStatus) cmbStatus.getSelectedItem();
+    }
 
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                cancelled = true;
-                ConfigureMultimediaDialog.this.dispose();
-            }
-        });
+    public Integer getSelectedCurrentEpisode() {
+        if (cancelled || listItemDTO.getMultimedia().getType() == MultimediaType.MOVIE) {
+            return null;
+        }
+
+        return (Integer) (spnEpisode.getModel().getValue());
+    }
+
+    public void cancelDialog() {
+        cancelled = true;
+        this.dispose();
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public JButton getBtnAccept() {
+        return btnAccept;
+    }
+
+    public JButton getBtnCancel() {
+        return btnCancel;
+    }
+
+    public JSpinner getSpnEpisode() {
+        return spnEpisode;
+    }
+
+    public JComboBox<MultimediaStatus> getCmbStatus() {
+        return cmbStatus;
+    }
+
+    private static class SimpleNameRenderer<T> extends DefaultListCellRenderer {
+
+        private final Function<T, String> nameExtractor;
+
+        private SimpleNameRenderer(Function<T, String> nameExtractor) {
+            this.nameExtractor = nameExtractor;
+
+            setHorizontalAlignment(CENTER);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            return super.getListCellRendererComponent(
+                    list,
+                    value != null ? nameExtractor.apply((T) value) : "",
+                    index,
+                    isSelected,
+                    cellHasFocus);
+        }
     }
 }

@@ -2,12 +2,12 @@ package service;
 
 import config.HibernateUtil;
 import dao.MultimediaListItemDAO;
-import dao.MultimediaListItemDAOImpl;
+import dto.MultimediaListItemDTO;
+import dto.MultimediaSummaryDTO;
+import dto.SeriesSummaryDTO;
 import model.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import java.util.List;
 
 public class MultimediaListItemService {
 
@@ -16,43 +16,56 @@ public class MultimediaListItemService {
     private final UserListService userListService;
     private final MultimediaService multimediaService;
 
-    public MultimediaListItemService() {
-        this.multimediaListItemDAO = new MultimediaListItemDAOImpl();
-        this.authService = new AuthService();
-        this.userListService = new UserListService();
-        this.multimediaService = new MultimediaService();
+    public MultimediaListItemService(MultimediaListItemDAO multimediaListItemDAO, AuthService authService, UserListService userListService, MultimediaService multimediaService) {
+        this.multimediaListItemDAO = multimediaListItemDAO;
+        this.authService = authService;
+        this.userListService = userListService;
+        this.multimediaService = multimediaService;
     }
 
-    public MultimediaListItem addMultimediaToList(Long idUser, Long idList, String title, String apiId, Integer totalEpisodes,
-                                                  MultimediaType type, MultimediaStatus status, Integer currentEpisode, Integer sessionToken) {
-        Transaction transaction = null;
+    public MultimediaListItemDTO addMultimediaToList(Long idUser, MultimediaListItemDTO listItemDTO, Integer sessionToken) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
 
-            authService.authenticate(session, idUser, sessionToken);
-            UserList list = userListService.checkListOwnership(session, idList, idUser);
-            List<MultimediaListItem> multimediaListItems = multimediaListItemDAO.findAll(session, idList);
+                authService.authenticate(session, idUser, sessionToken);
+                UserList list = userListService.checkListOwnership(session, listItemDTO.getListId(), idUser);
 
-            Multimedia multimedia = multimediaService.getOrCreate(session, title, apiId, totalEpisodes, type);
-            MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia, list, status, currentEpisode);
+                MultimediaSummaryDTO summaryDTO = listItemDTO.getMultimedia();
+                if (isMultimediaContainedOnList(list, summaryDTO)) {
+                    throw new RuntimeException("That multimedia item already exists in that list");
+                }
 
-            boolean alreadyExists = multimediaListItems.stream()
-                    .anyMatch(item -> item.getMultimedia().equals(multimediaListItem.getMultimedia()));
+                Integer totalEpisodes = 0;
+                if (summaryDTO instanceof SeriesSummaryDTO serie) {
+                    totalEpisodes = serie.getTotalEpisodes();
+                }
+                Multimedia multimedia = multimediaService.getOrCreate(
+                        session,
+                        summaryDTO.getTitle(),
+                        summaryDTO.getApiId(),
+                        summaryDTO.getPosterPath(),
+                        totalEpisodes,
+                        summaryDTO.getType());
+                MultimediaListItem multimediaListItem = new MultimediaListItem(
+                        multimedia,
+                        list,
+                        listItemDTO.getStatus(),
+                        listItemDTO.getCurrentEpisode());
 
-            if (alreadyExists) {
-                throw new RuntimeException("That multimedia item already exists in that list");
+
+                multimediaListItemDAO.create(session, multimediaListItem);
+
+                transaction.commit();
+
+                return new MultimediaListItemDTO(multimediaListItem);
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                throw e;
             }
-
-            multimediaListItemDAO.create(session, multimediaListItem);
-
-            transaction.commit();
-
-            return multimediaListItem;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            return null;
         }
     }
 
@@ -86,29 +99,36 @@ public class MultimediaListItemService {
         }
     }
 
-    public void delete(Long idUser, MultimediaListItem itemFromClient, Integer sessionToken) {
-        Transaction transaction = null;
+    public void delete(Long idUser, Long idList, Long idMultimedia, Integer sessionToken) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
 
-            Long idList = itemFromClient.getList().getId();
-            Long idMultimedia = itemFromClient.getMultimedia().getId();
+                authService.authenticate(session, idUser, sessionToken);
+                userListService.checkListOwnership(session, idList, idUser);
+                MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, idList, idMultimedia);
 
-            authService.authenticate(session, idUser, sessionToken);
-            userListService.checkListOwnership(session, idList, idUser);
-            MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, idList, idMultimedia);
+                if (itemAtBD == null) {
+                    throw new RuntimeException("That multimedia item does not exists in that list");
+                }
 
-            if (itemAtBD == null) {
-                throw new RuntimeException("That multimedia item does not exists in that list");
-            }
+                multimediaListItemDAO.delete(session, itemAtBD);
 
-            multimediaListItemDAO.delete(session, itemAtBD);
-
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                throw e;
             }
         }
+    }
+
+    private boolean isMultimediaContainedOnList(UserList list, MultimediaSummaryDTO multimedia) {
+        return list.getMultimediaList().stream()
+                .map(MultimediaListItem::getMultimedia)
+                .anyMatch(item -> item.getApiId().equals(multimedia.getApiId())
+                        && item.getMultimediaType() == multimedia.getType());
     }
 }

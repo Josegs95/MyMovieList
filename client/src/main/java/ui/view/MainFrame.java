@@ -1,11 +1,15 @@
 package ui.view;
 
+import context.SessionContext;
 import controller.ViewController;
-import model.entity.User;
+import dto.UserDTO;
 import net.miginfocom.swing.MigLayout;
 import service.AuthService;
-import thread.FetchUserLists;
+import service.SearchService;
+import service.UserListService;
 import ui.controller.LoginUIController;
+import ui.controller.SearchUIController;
+import ui.controller.UserListUIController;
 import ui.view.component.dialog.auth.LoginDialog;
 import ui.view.component.panel.SearchPanel;
 import ui.view.component.panel.UserListPanel;
@@ -13,15 +17,12 @@ import ui.view.component.panel.UserListPanel;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame{
 
-    private static volatile MainFrame instance;
-    private User user;
+    private static final Color BACKGROUND_COLOR = new Color(192, 192, 192);
 
-    private JPanel pnlCentral;
+    private JPanel centralPanel;
     private JButton btnLateralSearch;
     private JButton btnLateralLists;
     private SearchPanel searchPanel;
@@ -30,57 +31,31 @@ public class MainFrame extends JFrame{
     private static final String APP_TITLE = "MyMovieList";
     private static final boolean LOGIN = true;
 
-    private MainFrame() {
+    public MainFrame() {
         initFrame();
 
         if (LOGIN) {
-            doLogin();
-        }
-
-        finishInit();
-        createListeners();
-    }
-
-    public static MainFrame getInstance(){
-        if (instance == null) {
-            synchronized (MainFrame.class) {
-                if (instance == null) {
-                    instance = new MainFrame();
-                }
+            if (!doLogin()) {
+                dispose();
+                throw new RuntimeException("The client closed the application");
             }
         }
 
-        return instance;
-    }
-
-    public void changeCentralPanel(JPanel panel) {
-        getContentPane().remove(pnlCentral);
-        pnlCentral = panel;
-        getContentPane().add(pnlCentral);
-
-        revalidate();
-        repaint();
-    }
-
-    public void setUser(User user){
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
+        finishInit();
     }
 
     private void initFrame() {
         setTitle(APP_TITLE);
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new Color(192, 192, 192));
-
+        getContentPane().setBackground(BACKGROUND_COLOR);
         setVisible(true);
     }
 
-    private void finishInit() {
+    public void finishInit() {
+        UserDTO user = SessionContext.getInstance().getUser();
+
         getContentPane().setLayout(new MigLayout(
                 "fill",
                 "[fill, 22%]5[fill, 78%]",
@@ -88,13 +63,17 @@ public class MainFrame extends JFrame{
         ));
         searchPanel = new SearchPanel(this);
         userListPanel = new UserListPanel(this);
+        new SearchUIController(searchPanel, new SearchService());
+        new UserListUIController(userListPanel, new UserListService());
 
+        // * BORRAR *
         ViewController.getInstance().registerView("searchPanel", searchPanel);
         ViewController.getInstance().registerView("userListPanel", userListPanel);
+        //
 
         // Set central panel to "search mode"
 
-        pnlCentral = searchPanel;
+        centralPanel = searchPanel;
 
         // Create "lateral panel"
 
@@ -148,7 +127,7 @@ public class MainFrame extends JFrame{
         pnlLateral.add(pnlMenuLateral);
 
         add(pnlLateral);
-        add(pnlCentral);
+        add(centralPanel);
 
         // Logic
 
@@ -156,46 +135,38 @@ public class MainFrame extends JFrame{
         repaint();
     }
 
-    private void createListeners() {
-        btnLateralSearch.addActionListener(_ -> {
-            if (pnlCentral != searchPanel) {
-                changeCentralPanel(searchPanel);
-                searchPanel.updateState();
-            }
-        });
-
-        btnLateralLists.addActionListener(_ -> {
-            if (pnlCentral != userListPanel) {
-                changeCentralPanel(userListPanel);
-                userListPanel.updateState();
-            }
-        });
-
-        addWindowListener(new MainWindowListener(this));
-    }
-
-    private void doLogin() {
+    private boolean doLogin() {
         LoginDialog loginDialog = new LoginDialog(this);
         new LoginUIController(loginDialog, new AuthService());
         loginDialog.setVisible(true);
 
-        if (loginDialog.isLoginSuccess()) {
-            this.user = loginDialog.getLoggedUser();
-//            new Thread(new FetchUserLists(user)).start();
-        }
+        return loginDialog.isSuccessful();
     }
 
-    private static class MainWindowListener extends WindowAdapter {
-        final private JFrame FRAME;
-
-        public MainWindowListener(JFrame frame) {
-            this.FRAME = frame;
+    public <T extends JPanel> void changeCentralPanel(Class<T> panelType) {
+        // Check if the central panel is already the requested one.
+        if (centralPanel.getClass().equals(panelType)) {
+            return;
         }
 
-        @Override
-        public void windowClosing(WindowEvent e) {
-            FRAME.dispose();
+        getContentPane().remove(centralPanel);
+
+        if (panelType.equals(SearchPanel.class)) {
+            centralPanel = searchPanel;
+        } else if (panelType.equals(UserListPanel.class)) {
+            centralPanel = userListPanel;
         }
+        getContentPane().add(centralPanel);
+        revalidate();
+        repaint();
+    }
+
+    public JButton getBtnLateralSearch() {
+        return btnLateralSearch;
+    }
+
+    public JButton getBtnLateralLists() {
+        return btnLateralLists;
     }
 
     private static class MyLateralButton extends JButton {

@@ -1,5 +1,7 @@
 package ui.util;
 
+import exception.ServerException;
+
 import javax.naming.CommunicationException;
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +18,7 @@ public class ErrorHandler {
             );
             return;
         }
-        if (e instanceof RuntimeException) {
+        if (e instanceof ServerException) {
             JOptionPane.showMessageDialog(
                     parent,
                     e.getMessage(),
@@ -26,6 +28,7 @@ public class ErrorHandler {
             return;
         }
 
+        e.printStackTrace();
         JOptionPane.showMessageDialog(
                 parent,
                 "Error desconocido",

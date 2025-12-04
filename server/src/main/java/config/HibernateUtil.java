@@ -10,6 +10,7 @@ import java.util.Properties;
 public class HibernateUtil {
 
     private static SessionFactory SESSION_FACTORY;
+    private static boolean built = false;
 
     private static SessionFactory buildSessionFactory() {
         try {
@@ -28,7 +29,7 @@ public class HibernateUtil {
             properties.put("hibernate.connection.password", System.getProperty("DB_PASS"));
             properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 
-            properties.put("hibernate.hbm2ddl.auto", "create-drop");
+            properties.put("hibernate.hbm2ddl.auto", "create-only");
             properties.put("hibernate.show_sql", "true");
 
             Configuration configuration = new Configuration();
@@ -48,7 +49,10 @@ public class HibernateUtil {
     }
 
     public static void load() {
-        SESSION_FACTORY = buildSessionFactory();
+        if (!built) {
+            SESSION_FACTORY = buildSessionFactory();
+            built = true;
+        }
     }
 
     public static SessionFactory getSessionFactory() {

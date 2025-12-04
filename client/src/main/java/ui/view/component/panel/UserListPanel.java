@@ -1,48 +1,32 @@
 package ui.view.component.panel;
 
-import controller.UserListController;
+import dto.MultimediaListItemDTO;
+import dto.UserListDTO;
 import event.Event;
 import event.EventListener;
 import lib.ScrollablePanel;
-import model.Message;
-import model.entity.MultimediaListItem;
-import model.entity.User;
-import model.entity.UserList;
 import net.miginfocom.swing.MigLayout;
 import ui.view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 public class UserListPanel extends JPanel implements EventListener {
 
     private final MainFrame mainFrame;
-    private final User user;
 
     private JPanel pnlContainer;
-    private ScrollablePanel pnlMultimediaLists;
+    private ScrollablePanel pnlLists;
     private JButton btnCreateList;
 
-    private final Map<UserList, CollapsableUserListPanel> userListViewDict;
+    private final Map<Long, CollapsableListPanel> listPanelMap = new HashMap<>();
 
     public UserListPanel(MainFrame mainFrame){
         this.mainFrame = mainFrame;
-        this.user = mainFrame.getUser();
-
-        userListViewDict = new HashMap<>();
 
         createUI();
-        createListeners();
-    }
-
-    public void updateState() {
-        if (pnlContainer.getComponent(0) instanceof DetailMultimediaPanel detailPanel) {
-            detailPanel.updatePage();
-        }
     }
 
     private void createUI() {
@@ -72,155 +56,127 @@ public class UserListPanel extends JPanel implements EventListener {
         pnlButtons.add(btnCreateList);
         pnlContainer.add(pnlButtons);
 
-        pnlMultimediaLists = new ScrollablePanel(new MigLayout(
+        pnlLists = new ScrollablePanel(new MigLayout(
                 "fillx, flowy, ins 0",
                 "[fill]",
                 "[100::null, fill]0[100::null, fill]"
         ));
-        pnlMultimediaLists.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
-        pnlMultimediaLists.setScrollableHeight(ScrollablePanel.ScrollableSizeHint.STRETCH);
-        pnlMultimediaLists.setBorder(LineBorder.createBlackLineBorder());
+        pnlLists.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
+        pnlLists.setScrollableHeight(ScrollablePanel.ScrollableSizeHint.STRETCH);
+        pnlLists.setBorder(LineBorder.createBlackLineBorder());
 
-        JScrollPane scrollPane = new JScrollPane(pnlMultimediaLists);
+        JScrollPane scrollPane = new JScrollPane(pnlLists);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 
         pnlContainer.add(scrollPane);
     }
 
-    private void createListeners() {
-        btnCreateList.addActionListener(_->{
-            String listName = JOptionPane.showInputDialog(mainFrame,
-                    "Write the list's name that you desire.");
-
-            if (listName == null)
-                return;
-
-            Message serverMessage = UserListController.createUserList(user, listName);
-            if (serverMessage.status() != 200) {
-                processServerError(serverMessage);
-            } else {
-                // Add list to model
-                UserList userList = new UserList(listName, user);
-                user.getMultimediaLists().add(userList);
-
-                // Add list to the UI
-                CollapsableUserListPanel panel = new CollapsableUserListPanel(this, userList);
-                pnlMultimediaLists.add(panel);
-                userListViewDict.put(userList, panel);
-
-                revalidate();
-                repaint();
-            }
-        });
-    }
-
-    private void processServerError(Message response) {
-        String errorMessage = "Could not create the new list";
-//        if (response.getErrorCode() == 23) {
-//            errorMessage = "You already have a list with than name";
-//        }
-        JOptionPane.showMessageDialog(mainFrame, errorMessage,
-                "Error", JOptionPane.ERROR_MESSAGE);
-    }
-
-    private void addMultimediaToList(UserList userList, MultimediaListItem item) {
-        // Add MultimediaListItem to model
-        userList.getMultimediaList().add(item);
-
-        // Add MultimediaListItem to the UI
-        CollapsableUserListPanel panel = userListViewDict.get(userList);
-        panel.addMultimediaListItem(item);
-        panel.updateListName();
-
-        revalidate();
-        repaint();
-    }
-
-    private void removeMultimediaFromList(UserList userList, MultimediaListItem item) {
-        // Remove MultimediaListItem from model
-        userList.getMultimediaList().remove(item);
-
-        // Remove MultimediaListItem from the UI
-        CollapsableUserListPanel panel = userListViewDict.get(userList);
-        panel.removeMultimediaItem(item);
-
-        revalidate();
-        repaint();
-    }
-
-    private void showDetailPanel(DetailMultimediaPanel panel) {
-        remove(0);
-        add(panel);
-
-        revalidate();
-        repaint();
-    }
-
-    private void removeDetailPanel() {
-        remove(0);
-        add(pnlContainer);
-
-        revalidate();
-        repaint();
-    }
-
-    private void createUserListItems(List<UserList> userLists) {
-        pnlMultimediaLists.removeAll();
-
-        for (UserList userList : userLists) {
-            CollapsableUserListPanel panel = new CollapsableUserListPanel(this, userList);
-            userListViewDict.put(userList, panel);
-            pnlMultimediaLists.add(panel);
+    // * BORRAR *
+    public void updateState() {
+        if (pnlContainer.getComponent(0) instanceof DetailPanel detailPanel) {
+            detailPanel.updatePage();
         }
+    }
+    //
+
+    public String showListNameDialog() {
+        return JOptionPane.showInputDialog(mainFrame,"Write the list's name that you desire.");
+    }
+
+    public void createUserList(UserListDTO userList) {
+        CollapsableListPanel panel = new CollapsableListPanel(mainFrame, userList);
+        listPanelMap.put(userList.id(), panel);
+        pnlLists.add(panel);
 
         revalidate();
         repaint();
     }
 
-    private void deleteUserList(UserList userList) {
-        // Delete userList from model
-        user.getMultimediaLists().remove(userList);
-
-        // Delete userList from UI
-        pnlMultimediaLists.remove(userListViewDict.get(userList));
+    public void addMultimediaToList(UserListDTO userListDTO, MultimediaListItemDTO addedItem) {
+        CollapsableListPanel listPanel = listPanelMap.get(userListDTO.id());
+        listPanel.addMultimediaListItem(addedItem);
+        listPanel.updateListNameItems();
 
         revalidate();
         repaint();
     }
 
+    public void removeMultimediaFromList(UserListDTO userListDTO, MultimediaListItemDTO deletedItem) {
+        listPanelMap.get(userListDTO.id()).removeMultimediaItem(deletedItem);
+
+        revalidate();
+        repaint();
+    }
+
+//    private void showDetailPanel(DetailPanel panel) {
+//        remove(0);
+//        add(panel);
+//
+//        revalidate();
+//        repaint();
+//    }
+//
+//    private void removeDetailPanel() {
+//        remove(0);
+//        add(pnlContainer);
+//
+//        revalidate();
+//        repaint();
+//    }
+//
+//    private void deleteUserList(UserList userList) {
+//        // Delete userList from model
+////        user.getMultimediaLists().remove(userList);
+//
+//        // Delete userList from UI
+//        pnlLists.remove(listPanelMap.get(userList));
+//
+//        revalidate();
+//        repaint();
+//    }
+
+    public JButton getBtnCreateList() {
+        return btnCreateList;
+    }
+
+    public Map<Long, CollapsableListPanel> getListPanelMap() {
+        return listPanelMap;
+    }
+
+    // * BORRAR *
     @Override @SuppressWarnings("unchecked")
     public void onEvent(Event event) {
-        Map<String, Object> data = event.data();
-
-        switch (event.type()) {
-            case ADD_MULTIMEDIA -> {
-                UserList userList = (UserList) data.get("userList");
-                MultimediaListItem multimediaListItem = (MultimediaListItem) data.get("multimediaListItem");
-
-                addMultimediaToList(userList, multimediaListItem);
-            }
-            case REMOVE_MULTIMEDIA -> {
-                UserList userList = (UserList) data.get("userList");
-                MultimediaListItem multimediaListItem = (MultimediaListItem) data.get("multimediaListItem");
-
-                removeMultimediaFromList(userList, multimediaListItem);
-            }
-            case SHOW_DETAIL_PANEL -> {
-                DetailMultimediaPanel panel = (DetailMultimediaPanel) data.get("detailPanel");
-
-                showDetailPanel(panel);
-            }
-            case HIDE_DETAIL_PANEL -> removeDetailPanel();
-            case CREATE_USER_LIST_ITEMS -> {
-                List<UserList> userLists = (List<UserList>) data.get("userLists");
-
-                createUserListItems(userLists);
-            }
-            case DELETE_USER_LIST -> {
-                UserList userList = (UserList) data.get("userList");
-
-                deleteUserList(userList);
-            }
-        }
+//        Map<String, Object> data = event.data();
+//
+//        switch (event.type()) {
+//            case ADD_MULTIMEDIA -> {
+//                UserList userList = (UserList) data.get("userList");
+//                MultimediaListItem multimediaListItem = (MultimediaListItem) data.get("multimediaListItem");
+//
+//                addMultimediaToList(userList, multimediaListItem);
+//            }
+//            case REMOVE_MULTIMEDIA -> {
+//                UserList userList = (UserList) data.get("userList");
+//                MultimediaListItem multimediaListItem = (MultimediaListItem) data.get("multimediaListItem");
+//
+//                removeMultimediaFromList(userList, multimediaListItem);
+//            }
+//            case SHOW_DETAIL_PANEL -> {
+//                DetailPanel panel = (DetailPanel) data.get("detailPanel");
+//
+//                showDetailPanel(panel);
+//            }
+//            case HIDE_DETAIL_PANEL -> removeDetailPanel();
+//            case CREATE_USER_LIST_ITEMS -> {
+//                List<UserListDTO> userLists = (List<UserListDTO>) data.get("userLists");
+//
+//                createUserListItems(userLists);
+//            }
+//            case DELETE_USER_LIST -> {
+//                UserList userList = (UserList) data.get("userList");
+//
+//                deleteUserList(userList);
+//            }
+//        }
     }
 }

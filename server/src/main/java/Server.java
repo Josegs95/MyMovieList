@@ -1,3 +1,4 @@
+import config.ApiConfiguration;
 import config.HibernateUtil;
 import init.EnvironmentVariables;
 import org.slf4j.Logger;
@@ -30,14 +31,12 @@ public class Server {
     private void init(){
         createDatabaseConnection();
 
-        try (ServerSocket serverSocket = new ServerSocket(PORT);
-             ExecutorService executor = Executors.newCachedThreadPool()){
+        try (ServerSocket serverSocket = new ServerSocket(PORT); ExecutorService executor = Executors.newCachedThreadPool()){
+            executor.execute(ApiConfiguration::load);
 
             LOGGER.info("Escuchando en el puerto: {}", PORT);
-
             while(true){
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Ha llegado un cliente");
                 LOGGER.info("Ha llegado un cliente");
                 executor.execute(new ClientHandler(clientSocket));
             }

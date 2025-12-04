@@ -1,50 +1,30 @@
 package service;
 
-import exception.CommunicationException;
-import model.Message;
-import model.entity.User;
+import context.SessionContext;
+import dto.UserDTO;
+import dto.request.LoginRequest;
+import dto.request.RegisterRequest;
+import protocol.Message;
 import protocol.MessageType;
 import protocol.SocketCommunication;
-import security.Security;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import tools.jackson.databind.ObjectMapper;
 
 public class AuthService {
 
-    public User login(String username, String password) {
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("username", username);
-        userData.put("password", Security.hashString(password));
+    private final ObjectMapper mapper = new ObjectMapper();
 
-        Message serverMessage = writeMessage(userData, MessageType.LOGIN);
+    public void login(String username, String password) {
+        LoginRequest request = new LoginRequest(username, password);
 
-        return new User(username, (Integer) serverMessage.content().get("token"));
+        Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.LOGIN, request));
+
+        UserDTO user = mapper.convertValue(serverMessage.content(), UserDTO.class);
+        SessionContext.getInstance().setUser(user);
     }
 
     public void register(String username, String password, String email) {
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("username", username);
-        userData.put("password", Security.hashString(password));
-        userData.put("email", email);
+        RegisterRequest request = new RegisterRequest(username, password, email);
 
-        writeMessage(userData, MessageType.REGISTER);
-    }
-
-    private Message writeMessage(Map<String, Object> userData, MessageType messageType) {
-        Message serverMessage;
-        try (SocketCommunication socketCommunication = new SocketCommunication()) {
-            serverMessage = socketCommunication.writeToServer(messageType, userData);
-        } catch (IOException e) {
-            throw new CommunicationException("Error al intentar comunicarse al servidor");
-        }
-
-        if (serverMessage.status() == null || serverMessage.status() != 200L) {
-            String errorMessage = serverMessage.getErrorMessage().orElse("Error desconocido");
-            throw new RuntimeException(errorMessage);
-        }
-
-        return serverMessage;
+        SocketCommunication.sendMessageToServer(new Message(MessageType.REGISTER, request));
     }
 }

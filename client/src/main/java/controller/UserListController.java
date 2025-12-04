@@ -1,6 +1,8 @@
 package controller;
 
-import model.Message;
+import dto.UserDTO;
+import dto.UserListDTO;
+import protocol.Message;
 import model.TvShow;
 import model.entity.*;
 import protocol.MessageType;
@@ -15,55 +17,48 @@ public class UserListController {
 
     public UserListController() {}
 
-    public static Message fetchUserList(User user) {
+    public static Message fetchUserList(UserDTO user) {
         Map<String, Object> userData = getUserData(user);
 
-        try(SocketCommunication socketCommunication = new SocketCommunication()) {
-
-            return socketCommunication.writeToServer(MessageType.GET_USER_LISTS, userData);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return SocketCommunication.sendMessageToServer(new Message(MessageType.GET_USER_LISTS, userData));
     }
 
-    public static Message createUserList(User user, String listName) {
+    public static Message createUserList(UserDTO user, String listName) {
         Map<String, Object> userData = getUserData(user);
         userData.put("listName", listName);
 
         try(SocketCommunication socketCommunication = new SocketCommunication()) {
 
-            return socketCommunication.writeToServer(MessageType.CREATE_USER_LIST, userData);
+            return SocketCommunication.sendMessageToServer(new Message(MessageType.CREATE_USER_LIST, userData));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Message renameUserList(User user, String oldListName, String newListName) {
+    public static Message renameUserList(UserDTO user, String oldListName, String newListName) {
         Map<String, Object> userData = getUserData(user);
         userData.put("oldListName", oldListName);
         userData.put("newListName", newListName);
 
         try(SocketCommunication socketCommunication = new SocketCommunication()) {
-
-            return socketCommunication.writeToServer(MessageType.RENAME_USER_LIST, userData);
+            return SocketCommunication.sendMessageToServer(new Message(MessageType.RENAME_USER_LIST, userData));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Message deleteUserList(User user, String listName) {
+    public static Message deleteUserList(UserDTO user, String listName) {
         Map<String, Object> userData = getUserData(user);
         userData.put("listName", listName);
 
         try(SocketCommunication socketCommunication = new SocketCommunication()) {
-
-            return socketCommunication.writeToServer(MessageType.DELETE_USER_LIST, userData);
+            return SocketCommunication.sendMessageToServer(new Message(MessageType.DELETE_USER_LIST, userData));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Message addMultimediaToList(User user, UserList userList, MultimediaListItem multimediaListItem) {
+    public static Message addMultimediaToList(UserDTO user, UserList userList, MultimediaListItem multimediaListItem) {
         Map<String, Object> userData = getUserData(user);
         Map<String, Object> multimediaData = new HashMap<>();
 
@@ -83,14 +78,13 @@ public class UserListController {
         userData.put("currentEpisode", multimediaListItem.getCurrentEpisode());
 
         try(SocketCommunication socketCommunication = new SocketCommunication()) {
-
-            return socketCommunication.writeToServer(MessageType.ADD_MULTIMEDIA, userData);
+            return SocketCommunication.sendMessageToServer(new Message(MessageType.ADD_MULTIMEDIA, userData));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Message modifyMultimediaAttributes(User user, UserList userList,
+    public static Message modifyMultimediaAttributes(UserDTO user, UserList userList,
                                                                   MultimediaListItem multimediaListItem) {
         Map<String, Object> userData = getUserData(user);
         Map<String, Object> multimediaData = new HashMap<>();
@@ -111,14 +105,13 @@ public class UserListController {
         userData.put("currentEpisode", multimediaListItem.getCurrentEpisode());
 
         try(SocketCommunication socketCommunication = new SocketCommunication()) {
-
-            return socketCommunication.writeToServer(MessageType.MODIFY_MULTIMEDIA, userData);
+            return SocketCommunication.sendMessageToServer(new Message(MessageType.MODIFY_MULTIMEDIA, userData));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Message deleteMultimediaFromList(User user, UserList userList, Multimedia multimedia) {
+    public static Message deleteMultimediaFromList(UserDTO user, UserListDTO userList, Multimedia multimedia) {
         Map<String, Object> userData = getUserData(user);
         Map<String, Object> multimediaData = new HashMap<>();
 
@@ -126,11 +119,10 @@ public class UserListController {
         multimediaData.put("type", multimedia.getMultimediaType());
 
         userData.put("multimedia", multimediaData);
-        userData.put("listName", userList.getName());
+        userData.put("listName", userList.name());
 
         try(SocketCommunication socketCommunication = new SocketCommunication()) {
-
-            return socketCommunication.writeToServer(MessageType.REMOVE_MULTIMEDIA, userData);
+            return SocketCommunication.sendMessageToServer(new Message(MessageType.REMOVE_MULTIMEDIA, userData));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -138,7 +130,7 @@ public class UserListController {
 
     public static void showMultimediaDetails(MainFrame mainView) {}
 
-    private static Map<String, Object> getUserData(User user) {
+    private static Map<String, Object> getUserData(UserDTO user) {
         Map<String, Object> userData = new HashMap<>();
         userData.put("username", user.getUsername());
         userData.put("token", user.getSessionToken());

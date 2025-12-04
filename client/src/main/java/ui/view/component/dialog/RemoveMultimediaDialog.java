@@ -1,66 +1,45 @@
 package ui.view.component.dialog;
 
-import model.entity.User;
-import model.entity.UserList;
+import context.SessionContext;
+import dto.MultimediaListItemDTO;
+import dto.MultimediaSummaryDTO;
+import dto.UserDTO;
+import dto.UserListDTO;
 import net.miginfocom.swing.MigLayout;
 import ui.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.List;
+import java.util.function.Function;
 
 public class RemoveMultimediaDialog extends JDialog {
 
-    private final List<UserList> userLists;
-    private final MainFrame mainFrame;
-    private final User user;
+    private static final Color BACKGROUND_COLOR = new Color(223, 223, 223);
 
-    private JComboBox<String> cmbLists;
+    private final MainFrame mainFrame;
+    private final MultimediaSummaryDTO multimedia;
+
+    private JComboBox<UserListDTO> cmbLists;
     private JButton btnCancel;
     private JButton btnRemove;
 
     private boolean cancelled;
 
-    public RemoveMultimediaDialog (List<UserList> userLists) {
-        super(MainFrame.getInstance(), true);
+    public RemoveMultimediaDialog (MainFrame mainFrame, MultimediaSummaryDTO multimedia) {
+        super(mainFrame, true);
 
-        this.userLists = userLists;
+        this.multimedia = multimedia;
+        this.mainFrame = mainFrame;
 
-        mainFrame = MainFrame.getInstance();
-        user = mainFrame.getUser();
-
-        init();
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public UserList getSelectedList() {
-        if (cancelled || cmbLists.getSelectedItem() == null) {
-            return null;
-        }
-
-        String selectedListName = cmbLists.getSelectedItem().toString();
-        return user.getMultimediaLists().stream()
-                .filter(userList -> userList.getName().equals(selectedListName))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private void init() {
         createUI();
-        createListeners();
     }
 
     private void createUI() {
-        setSize(300, 200);
+        setSize(350, 200);
         setLocationRelativeTo(mainFrame);
         setResizable(false);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        getContentPane().setBackground(new Color(223, 223, 223));
+        getContentPane().setBackground(BACKGROUND_COLOR);
         setTitle("Remove");
 
         setLayout(new MigLayout(
@@ -79,13 +58,8 @@ public class RemoveMultimediaDialog extends JDialog {
 
         JLabel lblLists = new JLabel("Lists:", SwingConstants.RIGHT);
 
-        String[] listNames = userLists.stream()
-                .map(UserList::getName)
-                .toArray(String[]::new);
-
-        cmbLists = new JComboBox<>(listNames);
-        cmbLists.setSelectedItem(userLists.getFirst());
-        ((JLabel) cmbLists.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+        cmbLists = new JComboBox<>(getAllListContainingMultimedia());
+        cmbLists.setRenderer(new SimpleNameRenderer<>(UserListDTO::name));
 
         pnlLists.add(lblLists);
         pnlLists.add(cmbLists);
@@ -109,24 +83,62 @@ public class RemoveMultimediaDialog extends JDialog {
         add(pnlButtons);
     }
 
-    private void createListeners() {
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                quit();
-            }
-        });
-
-        btnCancel.addActionListener(_ -> quit());
-
-        btnRemove.addActionListener(_ -> {
-            cancelled = false;
-            RemoveMultimediaDialog.this.dispose();
-        });
+    private UserListDTO[] getAllListContainingMultimedia() {
+        UserDTO user = SessionContext.getInstance().getUser();
+        return user.getLists().stream()
+                .filter(userList -> userList.listItems().stream()
+                        .map(MultimediaListItemDTO::getMultimedia)
+                        .anyMatch(item -> item.equals(multimedia)))
+                .toArray(UserListDTO[]::new);
     }
 
-    private void quit() {
-        cancelled = true;
-        dispose();
+    public UserListDTO getSelectedList() {
+        if (cancelled || cmbLists.getSelectedItem() == null) {
+            return null;
+        }
+
+        return (UserListDTO) cmbLists.getSelectedItem();
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public JButton getBtnCancel() {
+        return btnCancel;
+    }
+
+    public JButton getBtnRemove() {
+        return btnRemove;
+    }
+
+    public MultimediaSummaryDTO getMultimedia() {
+        return multimedia;
+    }
+
+    private static class SimpleNameRenderer<T> extends DefaultListCellRenderer {
+
+        private final Function<T, String> nameExtractor;
+
+        private SimpleNameRenderer(Function<T, String> nameExtractor) {
+            this.nameExtractor = nameExtractor;
+
+            setHorizontalAlignment(CENTER);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            return super.getListCellRendererComponent(
+                    list,
+                    value != null ? nameExtractor.apply((T) value) : "",
+                    index,
+                    isSelected,
+                    cellHasFocus);
+        }
     }
 }

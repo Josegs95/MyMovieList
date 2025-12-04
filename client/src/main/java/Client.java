@@ -1,5 +1,5 @@
-import controller.ApiController;
 import init.EnvironmentVariables;
+import ui.controller.MainFrameUIController;
 import ui.view.MainFrame;
 
 import javax.swing.*;
@@ -16,8 +16,8 @@ public class Client {
 
     private void init() {
         SwingUtilities.invokeLater(() -> {
-            MainFrame.getInstance();
-            new Thread(ApiController::setUpConfigurationDetails).start();
+            MainFrame mainFrame = new MainFrame();
+            new MainFrameUIController(mainFrame);
         });
     }
 }

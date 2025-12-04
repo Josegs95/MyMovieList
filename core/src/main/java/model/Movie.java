@@ -13,8 +13,9 @@ public class Movie extends Multimedia {
     private Double popularity;
     private String synopsis;
     private List<String> genreList;
-    private String duration;
     private String country;
+
+    private String duration;
 
     public Movie() {
     }

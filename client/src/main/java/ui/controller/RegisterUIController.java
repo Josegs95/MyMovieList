@@ -32,8 +32,7 @@ public class RegisterUIController {
 
         try {
             authService.register(username, password, email.isEmpty() ? null : email);
-            view.setUsername(username);
-            view.dispose();
+            view.setRegisteredUser(username);
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
         }

@@ -18,6 +18,9 @@ public class Multimedia {
     @Column(name = "api_id", nullable = false)
     private String apiId;
 
+    @Column(name = "poster_path")
+    private String posterPath;
+
     @Column(name = "total_episodes")
     private Integer totalEpisodes;
 
@@ -28,9 +31,10 @@ public class Multimedia {
     public Multimedia() {
     }
 
-    public Multimedia(String title, String apiId, Integer totalEpisodes, MultimediaType multimediaType) {
+    public Multimedia(String title, String apiId, String posterPath, Integer totalEpisodes, MultimediaType multimediaType) {
         this.title = title;
         this.apiId = apiId;
+        this.posterPath = posterPath;
         this.totalEpisodes = totalEpisodes;
         this.multimediaType = multimediaType;
     }
@@ -49,6 +53,14 @@ public class Multimedia {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
     public String getApiId() {

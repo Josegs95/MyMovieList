@@ -1,6 +1,7 @@
 package protocol;
 
-import model.Message;
+import exception.CommunicationException;
+import exception.ServerException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.DataInputStream;
@@ -9,7 +10,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Map;
 
 public class SocketCommunication implements AutoCloseable {
 
@@ -37,28 +37,45 @@ public class SocketCommunication implements AutoCloseable {
         this(new Socket(System.getProperty("SERVER_HOST"), Integer.parseInt(System.getProperty("SERVER_PORT"))));
     }
 
-    public Message writeToServer(MessageType messageType, Map<String, Object> messageData)
+    public static Message sendMessageToServer(Message clientMessage) {
+        try (SocketCommunication socketCommunication = new SocketCommunication()) {
+            Message serverMessage = socketCommunication.writeToServer(clientMessage);
+
+            if (serverMessage.status() != 200L) {
+                String errorMessage = serverMessage.getErrorMessage().orElse("Error desconocido");
+                throw new ServerException(errorMessage);
+            }
+
+            return serverMessage;
+        } catch (IOException e) {
+            throw new CommunicationException("Error al intentar comunicarse al servidor");
+        }
+    }
+
+    private Message writeToServer(Message message)
             throws IOException {
         writeStringToSocket(objectMapper.writeValueAsString(new Message(MessageType.KNOCK, null, null)));
         Message serverResponse = objectMapper.readValue(readStringFromSocket(), Message.class);
 
-        if (serverResponse.messageType() != MessageType.KNOCK
-                || serverResponse.status() == null || serverResponse.status() != 200)
-            return null;
+        if (serverResponse.messageType() != MessageType.KNOCK || serverResponse.status() != 200) {
+            throw new RuntimeException("Error de comunicación con el servidor");
+        }
 
-        writeStringToSocket(objectMapper.writeValueAsString(new Message(messageType, null, messageData)));
+        writeStringToSocket(objectMapper.writeValueAsString(message));
 
         return objectMapper.readValue(readStringFromSocket(), Message.class);
     }
 
-    public void writeToClient(MessageType messageType, Long status, Map<String, Object> messageData)
+    public void writeToClient(MessageType messageType, Long status, Object messageData)
             throws IOException {
         writeStringToSocket(objectMapper.writeValueAsString(new Message(messageType, status, messageData)));
     }
 
     public String readStringFromSocket() throws IOException {
         String encodedMessage = dis.readUTF();
-        return new String (Base64.getDecoder().decode(encodedMessage), StandardCharsets.UTF_8);
+        String decodedMessage = new String (Base64.getDecoder().decode(encodedMessage), StandardCharsets.UTF_8);
+        System.out.printf("Mensaje leído: %s%n", decodedMessage);
+        return decodedMessage;
     }
 
     private void writeStringToSocket(String message) throws IOException {

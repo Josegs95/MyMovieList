@@ -143,7 +143,7 @@ public class RegisterDialog extends AuthenticationDialog{
     private boolean checkEmailField() {
         String email = getEmail();
 
-        if (email == null) {
+        if (email == null || email.isEmpty()) {
             return true;
         }
 
@@ -159,6 +159,12 @@ public class RegisterDialog extends AuthenticationDialog{
         }
 
         return true;
+    }
+
+    public void setRegisteredUser(String username) {
+        this.setUsername(username);
+        this.loginDialog.getTextFieldPassword().requestFocus();
+        this.dispose();
     }
 
     @Override

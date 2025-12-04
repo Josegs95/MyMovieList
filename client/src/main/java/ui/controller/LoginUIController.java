@@ -1,6 +1,5 @@
 package ui.controller;
 
-import model.entity.User;
 import service.AuthService;
 import ui.util.ErrorHandler;
 import ui.view.component.dialog.auth.LoginDialog;
@@ -19,20 +18,18 @@ public class LoginUIController {
     }
 
     private void initListeners() {
-        view.getBtnLogin().addActionListener(_ -> onAccept());
+        view.getBtnLogin().addActionListener(_ -> onLogin());
         view.getBtnRegister().addActionListener(_ -> onRegister());
         view.getBtnCancel().addActionListener(_ -> onCancel());
     }
 
-    private void onAccept() {
+    private void onLogin() {
         String username = view.getUsername();
         String password = view.getPassword();
 
         try {
-            User user = authService.login(username, password);
-            view.setUser(user);
-            view.setLoginSuccess(true);
-            view.dispose();
+            authService.login(username, password);
+            view.onLoginSuccess();
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
         }
