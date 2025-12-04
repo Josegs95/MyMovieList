@@ -7,8 +7,8 @@ import dto.request.CreateListRequest;
 import exception.AuthorizationException;
 import exception.ConflictException;
 import exception.ResourceNotFoundException;
-import model.entity.User;
-import model.entity.UserList;
+import entity.User;
+import entity.UserList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

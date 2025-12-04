@@ -5,7 +5,7 @@ import dto.MultimediaSummaryDTO;
 import dto.SeriesSummaryDTO;
 import dto.UserListDTO;
 import lib.StretchIcon;
-import model.entity.MultimediaType;
+import entity.MultimediaType;
 import net.miginfocom.swing.MigLayout;
 import ui.view.MainFrame;
 

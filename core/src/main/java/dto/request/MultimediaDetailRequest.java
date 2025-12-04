@@ -1,5 +1,5 @@
 package dto.request;
 
-import model.entity.MultimediaType;
+import entity.MultimediaType;
 
 public record MultimediaDetailRequest(Long userId, String apiId, MultimediaType type, Integer token) {}

@@ -12,7 +12,7 @@ import dto.response.ApiSearchResponse;
 import dto.response.MultimediaDetailResponse;
 import dto.response.SearchMultimediaResponse;
 import filter.TMDBFilter;
-import model.entity.MultimediaType;
+import entity.MultimediaType;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;

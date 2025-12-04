@@ -7,7 +7,7 @@ import dto.request.LoginRequest;
 import dto.request.RegisterRequest;
 import exception.AuthenticationException;
 import exception.ConflictException;
-import model.entity.User;
+import entity.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import security.Security;

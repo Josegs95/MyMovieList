@@ -1,7 +1,7 @@
 package dto;
 
-import model.entity.MultimediaListItem;
-import model.entity.MultimediaStatus;
+import entity.MultimediaListItem;
+import entity.MultimediaStatus;
 
 import java.util.Objects;
 

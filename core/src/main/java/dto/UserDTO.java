@@ -1,6 +1,6 @@
 package dto;
 
-import model.entity.User;
+import entity.User;
 
 import java.util.List;
 

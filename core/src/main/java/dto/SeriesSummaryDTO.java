@@ -1,6 +1,6 @@
 package dto;
 
-import model.entity.Multimedia;
+import entity.Multimedia;
 
 public class SeriesSummaryDTO extends MultimediaSummaryDTO{
 

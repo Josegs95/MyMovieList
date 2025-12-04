@@ -1,6 +1,6 @@
 package dao;
 
-import model.entity.MultimediaListItem;
+import entity.MultimediaListItem;
 import org.hibernate.Session;
 
 import java.util.List;

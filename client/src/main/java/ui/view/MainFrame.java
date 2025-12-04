@@ -1,7 +1,6 @@
 package ui.view;
 
 import context.SessionContext;
-import controller.ViewController;
 import dto.UserDTO;
 import net.miginfocom.swing.MigLayout;
 import service.AuthService;
@@ -65,11 +64,6 @@ public class MainFrame extends JFrame{
         userListPanel = new UserListPanel(this);
         new SearchUIController(searchPanel, new SearchService());
         new UserListUIController(userListPanel, new UserListService());
-
-        // * BORRAR *
-        ViewController.getInstance().registerView("searchPanel", searchPanel);
-        ViewController.getInstance().registerView("userListPanel", userListPanel);
-        //
 
         // Set central panel to "search mode"
 

@@ -1,6 +1,6 @@
 package dto;
 
-import model.entity.UserList;
+import entity.UserList;
 
 import java.util.List;
 import java.util.stream.Collectors;

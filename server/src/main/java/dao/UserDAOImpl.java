@@ -1,6 +1,6 @@
 package dao;
 
-import model.entity.User;
+import entity.User;
 import org.hibernate.Session;
 
 public class UserDAOImpl implements UserDAO {

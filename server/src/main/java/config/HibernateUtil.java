@@ -1,5 +1,9 @@
 package config;
 
+import entity.Multimedia;
+import entity.MultimediaListItem;
+import entity.User;
+import entity.UserList;
 import init.EnvironmentVariables;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -36,10 +40,10 @@ public class HibernateUtil {
             configuration.setProperties(properties);
 
             // Entities
-            configuration.addAnnotatedClass(model.entity.User.class);
-            configuration.addAnnotatedClass(model.entity.UserList.class);
-            configuration.addAnnotatedClass(model.entity.Multimedia.class);
-            configuration.addAnnotatedClass(model.entity.MultimediaListItem.class);
+            configuration.addAnnotatedClass(User.class);
+            configuration.addAnnotatedClass(UserList.class);
+            configuration.addAnnotatedClass(Multimedia.class);
+            configuration.addAnnotatedClass(MultimediaListItem.class);
 
             return configuration.buildSessionFactory();
         } catch (HibernateException e) {

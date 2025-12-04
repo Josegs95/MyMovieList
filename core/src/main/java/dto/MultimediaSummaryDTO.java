@@ -1,8 +1,8 @@
 package dto;
 
 import com.fasterxml.jackson.annotation.*;
-import model.entity.Multimedia;
-import model.entity.MultimediaType;
+import entity.Multimedia;
+import entity.MultimediaType;
 
 import java.util.Objects;
 

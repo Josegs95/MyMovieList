@@ -2,8 +2,8 @@ package ui.view.component.dialog;
 
 import context.SessionContext;
 import dto.*;
-import model.entity.MultimediaStatus;
-import model.entity.MultimediaType;
+import entity.MultimediaStatus;
+import entity.MultimediaType;
 import net.miginfocom.swing.MigLayout;
 import ui.view.MainFrame;
 

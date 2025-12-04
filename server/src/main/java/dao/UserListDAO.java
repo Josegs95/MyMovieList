@@ -1,7 +1,7 @@
 package dao;
 
-import model.entity.User;
-import model.entity.UserList;
+import entity.User;
+import entity.UserList;
 import org.hibernate.Session;
 
 import java.util.List;

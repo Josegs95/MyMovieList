@@ -1,4 +1,4 @@
-package model.entity;
+package entity;
 
 public enum MultimediaStatus {
     PLAN_TO_WATCH,

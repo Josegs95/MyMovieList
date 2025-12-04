@@ -5,7 +5,9 @@ import dao.MultimediaListItemDAO;
 import dto.MultimediaListItemDTO;
 import dto.MultimediaSummaryDTO;
 import dto.SeriesSummaryDTO;
-import model.entity.*;
+import entity.Multimedia;
+import entity.MultimediaListItem;
+import entity.UserList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
