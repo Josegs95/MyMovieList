@@ -65,10 +65,6 @@ public class UserService {
                 }
                 transaction.commit();
 
-                if (user.getMultimediaLists() == null) {
-                    user.setMultimediaLists(Collections.emptyList());
-                }
-
                 return new UserDTO(user);
             } catch (Exception e) {
                 if (transaction != null) {

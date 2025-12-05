@@ -2,6 +2,7 @@ package dto;
 
 import entity.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDTO {
@@ -17,9 +18,7 @@ public class UserDTO {
         this.id = user.getId();
         this.username = user.getUsername();
         this.sessionToken = user.getSessionToken();
-        this.lists = user.getMultimediaLists().stream()
-                .map(UserListDTO::new)
-                .toList();
+        this.lists = new ArrayList<>();
     }
 
     public Long getId() {

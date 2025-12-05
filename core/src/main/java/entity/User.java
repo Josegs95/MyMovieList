@@ -102,4 +102,16 @@ public class User {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    @Override
+    public String toString() {
+        return "User {" +
+                "id = " + id +
+                ", username = \"" + username + '\"' +
+                ", password = \"" + password + '\"' +
+                ", email = \"" + email + '\"' +
+                ", sessionToken = " + sessionToken +
+                ", multimediaLists = " + multimediaLists +
+                '}';
+    }
 }
