@@ -51,10 +51,7 @@ public class UserListService {
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.ADD_MULTIMEDIA, request));
         MultimediaListItemDTO listItem = mapper.convertValue(serverMessage.content(), MultimediaListItemDTO.class);
-        UserListDTO userList = user.getLists().stream()
-                .filter(list -> list.id().equals(userListDTO.id()))
-                .findFirst().orElseThrow();
-        userList.listItems().add(listItem);
+        userListDTO.listItems().add(listItem);
 
         EventBus.publish(new ListItemAddedEvent(userListDTO, listItem));
     }
@@ -67,11 +64,8 @@ public class UserListService {
                 user.getSessionToken());
 
         SocketCommunication.sendMessageToServer(new Message(MessageType.REMOVE_MULTIMEDIA, request));
-        UserListDTO userList = user.getLists().stream()
-                .filter(list -> list.id().equals(userListDTO.id()))
-                .findFirst().orElseThrow();
-        userList.listItems().remove(listItem);
+        userListDTO.listItems().remove(listItem);
 
-        EventBus.publish(new ListItemDeletedEvent(userList, listItem));
+        EventBus.publish(new ListItemDeletedEvent(userListDTO, listItem));
     }
 }

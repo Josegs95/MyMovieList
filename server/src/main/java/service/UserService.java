@@ -5,14 +5,13 @@ import dao.UserDAO;
 import dto.UserDTO;
 import dto.request.LoginRequest;
 import dto.request.RegisterRequest;
+import entity.User;
 import exception.AuthenticationException;
 import exception.ConflictException;
-import entity.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import security.Security;
 
-import java.util.Collections;
 import java.util.Random;
 
 public class UserService {
