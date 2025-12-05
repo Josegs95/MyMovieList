@@ -4,10 +4,7 @@ import context.SessionContext;
 import dto.MultimediaListItemDTO;
 import dto.UserDTO;
 import dto.UserListDTO;
-import dto.request.AddItemListRequest;
-import dto.request.CreateListRequest;
-import dto.request.DeleteItemListRequest;
-import dto.request.GetAllListsRequest;
+import dto.request.*;
 import dto.response.GetAllListsResponse;
 import protocol.Message;
 import protocol.MessageType;
@@ -46,12 +43,20 @@ public class UserListService {
         return response.lists();
     }
 
+    public void renameList(UserListDTO userList, String newListName) {
+        RenameListRequest request = new RenameListRequest(user.getId(), userList.getId(), newListName, user.getSessionToken());
+
+        Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.RENAME_USER_LIST, request));
+        UserListDTO renamedUserList = mapper.convertValue(serverMessage.content(), UserListDTO.class);
+        userList.setName(renamedUserList.getName());
+    }
+
     public void addItemToList(UserListDTO userListDTO, MultimediaListItemDTO multimedia) {
         AddItemListRequest request = new AddItemListRequest(user.getId(), multimedia, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.ADD_MULTIMEDIA, request));
         MultimediaListItemDTO listItem = mapper.convertValue(serverMessage.content(), MultimediaListItemDTO.class);
-        userListDTO.listItems().add(listItem);
+        userListDTO.getListItems().add(listItem);
 
         EventBus.publish(new ListItemAddedEvent(userListDTO, listItem));
     }
@@ -59,12 +64,12 @@ public class UserListService {
     public void deleteItemFromList(UserListDTO userListDTO, MultimediaListItemDTO listItem) {
         DeleteItemListRequest request = new DeleteItemListRequest(
                 user.getId(),
-                userListDTO.id(),
+                userListDTO.getId(),
                 listItem.getMultimedia().getIdDb(),
                 user.getSessionToken());
 
         SocketCommunication.sendMessageToServer(new Message(MessageType.REMOVE_MULTIMEDIA, request));
-        userListDTO.listItems().remove(listItem);
+        userListDTO.getListItems().remove(listItem);
 
         EventBus.publish(new ListItemDeletedEvent(userListDTO, listItem));
     }

@@ -4,6 +4,8 @@ import dto.MultimediaListItemDTO;
 import dto.UserListDTO;
 import lib.ScrollablePanel;
 import net.miginfocom.swing.MigLayout;
+import service.UserListService;
+import ui.controller.CollapsableListUIController;
 import ui.view.MainFrame;
 
 import javax.swing.*;
@@ -74,25 +76,26 @@ public class UserListPanel extends JPanel {
     }
 
     public void createUserList(UserListDTO userList) {
-        CollapsableListPanel panel = new CollapsableListPanel(userList);
-        listPanelMap.put(userList.id(), panel);
-        pnlLists.add(panel);
+        CollapsableListPanel listPanel = new CollapsableListPanel(userList);
+        new CollapsableListUIController(listPanel, new UserListService());
+        listPanelMap.put(userList.getId(), listPanel);
+        pnlLists.add(listPanel);
 
         revalidate();
         repaint();
     }
 
     public void addMultimediaToList(UserListDTO userListDTO, MultimediaListItemDTO addedItem) {
-        CollapsableListPanel listPanel = listPanelMap.get(userListDTO.id());
+        CollapsableListPanel listPanel = listPanelMap.get(userListDTO.getId());
         listPanel.addMultimediaListItem(addedItem);
-        listPanel.updateListNameItems();
+        listPanel.updateListNameLabel();
 
         revalidate();
         repaint();
     }
 
     public void removeMultimediaFromList(UserListDTO userListDTO, MultimediaListItemDTO deletedItem) {
-        listPanelMap.get(userListDTO.id()).removeMultimediaItem(deletedItem);
+        listPanelMap.get(userListDTO.getId()).removeMultimediaItem(deletedItem);
 
         revalidate();
         repaint();

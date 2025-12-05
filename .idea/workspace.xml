@@ -4,10 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Fixed to not bring user lists when logged in">
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Some code optimizations">
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/dto/request/RenameListRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/service/UserListService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/UserListService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/CollapsableListUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/CollapsableListUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/ConfigureDialogUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/ConfigureDialogUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/DetailUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/DetailUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/RemoveDialogUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/RemoveDialogUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/ConfigureMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/ConfigureMultimediaDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/RemoveMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/RemoveMultimediaDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/CollapsableListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/CollapsableListPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/DetailPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/DetailPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/UserListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/UserListPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/UserListDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/dto/UserListDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +178,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764940857100</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Some code optimizations">
+      <option name="closed" value="true" />
+      <created>1764952461029</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1764952461029</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -188,6 +208,7 @@
     <MESSAGE value="API moved to server and some refactoring" />
     <MESSAGE value="Deleted old classes and packages" />
     <MESSAGE value="Fixed to not bring user lists when logged in" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed to not bring user lists when logged in" />
+    <MESSAGE value="Some code optimizations" />
+    <option name="LAST_COMMIT_MESSAGE" value="Some code optimizations" />
   </component>
 </project>

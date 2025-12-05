@@ -73,7 +73,7 @@ public class ClientHandler implements Runnable{
                 case LOGIN -> serverResponseData = loginUser();
                 case REGISTER -> registerUser();
                 case CREATE_USER_LIST -> serverResponseData = createUserList();
-//                case RENAME_USER_LIST -> renameUserList();
+                case RENAME_USER_LIST -> serverResponseData = renameUserList();
 //                case DELETE_USER_LIST -> deleteUserList();
                 case GET_USER_LISTS -> serverResponseData = getUserLists();
                 case ADD_MULTIMEDIA -> serverResponseData = addMultimediaToList();
@@ -155,17 +155,16 @@ public class ClientHandler implements Runnable{
         return USER_LIST_SERVICE.create(request);
     }
 
-//    private void renameUserList() throws AuthenticationException, SQLException, DatabaseException {
-//        String username = clientData.get("username").toString();
-//        Integer token = (Integer) clientData.get("token");
-//        int idUser = Database.validateUser(username, token);
-//
-//        String oldListName = clientData.get("oldListName").toString();
-//        String newListName = clientData.get("newListName").toString();
-//
-//        Database.renameUserList(idUser, oldListName, newListName);
-//    }
-//
+    private UserListDTO renameUserList() {
+        RenameListRequest request = mapper.convertValue(clientData, RenameListRequest.class);
+
+        return USER_LIST_SERVICE.rename(
+                request.userId(),
+                request.listId(),
+                request.newListName(),
+                request.sessionToken());
+    }
+
 //    private void deleteUserList() throws AuthenticationException, SQLException, DatabaseException {
 //        String username = clientData.get("username").toString();
 //        Integer token = (Integer) clientData.get("token");

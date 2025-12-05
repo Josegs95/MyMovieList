@@ -38,7 +38,7 @@ public class RemoveDialogUIController {
         try {
             UserListDTO list = view.getSelectedList();
             MultimediaSummaryDTO multimedia = view.getMultimedia();
-            MultimediaListItemDTO listItemDTO = list.listItems().stream()
+            MultimediaListItemDTO listItemDTO = list.getListItems().stream()
                     .filter(multi -> multi.getMultimedia().equals(multimedia))
                     .findFirst().orElseThrow();
 
@@ -46,7 +46,7 @@ public class RemoveDialogUIController {
 
             String message = String.format("Se ha eliminado \"%s\" de la lista \"%s\" exitosamente",
                     multimedia.getTitle(),
-                    list.name());
+                    list.getName());
             JOptionPane.showMessageDialog(view, message, "Información", JOptionPane.INFORMATION_MESSAGE);
 
             view.dispose();

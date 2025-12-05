@@ -59,7 +59,7 @@ public class RemoveMultimediaDialog extends JDialog {
         JLabel lblLists = new JLabel("Lists:", SwingConstants.RIGHT);
 
         cmbLists = new JComboBox<>(getAllListContainingMultimedia());
-        cmbLists.setRenderer(new SimpleNameRenderer<>(UserListDTO::name));
+        cmbLists.setRenderer(new SimpleNameRenderer<>(UserListDTO::getName));
 
         pnlLists.add(lblLists);
         pnlLists.add(cmbLists);
@@ -86,7 +86,7 @@ public class RemoveMultimediaDialog extends JDialog {
     private UserListDTO[] getAllListContainingMultimedia() {
         UserDTO user = SessionContext.getInstance().getUser();
         return user.getLists().stream()
-                .filter(userList -> userList.listItems().stream()
+                .filter(userList -> userList.getListItems().stream()
                         .map(MultimediaListItemDTO::getMultimedia)
                         .anyMatch(item -> item.equals(multimedia)))
                 .toArray(UserListDTO[]::new);

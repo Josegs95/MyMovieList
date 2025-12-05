@@ -62,7 +62,7 @@ public class DetailUIController {
         String message = String.format(
                 "\"%s\" añadido a la lista \"%s\" exitosamente.",
                 event.listItemDTO().getMultimedia().getTitle(),
-                event.userListDTO().name());
+                event.userListDTO().getName());
         JOptionPane.showMessageDialog(view, message,"Información", JOptionPane.INFORMATION_MESSAGE);
         view.checkButtonAvailability();
     }

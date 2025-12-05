@@ -65,12 +65,12 @@ public class ConfigureMultimediaDialog extends JDialog {
             lists = getAllListsWithoutMultimedia();
         } else {
             lists = user.getLists().stream()
-                    .filter(listDTO -> listDTO.id().equals(listItemDTO.getListId()))
+                    .filter(listDTO -> listDTO.getId().equals(listItemDTO.getListId()))
                     .toList();
             cmbLists.setEnabled(false);
         }
         cmbLists = new JComboBox<>(lists.toArray(UserListDTO[]::new));
-        cmbLists.setRenderer(new SimpleNameRenderer<>(UserListDTO::name));
+        cmbLists.setRenderer(new SimpleNameRenderer<>(UserListDTO::getName));
         cmbLists.setSelectedItem(lists.getFirst());
 
         // Status selector component
@@ -141,7 +141,7 @@ public class ConfigureMultimediaDialog extends JDialog {
 
     private List<UserListDTO> getAllListsWithoutMultimedia() {
         return user.getLists().stream()
-                .filter(listDTO -> listDTO.listItems().stream()
+                .filter(listDTO -> listDTO.getListItems().stream()
                         .map(MultimediaListItemDTO::getMultimedia)
                         .noneMatch(multimedia -> multimedia.equals(listItemDTO.getMultimedia())))
                 .toList();

@@ -7,7 +7,6 @@ import dto.UserListDTO;
 import lib.StretchIcon;
 import entity.MultimediaType;
 import net.miginfocom.swing.MigLayout;
-import ui.view.MainFrame;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -85,18 +84,18 @@ public class CollapsableListPanel extends JPanel {
         add(pnlUserList);
     }
 
-    public void updateListNameItems() {
-        int nItems = userList.listItems().size();
+    public void updateListNameLabel() {
+        int nItems = userList.getListItems().size();
         String listName = String.format("%s (%d %s)",
-                userList.name(),
+                userList.getName(),
                 nItems,
                 nItems == 1 ? "item" : "items");
         lblListName.setText(listName);
     }
 
     private void createItemPanels() {
-        userList.listItems().forEach(this::addMultimediaListItem);
-        updateListNameItems();
+        userList.getListItems().forEach(this::addMultimediaListItem);
+        updateListNameLabel();
 
         revalidate();
         repaint();
@@ -113,7 +112,7 @@ public class CollapsableListPanel extends JPanel {
         MultimediaItemPanel panel = multimediaDict.remove(item);
         panelItems.remove(panel);
 
-        updateListNameItems();
+        updateListNameLabel();
 
         // If there are not more multimedia items in the list, the list wrap itself.
         if (panelItems.getComponentCount() == 0) {
@@ -126,7 +125,7 @@ public class CollapsableListPanel extends JPanel {
         pnlUserList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (!expanded && !userList.listItems().isEmpty()){
+                if (!expanded && !userList.getListItems().isEmpty()){
                     CollapsableListPanel.this.add(panelItems);
                 } else {
                     CollapsableListPanel.this.remove(panelItems);
@@ -205,6 +204,23 @@ public class CollapsableListPanel extends JPanel {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String showRenameListDialog() {
+        String message = String.format("¿A qué nombre deseas renombrar la lista \"%s\"?", userList.getName());
+        return JOptionPane.showInputDialog(this, message,"Renombrar lista", JOptionPane.QUESTION_MESSAGE);
+    }
+
+    public UserListDTO getUserList() {
+        return userList;
+    }
+
+    public JButton getBtnRename() {
+        return btnRename;
+    }
+
+    public JButton getBtnDelete() {
+        return btnDelete;
     }
 
     private class MultimediaItemPanel extends JPanel{

@@ -93,7 +93,7 @@ public class ConfigureDialogUIController {
         UserListDTO userList = view.getSelectedList();
         try {
             MultimediaListItemDTO listItem = new MultimediaListItemDTO(
-                    userList.id(),
+                    userList.getId(),
                     view.getSelectedMultimediaStatus(),
                     view.getSelectedCurrentEpisode(),
                     summaryDTO);

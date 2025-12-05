@@ -74,25 +74,25 @@ public class UserListService {
         }
     }
 
-    public UserList rename(String listName, Long idList, Long idOwner, Integer sessionToken) {
+    public UserListDTO rename(Long idUser, Long idList, String newListName, Integer sessionToken) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                User user = authService.authenticate(session, idOwner, sessionToken);
+                User user = authService.authenticate(session, idUser, sessionToken);
 
-                UserList list = checkListOwnership(session, idList, idOwner);
+                UserList list = checkListOwnership(session, idList, idUser);
 
-                UserList sameNameList = userListDAO.findByNameAndUser(session, listName, user);
+                UserList sameNameList = userListDAO.findByNameAndUser(session, newListName, user);
                 if (sameNameList != null) {
                     throw new ConflictException("It already exists a list with that name for that user");
                 }
 
-                list.setName(listName);
+                list.setName(newListName);
 
                 transaction.commit();
 
-                return list;
+                return new UserListDTO(list);
             } catch (Exception e) {
                 if (transaction != null) {
                     transaction.rollback();

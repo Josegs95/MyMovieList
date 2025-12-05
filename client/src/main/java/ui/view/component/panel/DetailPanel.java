@@ -195,7 +195,7 @@ public class DetailPanel extends JPanel {
         }
 
         long listsContainingItemCount = user.getLists().stream()
-                .filter(userListDTO -> userListDTO.listItems().stream()
+                .filter(userListDTO -> userListDTO.getListItems().stream()
                         .anyMatch(item -> item.getMultimedia().equals(summaryDTO)))
                 .count();
         int userListsCount = user.getLists().size();
