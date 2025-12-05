@@ -26,11 +26,4 @@ public class MainFrameUIController {
     private void onListsLateralMenu() {
         view.changeCentralPanel(UserListPanel.class);
     }
-
-//    private void onUserAuthenticated(UserAuthenticatedEvent event) {
-//        view.setUser(event.user());
-//        view.finishInit();
-//        initListeners();
-////        new Thread(new FetchUserLists(user)).start();
-//    }
 }

@@ -100,10 +100,6 @@ public class RemoveMultimediaDialog extends JDialog {
         return (UserListDTO) cmbLists.getSelectedItem();
     }
 
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }

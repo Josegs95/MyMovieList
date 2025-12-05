@@ -5,7 +5,6 @@ import dto.*;
 import lib.ScrollablePanel;
 import lib.StretchIcon;
 import net.miginfocom.swing.MigLayout;
-import ui.view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -19,7 +18,6 @@ public class DetailPanel extends JPanel {
     private static final Color MOVIE_COLOR = new Color(250, 219, 111);
     private static final Color SERIES_COLOR = new Color(132, 182, 244);
 
-    private final MainFrame mainFrame;
     private final UserDTO user;
     private final MultimediaDetailDTO detailDTO;
     private final MultimediaSummaryDTO summaryDTO;
@@ -28,8 +26,7 @@ public class DetailPanel extends JPanel {
     private JButton btnAddToList;
     private JButton btnRemoveFromList;
 
-    public DetailPanel(MainFrame mainFrame, MultimediaDetailDTO detailDTO, MultimediaSummaryDTO summaryDTO) {
-        this.mainFrame = mainFrame;
+    public DetailPanel(MultimediaDetailDTO detailDTO, MultimediaSummaryDTO summaryDTO) {
         this.detailDTO = detailDTO;
         this.summaryDTO = summaryDTO;
         this.user = SessionContext.getInstance().getUser();
@@ -37,19 +34,6 @@ public class DetailPanel extends JPanel {
         createUI();
         checkButtonAvailability();
     }
-
-    // * BORRAR *
-    public void updatePage() {
-//        userListsWithMultimedia = user.getListsWithMultimedia(multimedia);
-//        userListsWithMultimedia = user.lists();
-//
-//        btnRemoveFromList.setEnabled(!userListsWithMultimedia.isEmpty());
-//        btnAddToList.setEnabled(user.lists().size() > userListsWithMultimedia.size());
-//
-//        revalidate();
-//        repaint();
-    }
-    //
 
     private void createUI() {
         setLayout(new MigLayout(
@@ -116,7 +100,7 @@ public class DetailPanel extends JPanel {
 
         JLabel lblCountry = new JLabel(String.format("Country: %s", detailDTO.getCountry()), SwingConstants.CENTER);
 
-        //Duration & Status
+        // Duration & Status
 
         String duration = isAMovie ? ((MovieDetailDTO) detailDTO).getDuration() : ((SeriesDetailDTO) detailDTO).getEpisodeDuration();
         JLabel lblDuration = new JLabel(String.format("Duration: %s", duration));
@@ -124,7 +108,7 @@ public class DetailPanel extends JPanel {
         String status = isAMovie ? "" : ((SeriesDetailDTO) detailDTO).getAiringStatus();
         JLabel lblStatus = new JLabel(String.format("Status: %s", status), SwingConstants.CENTER);
 
-        //Synopsis
+        // Synopsis
 
         ScrollablePanel pnlSynopsis = new ScrollablePanel(new MigLayout(
                 "fill",
@@ -237,72 +221,5 @@ public class DetailPanel extends JPanel {
 
     public JButton getBtnRemoveFromList() {
         return btnRemoveFromList;
-    }
-
-    private void createListeners() {
-//        btnAddToList.addActionListener(_ -> {
-////            // Show dialog to configure the multimedia
-////            ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimedia);
-////            dialog.setVisible(true);
-////
-////            if (dialog.isCancelled()) {
-////                return;
-////            }
-////
-////            UserList selectedList = dialog.getSelectedList();
-////            MultimediaStatus status = dialog.getSelectedMultimediaStatus();
-////            int currentEpisode = dialog.getSelectedCurrentEpisode();
-////            MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia, selectedList, status, currentEpisode);
-////
-////            // Send the information to the server
-////            Message response = UserListController.addMultimediaToList(user, selectedList, multimediaListItem);
-////            if (response.status() != 200) {
-////                processServerError(response, "Couldn't add the multimedia to the list");
-////            } else {
-////                // Show 'success' message to user
-////                String message = String.format("\"%s\" has been added to \"%s\" list successfully.",
-////                        multimedia.getTitle(), selectedList.getName());
-////                JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
-////
-////                // Get data from server and update UI and model
-////                currentEpisode = (int) (response.getContentAsMap().get("currentEpisode"));
-////                status = MultimediaStatus.valueOf(response.getContentAsMap().get("status").toString());
-////                multimediaListItem.setStatus(status);
-////                multimediaListItem.setCurrentEpisode(currentEpisode);
-////
-////                Event event = new Event(EventType.ADD_MULTIMEDIA,
-////                        Map.of("userList", selectedList, "multimediaListItem", multimediaListItem));
-////                ViewController.getInstance().notifyView("userListPanel", event);
-////
-////                updatePage();
-////            }
-//        });
-//        btnRemoveFromList.addActionListener(_ -> {
-//            RemoveMultimediaDialog dialog = new RemoveMultimediaDialog(mainFrame, userListsWithMultimedia);
-//            dialog.setVisible(true);
-//
-//            if (dialog.isCancelled()) {
-//                return;
-//            }
-//
-//            UserListDTO selectedList = dialog.getSelectedList();
-//            Message response = UserListController.deleteMultimediaFromList(user, selectedList, multimedia);
-//            if (response.status() != 200) {
-//                processServerError(response, "Couldn't remove the multimedia from the list");
-//            } else {
-//                // Show 'success' message to user
-//                String message = String.format("'%s' successfully removed from '%s' list",
-//                        multimedia.getTitle(), selectedList.name());
-//                JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
-//
-//                // Update UI and model
-////                MultimediaListItem mli = selectedList.getMultimediaListItem(multimedia);
-////                Event event = new Event(EventType.REMOVE_MULTIMEDIA,
-////                        Map.of("userList", selectedList, "multimediaListItem", mli));
-////                ViewController.getInstance().notifyView("userListPanel", event);
-//
-//                updatePage();
-//            }
-//        });
     }
 }

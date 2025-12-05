@@ -2,8 +2,6 @@ package ui.view.component.panel;
 
 import dto.MultimediaListItemDTO;
 import dto.UserListDTO;
-import event.Event;
-import event.EventListener;
 import lib.ScrollablePanel;
 import net.miginfocom.swing.MigLayout;
 import ui.view.MainFrame;
@@ -13,7 +11,7 @@ import javax.swing.border.LineBorder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserListPanel extends JPanel implements EventListener {
+public class UserListPanel extends JPanel {
 
     private final MainFrame mainFrame;
 
@@ -71,20 +69,12 @@ public class UserListPanel extends JPanel implements EventListener {
         pnlContainer.add(scrollPane);
     }
 
-    // * BORRAR *
-    public void updateState() {
-        if (pnlContainer.getComponent(0) instanceof DetailPanel detailPanel) {
-            detailPanel.updatePage();
-        }
-    }
-    //
-
     public String showListNameDialog() {
         return JOptionPane.showInputDialog(mainFrame,"Write the list's name that you desire.");
     }
 
     public void createUserList(UserListDTO userList) {
-        CollapsableListPanel panel = new CollapsableListPanel(mainFrame, userList);
+        CollapsableListPanel panel = new CollapsableListPanel(userList);
         listPanelMap.put(userList.id(), panel);
         pnlLists.add(panel);
 
@@ -137,46 +127,5 @@ public class UserListPanel extends JPanel implements EventListener {
 
     public JButton getBtnCreateList() {
         return btnCreateList;
-    }
-
-    public Map<Long, CollapsableListPanel> getListPanelMap() {
-        return listPanelMap;
-    }
-
-    // * BORRAR *
-    @Override @SuppressWarnings("unchecked")
-    public void onEvent(Event event) {
-//        Map<String, Object> data = event.data();
-//
-//        switch (event.type()) {
-//            case ADD_MULTIMEDIA -> {
-//                UserList userList = (UserList) data.get("userList");
-//                MultimediaListItem multimediaListItem = (MultimediaListItem) data.get("multimediaListItem");
-//
-//                addMultimediaToList(userList, multimediaListItem);
-//            }
-//            case REMOVE_MULTIMEDIA -> {
-//                UserList userList = (UserList) data.get("userList");
-//                MultimediaListItem multimediaListItem = (MultimediaListItem) data.get("multimediaListItem");
-//
-//                removeMultimediaFromList(userList, multimediaListItem);
-//            }
-//            case SHOW_DETAIL_PANEL -> {
-//                DetailPanel panel = (DetailPanel) data.get("detailPanel");
-//
-//                showDetailPanel(panel);
-//            }
-//            case HIDE_DETAIL_PANEL -> removeDetailPanel();
-//            case CREATE_USER_LIST_ITEMS -> {
-//                List<UserListDTO> userLists = (List<UserListDTO>) data.get("userLists");
-//
-//                createUserListItems(userLists);
-//            }
-//            case DELETE_USER_LIST -> {
-//                UserList userList = (UserList) data.get("userList");
-//
-//                deleteUserList(userList);
-//            }
-//        }
     }
 }

@@ -123,8 +123,6 @@ public class MainFrame extends JFrame{
         add(pnlLateral);
         add(centralPanel);
 
-        // Logic
-
         revalidate();
         repaint();
     }

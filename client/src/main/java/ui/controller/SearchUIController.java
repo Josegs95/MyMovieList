@@ -20,7 +20,7 @@ public class SearchUIController {
         this.view = view;
         this.service = service;
 
-        EventBus.subscribe(HideDetailsEvent.class, view::showResultPanel);
+        EventBus.subscribe(HideDetailsEvent.class, this::onHideDetailPanelEvent);
         initListeners();
     }
 
@@ -58,5 +58,9 @@ public class SearchUIController {
         } catch(Exception e) {
             ErrorHandler.showError(view, e);
         }
+    }
+
+    private void onHideDetailPanelEvent(HideDetailsEvent event) {
+        view.showResultPanel();
     }
 }

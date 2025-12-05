@@ -24,7 +24,6 @@ import java.util.Map;
 public class CollapsableListPanel extends JPanel {
 
     private final UserListDTO userList;
-    private final MainFrame mainFrame;
 
     private JButton btnRename;
     private JButton btnDelete;
@@ -35,8 +34,7 @@ public class CollapsableListPanel extends JPanel {
     private boolean expanded = false;
     private final Map<MultimediaListItemDTO, MultimediaItemPanel> multimediaDict = new HashMap<>();
 
-    public CollapsableListPanel(MainFrame mainFrame, UserListDTO userList){
-        this.mainFrame = mainFrame;
+    public CollapsableListPanel(UserListDTO userList){
         this.userList = userList;
 
         createUI();
@@ -207,30 +205,6 @@ public class CollapsableListPanel extends JPanel {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public UserListDTO getUserList() {
-        return userList;
-    }
-
-    public JPanel getPanelItems() {
-        return panelItems;
-    }
-
-    public JButton getBtnDelete() {
-        return btnDelete;
-    }
-
-    public JButton getBtnRename() {
-        return btnRename;
-    }
-
-    public boolean isExpanded() {
-        return expanded;
-    }
-
-    public void setExpanded(boolean expanded) {
-        this.expanded = expanded;
     }
 
     private class MultimediaItemPanel extends JPanel{

@@ -58,7 +58,7 @@ public class ClientHandler implements Runnable{
     public void run() {
         SocketCommunication socketCommunication = new SocketCommunication(SOCKET);
         MessageType messageType = null;
-        Long status;
+        long status;
         Object serverResponseData = null;
         try{
             knockMessage(socketCommunication);
@@ -103,8 +103,9 @@ public class ClientHandler implements Runnable{
             LOGGER.info(e.getMessage());
         } catch (Exception e) {
             status = 500L;
-            serverResponseData = Map.of("error_message", "Error interno del servidor");
-            e.printStackTrace();
+            String errorMessage = "Error interno del servidor";
+            serverResponseData = Map.of("error_message", errorMessage);
+            LOGGER.error(errorMessage, e);
         }
 
         try {

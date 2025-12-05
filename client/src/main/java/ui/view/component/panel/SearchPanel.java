@@ -2,12 +2,9 @@ package ui.view.component.panel;
 
 import dto.MultimediaDetailDTO;
 import dto.MultimediaSummaryDTO;
-import event.Event;
-import event.EventListener;
 import lib.ScrollablePanel;
 import net.miginfocom.swing.MigLayout;
 import ui.controller.DetailUIController;
-import ui.event.HideDetailsEvent;
 import ui.view.MainFrame;
 import ui.view.component.MySearchTextField;
 
@@ -18,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class SearchPanel extends JPanel implements EventListener {
+public class SearchPanel extends JPanel{
 
     private final MainFrame mainFrame;
 
@@ -88,7 +85,7 @@ public class SearchPanel extends JPanel implements EventListener {
                 pnlResults.add(new MultimediaItemPanel(multimedia, consumer));
             }
 
-            // Se puede borrar. Está para esperar a que las imágenes carguen un poco
+            // Opcional. Es para esperar a que las imágenes de los elementos carguen.
 //            Thread.sleep(500);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -102,13 +99,13 @@ public class SearchPanel extends JPanel implements EventListener {
         repaint();
     }
 
-    public void showResultPanel(HideDetailsEvent event) {
+    public void showResultPanel() {
         cards.show(this, "RESULTS");
         txtSearch.requestFocusInWindow();
     }
 
     public void showDetailPanel(MultimediaDetailDTO detailDTO, MultimediaSummaryDTO summaryDTO) {
-        DetailPanel detailPanel = new DetailPanel(mainFrame, detailDTO, summaryDTO);
+        DetailPanel detailPanel = new DetailPanel(detailDTO, summaryDTO);
         new DetailUIController(mainFrame, detailPanel);
         add(detailPanel, "DETAILS");
         cards.show(this, "DETAILS");
@@ -121,21 +118,4 @@ public class SearchPanel extends JPanel implements EventListener {
     public JButton getBtnSearch() {
         return btnSearch;
     }
-
-    // * BORRAR *
-    @Override
-    public void onEvent(Event event) {
-//        Map<String, Object> data = event.data();
-//        switch (event.type()) {
-//            case SHOW_DETAIL_PANEL -> {
-//                DetailMultimediaPanel panel = (DetailMultimediaPanel) data.get("detailPanel");
-//
-//                showDetailPanel(panel);
-//            }
-//            case HIDE_DETAIL_PANEL -> showDetailPanel();
-//        }
-    }
-    //
-
-
 }
