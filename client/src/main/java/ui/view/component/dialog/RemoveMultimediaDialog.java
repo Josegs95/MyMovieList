@@ -1,10 +1,10 @@
 package ui.view.component.dialog;
 
 import context.SessionContext;
-import dto.MultimediaListItemDTO;
-import dto.MultimediaSummaryDTO;
-import dto.UserDTO;
-import dto.UserListDTO;
+import model.dto.MultimediaListItemDTO;
+import model.dto.MultimediaSummaryDTO;
+import model.dto.UserDTO;
+import model.dto.UserListDTO;
 import net.miginfocom.swing.MigLayout;
 import ui.view.MainFrame;
 

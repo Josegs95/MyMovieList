@@ -1,6 +1,6 @@
 package ui.event;
 
-import dto.UserListDTO;
+import model.dto.UserListDTO;
 
 import java.util.List;
 

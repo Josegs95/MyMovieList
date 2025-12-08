@@ -3,7 +3,7 @@ package service;
 import dao.UserDAO;
 import exception.AuthenticationException;
 import exception.AuthorizationException;
-import entity.User;
+import model.entity.User;
 import org.hibernate.Session;
 
 public class AuthService {

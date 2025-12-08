@@ -1,7 +1,10 @@
 package ui.controller;
 
 import service.AuthService;
+import ui.event.RegisterUserEvent;
 import ui.util.ErrorHandler;
+import ui.util.EventBus;
+import ui.util.Subscription;
 import ui.view.component.dialog.auth.RegisterDialog;
 
 public class RegisterUIController {
@@ -9,9 +12,13 @@ public class RegisterUIController {
     private final RegisterDialog view;
     private final AuthService authService;
 
+    private final Subscription subscription;
+
     public RegisterUIController(RegisterDialog view, AuthService authService) {
         this.view = view;
         this.authService = authService;
+
+        subscription = EventBus.subscribe(RegisterUserEvent.class, this::onRegisterUser);
 
         initListeners();
     }
@@ -32,13 +39,18 @@ public class RegisterUIController {
 
         try {
             authService.register(username, password, email.isEmpty() ? null : email);
-            view.setRegisteredUser(username);
+
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
         }
     }
 
     private void onCancel() {
+        subscription.unsubscribe();
         view.dispose();
+    }
+
+    private void onRegisterUser(RegisterUserEvent registerUserEvent) {
+        view.setRegisteredUser(registerUserEvent.username());
     }
 }

@@ -1,7 +1,7 @@
 package ui.view.component.panel;
 
-import dto.MultimediaDetailDTO;
-import dto.MultimediaSummaryDTO;
+import model.dto.MultimediaDetailDTO;
+import model.dto.MultimediaSummaryDTO;
 import lib.ScrollablePanel;
 import net.miginfocom.swing.MigLayout;
 import ui.controller.DetailUIController;

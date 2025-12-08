@@ -1,10 +1,7 @@
 package ui.controller;
 
-import dto.UserListDTO;
 import service.UserListService;
-import ui.event.GetListsEvent;
-import ui.event.ListItemAddedEvent;
-import ui.event.ListItemDeletedEvent;
+import ui.event.*;
 import ui.util.ErrorHandler;
 import ui.util.EventBus;
 import ui.view.component.panel.UserListPanel;
@@ -21,9 +18,11 @@ public class UserListUIController {
         this.view = view;
         this.userListService = userListService;
 
-        EventBus.subscribe(GetListsEvent.class, this::onAllListsGotten);
-        EventBus.subscribe(ListItemAddedEvent.class, this::onListItemAdded);
-        EventBus.subscribe(ListItemDeletedEvent.class, this::onListItemDeleted);
+        EventBus.subscribe(CreateListEvent.class, this::onCreateListEvent);
+        EventBus.subscribe(DeleteListEvent.class, this::onDeleteListEvent);
+        EventBus.subscribe(GetListsEvent.class, this::onGetListsEvent);
+        EventBus.subscribe(AddListItemEvent.class, this::onAddListItemEvent);
+        EventBus.subscribe(DeleteListItemEvent.class, this::onDeleteListItemEvent);
 
         initListeners();
         getUserData();
@@ -35,8 +34,7 @@ public class UserListUIController {
 
     private void getUserData() {
         CompletableFuture
-                .supplyAsync(userListService::getAllListsWithItems)
-                .thenAccept(lists -> EventBus.publish(new GetListsEvent(lists)))
+                .runAsync(userListService::getAllListsWithItems)
                 .exceptionally(e -> {
                     ErrorHandler.showError(view, (Exception) e);
                     return null;
@@ -45,27 +43,35 @@ public class UserListUIController {
 
     private void onCreateList() {
         String listName = view.showListNameDialog();
-        if (listName == null) {
-            return;
-        }
+        if (listName == null) return;
+
+        listName = listName.strip();
+        if (listName.isEmpty()) return;
 
         try {
-            UserListDTO userList = userListService.createList(listName);
-            view.createUserList(userList);
+            userListService.createList(listName);
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
         }
     }
 
-    private void onAllListsGotten(GetListsEvent event) {
+    private void onCreateListEvent(CreateListEvent event) {
+        view.createUserList(event.userList());
+    }
+
+    private void onDeleteListEvent(DeleteListEvent event) {
+        view.deleteUserList(event.userList());
+    }
+
+    private void onGetListsEvent(GetListsEvent event) {
         SwingUtilities.invokeLater(() -> event.lists().forEach(view::createUserList));
     }
 
-    private void onListItemAdded(ListItemAddedEvent event) {
+    private void onAddListItemEvent(AddListItemEvent event) {
         view.addMultimediaToList(event.userListDTO(), event.listItemDTO());
     }
 
-    private void onListItemDeleted(ListItemDeletedEvent event) {
+    private void onDeleteListItemEvent(DeleteListItemEvent event) {
         view.removeMultimediaFromList(event.userListDTO(), event.deletedItem());
     }
 }

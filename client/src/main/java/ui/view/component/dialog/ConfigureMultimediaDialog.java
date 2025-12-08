@@ -1,14 +1,17 @@
 package ui.view.component.dialog;
 
 import context.SessionContext;
-import dto.*;
-import entity.MultimediaStatus;
-import entity.MultimediaType;
+import model.dto.*;
+import model.entity.MultimediaStatus;
+import model.entity.MultimediaType;
 import net.miginfocom.swing.MigLayout;
 import ui.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.ItemEvent;
 import java.util.List;
 import java.util.function.Function;
 
@@ -23,10 +26,13 @@ public class ConfigureMultimediaDialog extends JDialog {
     private JComboBox<UserListDTO> cmbLists;
     private JComboBox<MultimediaStatus> cmbStatus;
     private JSpinner spnEpisode;
+    private SpinnerNumberModel spinnerModel;
+    private JTextField spinnerTextField;
     private JButton btnCancel;
     private JButton btnAccept;
 
     private boolean cancelled = false;
+    private boolean internalUpdate = false;
 
     public ConfigureMultimediaDialog(MainFrame mainFrame, MultimediaSummaryDTO summaryDTO) {
         this(mainFrame, new MultimediaListItemDTO(null, MultimediaStatus.PLAN_TO_WATCH, 1, summaryDTO));
@@ -40,6 +46,7 @@ public class ConfigureMultimediaDialog extends JDialog {
         this.user = SessionContext.getInstance().getUser();
 
         createUI();
+        createListeners();
     }
 
     private void createUI() {
@@ -98,9 +105,13 @@ public class ConfigureMultimediaDialog extends JDialog {
             totalEpisodes = series.getTotalEpisodes();
         }
         spnEpisode = new JSpinner(new SpinnerNumberModel(0, 0, totalEpisodes, 1));
-        JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spnEpisode.getEditor();
-        editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+        spinnerModel = (SpinnerNumberModel) spnEpisode.getModel();
+        JSpinner.NumberEditor spinnerEditor = (JSpinner.NumberEditor) spnEpisode.getEditor();
+        spinnerTextField = spinnerEditor.getTextField();
+
+        spinnerTextField.setHorizontalAlignment(SwingConstants.CENTER);
         spnEpisode.setValue(listItemDTO.getCurrentEpisode());
+        spinnerEditor.getFormat().setGroupingUsed(false);
 
         JLabel lblTotalEpisodes = new JLabel("/ " + totalEpisodes);
 
@@ -137,6 +148,54 @@ public class ConfigureMultimediaDialog extends JDialog {
         add(lblCurrentEpisode, "sg 1");
         add(pnlSpinnerEpisode, "sg 2, wrap");
         add(pnlButtons, "span 2");
+    }
+
+    private void createListeners() {
+        spnEpisode.addChangeListener(_ -> onEpisodeSpinner());
+        cmbStatus.addItemListener(this::onStatusComboBox);
+        spinnerTextField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(spinnerTextField::selectAll);
+            }
+        });
+    }
+
+    private void onEpisodeSpinner() {
+        if (internalUpdate) {
+            return;
+        }
+
+        internalUpdate = true;
+
+        try {
+            int currentValue = spinnerModel.getNumber().intValue();
+            if (currentValue == 0) {
+                cmbStatus.setSelectedItem(MultimediaStatus.PLAN_TO_WATCH);
+            } else if (currentValue == (Integer) spinnerModel.getMaximum()) {
+                cmbStatus.setSelectedItem(MultimediaStatus.FINISHED);
+            }
+        } finally {
+            internalUpdate = false;
+        }
+    }
+
+    private void onStatusComboBox(ItemEvent event) {
+        if (event.getStateChange() != ItemEvent.SELECTED || internalUpdate) {
+            return;
+        }
+
+        internalUpdate = true;
+
+        try {
+            MultimediaStatus selectedStatus = (MultimediaStatus) event.getItem();
+            switch (selectedStatus) {
+                case PLAN_TO_WATCH -> spnEpisode.setValue(0);
+                case FINISHED -> spnEpisode.setValue(spinnerModel.getMaximum());
+            }
+        } finally {
+            internalUpdate = false;
+        }
     }
 
     private List<UserListDTO> getAllListsWithoutMultimedia() {
@@ -186,14 +245,6 @@ public class ConfigureMultimediaDialog extends JDialog {
 
     public JButton getBtnCancel() {
         return btnCancel;
-    }
-
-    public JSpinner getSpnEpisode() {
-        return spnEpisode;
-    }
-
-    public JComboBox<MultimediaStatus> getCmbStatus() {
-        return cmbStatus;
     }
 
     private static class SimpleNameRenderer<T> extends DefaultListCellRenderer {

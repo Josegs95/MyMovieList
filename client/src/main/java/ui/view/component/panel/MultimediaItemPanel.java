@@ -1,7 +1,7 @@
 package ui.view.component.panel;
 
-import dto.MovieSummaryDTO;
-import dto.MultimediaSummaryDTO;
+import model.dto.MovieSummaryDTO;
+import model.dto.MultimediaSummaryDTO;
 import lib.StretchIcon;
 import net.miginfocom.swing.MigLayout;
 

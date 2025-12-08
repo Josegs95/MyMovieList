@@ -1,9 +1,9 @@
 package ui.view.component.panel;
 
 import context.SessionContext;
-import dto.*;
 import lib.ScrollablePanel;
 import lib.StretchIcon;
+import model.dto.*;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

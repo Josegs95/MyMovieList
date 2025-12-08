@@ -1,6 +1,6 @@
 package dao;
 
-import entity.User;
+import model.entity.User;
 import org.hibernate.Session;
 
 public interface UserDAO {

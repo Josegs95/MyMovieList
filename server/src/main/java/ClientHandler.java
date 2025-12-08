@@ -1,17 +1,17 @@
 import dao.*;
-import dto.MultimediaListItemDTO;
-import dto.UserDTO;
-import dto.UserListDTO;
-import dto.request.*;
-import dto.response.GetAllListsResponse;
-import dto.response.MultimediaDetailResponse;
-import dto.response.SearchMultimediaResponse;
 import exception.*;
+import model.dto.MultimediaListItemDTO;
+import model.dto.UserListDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import protocol.Message;
 import protocol.MessageType;
 import protocol.SocketCommunication;
+import protocol.dto.request.*;
+import protocol.dto.response.GetAllListsResponse;
+import protocol.dto.response.LoginResponse;
+import protocol.dto.response.MultimediaDetailResponse;
+import protocol.dto.response.SearchMultimediaResponse;
 import service.*;
 import tools.jackson.databind.ObjectMapper;
 
@@ -69,12 +69,12 @@ public class ClientHandler implements Runnable{
             clientData = clientMessage.content();
 
             switch (messageType){
-                case TEST -> System.out.println("Es un mensaje de tipo Test");
+                case TEST -> LOGGER.info("Ha llegado un mensaje de tipo Test");
                 case LOGIN -> serverResponseData = loginUser();
                 case REGISTER -> registerUser();
                 case CREATE_USER_LIST -> serverResponseData = createUserList();
                 case RENAME_USER_LIST -> serverResponseData = renameUserList();
-//                case DELETE_USER_LIST -> deleteUserList();
+                case DELETE_USER_LIST -> deleteUserList();
                 case GET_USER_LISTS -> serverResponseData = getUserLists();
                 case ADD_MULTIMEDIA -> serverResponseData = addMultimediaToList();
 //                case MODIFY_MULTIMEDIA -> serverResponseData = new HashMap<>(modifyMultimedia());
@@ -130,11 +130,11 @@ public class ClientHandler implements Runnable{
         USER_SERVICE.register(request);
     }
 
-    private UserDTO loginUser() {
+    private LoginResponse loginUser() {
         LoginRequest request = mapper.convertValue(clientData, LoginRequest.class);
         LOGGER.info("El usuario '{}' quiere identificarse", request.username());
 
-        return USER_SERVICE.login(request);
+        return new LoginResponse(USER_SERVICE.login(request));
     }
 
     private SearchMultimediaResponse searchMultimedia() {
@@ -165,17 +165,11 @@ public class ClientHandler implements Runnable{
                 request.sessionToken());
     }
 
-//    private void deleteUserList() throws AuthenticationException, SQLException, DatabaseException {
-//        String username = clientData.get("username").toString();
-//        Integer token = (Integer) clientData.get("token");
-//        int idUser = Database.validateUser(username, token);
-//
-//        String listName = clientData.get("listName").toString();
-//
-//        if (!Database.deleteUserList(idUser, listName)) {
-//            throw new DatabaseException("The list didn't get removed cause unknown reasons");
-//        }
-//    }
+    private void deleteUserList() {
+        DeleteListRequest request = mapper.convertValue(clientData, DeleteListRequest.class);
+
+        USER_LIST_SERVICE.delete(request.userId(), request.listId(), request.sessionToken());
+    }
 
     private GetAllListsResponse getUserLists() {
         GetAllListsRequest request = mapper.convertValue(clientData, GetAllListsRequest.class);

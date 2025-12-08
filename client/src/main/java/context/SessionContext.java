@@ -1,6 +1,6 @@
 package context;
 
-import dto.UserDTO;
+import model.dto.UserDTO;
 
 public class SessionContext {
 

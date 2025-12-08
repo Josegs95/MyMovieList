@@ -2,13 +2,13 @@ package service;
 
 import config.HibernateUtil;
 import dao.UserListDAO;
-import dto.UserListDTO;
-import dto.request.CreateListRequest;
+import model.dto.UserListDTO;
+import protocol.dto.request.CreateListRequest;
 import exception.AuthorizationException;
 import exception.ConflictException;
 import exception.ResourceNotFoundException;
-import entity.User;
-import entity.UserList;
+import model.entity.User;
+import model.entity.UserList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -102,7 +102,7 @@ public class UserListService {
         }
     }
 
-    public void delete(Long idList, Long idOwner, Integer sessionToken) {
+    public void delete(Long idOwner, Long idList, Integer sessionToken) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {

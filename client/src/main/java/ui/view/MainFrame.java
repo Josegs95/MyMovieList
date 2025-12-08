@@ -1,7 +1,7 @@
 package ui.view;
 
 import context.SessionContext;
-import dto.UserDTO;
+import model.dto.UserDTO;
 import net.miginfocom.swing.MigLayout;
 import service.AuthService;
 import service.SearchService;

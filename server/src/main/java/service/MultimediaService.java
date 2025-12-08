@@ -1,8 +1,8 @@
 package service;
 
 import dao.MultimediaDAO;
-import entity.Multimedia;
-import entity.MultimediaType;
+import model.entity.Multimedia;
+import model.entity.MultimediaType;
 import org.hibernate.Session;
 
 public class MultimediaService {

@@ -1,7 +1,7 @@
 package ui.view.component.panel;
 
-import dto.MultimediaListItemDTO;
-import dto.UserListDTO;
+import model.dto.MultimediaListItemDTO;
+import model.dto.UserListDTO;
 import lib.ScrollablePanel;
 import net.miginfocom.swing.MigLayout;
 import service.UserListService;
@@ -22,6 +22,7 @@ public class UserListPanel extends JPanel {
     private JButton btnCreateList;
 
     private final Map<Long, CollapsableListPanel> listPanelMap = new HashMap<>();
+    private final Map<CollapsableListPanel, CollapsableListUIController> listControllerMap = new HashMap<>();
 
     public UserListPanel(MainFrame mainFrame){
         this.mainFrame = mainFrame;
@@ -72,13 +73,15 @@ public class UserListPanel extends JPanel {
     }
 
     public String showListNameDialog() {
-        return JOptionPane.showInputDialog(mainFrame,"Write the list's name that you desire.");
+        return JOptionPane.showInputDialog(mainFrame,"Escribe el nombre de la lista:");
     }
 
     public void createUserList(UserListDTO userList) {
-        CollapsableListPanel listPanel = new CollapsableListPanel(userList);
-        new CollapsableListUIController(listPanel, new UserListService());
+        CollapsableListPanel listPanel = new CollapsableListPanel(mainFrame, userList);
+        CollapsableListUIController controller = new CollapsableListUIController(listPanel, new UserListService());
+
         listPanelMap.put(userList.getId(), listPanel);
+        listControllerMap.put(listPanel, controller);
         pnlLists.add(listPanel);
 
         revalidate();
@@ -116,17 +119,17 @@ public class UserListPanel extends JPanel {
 //        revalidate();
 //        repaint();
 //    }
-//
-//    private void deleteUserList(UserList userList) {
-//        // Delete userList from model
-////        user.getMultimediaLists().remove(userList);
-//
-//        // Delete userList from UI
-//        pnlLists.remove(listPanelMap.get(userList));
-//
-//        revalidate();
-//        repaint();
-//    }
+
+    public void deleteUserList(UserListDTO userListDTO) {
+        CollapsableListPanel listPanel = listPanelMap.remove(userListDTO.getId());
+        CollapsableListUIController controller = listControllerMap.remove(listPanel);
+
+        pnlLists.remove(listPanel);
+        controller.dispose();
+
+        revalidate();
+        repaint();
+    }
 
     public JButton getBtnCreateList() {
         return btnCreateList;

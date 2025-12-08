@@ -1,17 +1,20 @@
 package ui.view.component.panel;
 
-import dto.MultimediaListItemDTO;
-import dto.MultimediaSummaryDTO;
-import dto.SeriesSummaryDTO;
-import dto.UserListDTO;
 import lib.StretchIcon;
-import entity.MultimediaType;
+import model.dto.MultimediaListItemDTO;
+import model.dto.MultimediaSummaryDTO;
+import model.dto.SeriesSummaryDTO;
+import model.dto.UserListDTO;
+import model.entity.MultimediaType;
 import net.miginfocom.swing.MigLayout;
+import ui.view.MainFrame;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -22,6 +25,7 @@ import java.util.Map;
 
 public class CollapsableListPanel extends JPanel {
 
+    private final MainFrame mainFrame;
     private final UserListDTO userList;
 
     private JButton btnRename;
@@ -33,7 +37,8 @@ public class CollapsableListPanel extends JPanel {
     private boolean expanded = false;
     private final Map<MultimediaListItemDTO, MultimediaItemPanel> multimediaDict = new HashMap<>();
 
-    public CollapsableListPanel(UserListDTO userList){
+    public CollapsableListPanel(MainFrame mainFrame, UserListDTO userList){
+        this.mainFrame = mainFrame;
         this.userList = userList;
 
         createUI();
@@ -136,26 +141,6 @@ public class CollapsableListPanel extends JPanel {
                 CollapsableListPanel.this.repaint();
             }
         });
-//        btnRename.addActionListener(_ ->{
-//            String newListName = JOptionPane.showInputDialog(
-//                    mainFrame,
-//                    "¿How would you like to name the list?",
-//                    "Rename list",
-//                    JOptionPane.QUESTION_MESSAGE);
-//
-//            if (newListName == null) {
-//                return;
-//            }
-//
-//            Message serverMessage = UserListController.renameUserList(user, userList.name(), newListName);
-//
-//            if (serverMessage.status() != 200) {
-//                processErrorMessage(serverMessage, String.format("Couldn't rename the list to \"%s\"", newListName));
-//            } else {
-////                userList.setName(newListName);
-//                updateListName();
-//            }
-//        });
 //        btnDelete.addActionListener(_ ->{
 //            String listName = userList.name();
 //            int dialogResponse = JOptionPane.showConfirmDialog(
@@ -207,8 +192,29 @@ public class CollapsableListPanel extends JPanel {
     }
 
     public String showRenameListDialog() {
-        String message = String.format("¿A qué nombre deseas renombrar la lista \"%s\"?", userList.getName());
-        return JOptionPane.showInputDialog(this, message,"Renombrar lista", JOptionPane.QUESTION_MESSAGE);
+        String message = String.format("Elige un nuevo nombre para la lista \"%s\":", userList.getName());
+        JTextField textField = new JTextField(userList.getName());
+        textField.requestFocus();
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(textField::selectAll);
+            }
+        });
+
+        int response = JOptionPane.showConfirmDialog(
+                mainFrame,
+                new Object[] {message, textField},
+                "Renombrar lista",
+                JOptionPane.OK_CANCEL_OPTION);
+        return response == JOptionPane.YES_OPTION ? textField.getText() : null;
+    }
+
+    public boolean showDeleteListDialog() {
+        String message = String.format("¿Estás seguro/a que quieres borrar la lista \"%s\"?", userList.getName());
+        int dialogResponse = JOptionPane.showConfirmDialog(mainFrame, message, "Confirmation", JOptionPane.OK_CANCEL_OPTION);
+
+        return dialogResponse == JOptionPane.YES_OPTION;
     }
 
     public UserListDTO getUserList() {

@@ -2,12 +2,12 @@ package service;
 
 import config.HibernateUtil;
 import dao.MultimediaListItemDAO;
-import dto.MultimediaListItemDTO;
-import dto.MultimediaSummaryDTO;
-import dto.SeriesSummaryDTO;
-import entity.Multimedia;
-import entity.MultimediaListItem;
-import entity.UserList;
+import model.dto.MultimediaListItemDTO;
+import model.dto.MultimediaSummaryDTO;
+import model.dto.SeriesSummaryDTO;
+import model.entity.Multimedia;
+import model.entity.MultimediaListItem;
+import model.entity.UserList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

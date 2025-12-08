@@ -2,10 +2,10 @@ package service;
 
 import config.HibernateUtil;
 import dao.UserDAO;
-import dto.UserDTO;
-import dto.request.LoginRequest;
-import dto.request.RegisterRequest;
-import entity.User;
+import model.dto.UserDTO;
+import protocol.dto.request.LoginRequest;
+import protocol.dto.request.RegisterRequest;
+import model.entity.User;
 import exception.AuthenticationException;
 import exception.ConflictException;
 import org.hibernate.Session;

@@ -1,26 +1,26 @@
 package service;
 
 import context.SessionContext;
-import dto.MultimediaDetailDTO;
-import dto.MultimediaSummaryDTO;
-import dto.UserDTO;
-import dto.request.MultimediaDetailRequest;
-import dto.request.SearchMultimediaRequest;
-import dto.response.MultimediaDetailResponse;
-import dto.response.SearchMultimediaResponse;
+import model.dto.MultimediaSummaryDTO;
+import model.dto.UserDTO;
 import protocol.Message;
 import protocol.MessageType;
 import protocol.SocketCommunication;
+import protocol.dto.request.MultimediaDetailRequest;
+import protocol.dto.request.SearchMultimediaRequest;
+import protocol.dto.response.MultimediaDetailResponse;
+import protocol.dto.response.SearchMultimediaResponse;
 import tools.jackson.databind.ObjectMapper;
-
-import java.util.List;
+import ui.event.DetailApiEvent;
+import ui.event.SearchApiEvent;
+import ui.util.EventBus;
 
 public class SearchService {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final UserDTO user = SessionContext.getInstance().getUser();
 
-    public List<MultimediaSummaryDTO> searchByName(String text) {
+    public void searchByName(String text) {
         SearchMultimediaRequest request = new SearchMultimediaRequest(user.getId(), text, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.API_SEARCH_MULTIMEDIA, request));
@@ -28,20 +28,21 @@ public class SearchService {
 
         response.results()
                 .forEach(dto -> dto.setPosterPath(response.baseImageUrl() + dto.getPosterPath()));
-        return response.results();
+
+        EventBus.publish(new SearchApiEvent(response.results()));
     }
 
-    public MultimediaDetailDTO getMultimediaDetail(MultimediaSummaryDTO multimedia) {
+    public void getMultimediaDetail(MultimediaSummaryDTO multimediaSummary) {
         MultimediaDetailRequest request = new MultimediaDetailRequest(
                 user.getId(),
-                multimedia.getApiId(),
-                multimedia.getType(),
+                multimediaSummary.getApiId(),
+                multimediaSummary.getType(),
                 user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.API_DETAIL_MULTIMEDIA, request));
         MultimediaDetailResponse response = mapper.convertValue(serverMessage.content(), MultimediaDetailResponse.class);
         response.multimedia().setPosterPath(response.baseImageUrl() + response.multimedia().getPosterPath());
 
-        return response.multimedia();
+        EventBus.publish(new DetailApiEvent(response.multimedia(), multimediaSummary));
     }
 }

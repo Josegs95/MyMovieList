@@ -1,9 +1,9 @@
 package config;
 
-import entity.Multimedia;
-import entity.MultimediaListItem;
-import entity.User;
-import entity.UserList;
+import model.entity.Multimedia;
+import model.entity.MultimediaListItem;
+import model.entity.User;
+import model.entity.UserList;
 import init.EnvironmentVariables;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;

@@ -1,8 +1,8 @@
 package ui.controller;
 
-import dto.MultimediaListItemDTO;
-import dto.MultimediaSummaryDTO;
-import dto.UserListDTO;
+import model.dto.MultimediaListItemDTO;
+import model.dto.MultimediaSummaryDTO;
+import model.dto.UserListDTO;
 import service.UserListService;
 import ui.util.ErrorHandler;
 import ui.view.component.dialog.RemoveMultimediaDialog;

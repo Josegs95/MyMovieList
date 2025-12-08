@@ -1,6 +1,6 @@
 package ui.event;
 
-import dto.UserDTO;
+import model.dto.UserDTO;
 
 public record UserAuthenticatedEvent(UserDTO user) implements Event{
 }

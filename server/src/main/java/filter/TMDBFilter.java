@@ -1,7 +1,7 @@
 package filter;
 
-import dto.MultimediaSummaryDTO;
-import entity.MultimediaType;
+import model.dto.MultimediaSummaryDTO;
+import model.entity.MultimediaType;
 
 import java.text.Normalizer;
 import java.util.Comparator;

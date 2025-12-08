@@ -1,10 +1,8 @@
 package ui.controller;
 
-import dto.MultimediaSummaryDTO;
+import model.dto.MultimediaSummaryDTO;
 import service.UserListService;
-import ui.event.HideDetailsEvent;
-import ui.event.ListItemAddedEvent;
-import ui.event.ListItemDeletedEvent;
+import ui.event.*;
 import ui.util.CompositeSubscription;
 import ui.util.EventBus;
 import ui.view.MainFrame;
@@ -24,8 +22,12 @@ public class DetailUIController {
         this.mainFrame = mainFrame;
         this.view = view;
 
-        subscriptions.add(EventBus.subscribe(ListItemAddedEvent.class, this::onListItemCreated));
-        subscriptions.add(EventBus.subscribe(ListItemDeletedEvent.class, this::onListItemDeleted));
+        subscriptions.add(EventBus.subscribe(CreateListEvent.class, this::onCreateListEvent));
+        subscriptions.add(EventBus.subscribe(GetListsEvent.class, this::onGetListsEvent));
+        subscriptions.add(EventBus.subscribe(RenameListEvent.class, this::onRenameListEvent));
+        subscriptions.add(EventBus.subscribe(DeleteListEvent.class, this::onDeleteListEvent));
+        subscriptions.add(EventBus.subscribe(AddListItemEvent.class, this::onListItemCreated));
+        subscriptions.add(EventBus.subscribe(DeleteListItemEvent.class, this::onListItemDeleted));
         subscriptions.add(EventBus.subscribe(HideDetailsEvent.class, this::onHideDetailPanel));
 
         initListeners();
@@ -57,8 +59,23 @@ public class DetailUIController {
         EventBus.publish(new HideDetailsEvent());
     }
 
-    private void onListItemCreated(ListItemAddedEvent event) {
-        System.out.println("Entra y se muestra el mensaje");
+    private void onCreateListEvent(CreateListEvent createListEvent) {
+        view.checkButtonAvailability();
+    }
+
+    private void onGetListsEvent(GetListsEvent event) {
+        view.checkButtonAvailability();
+    }
+
+    private void onRenameListEvent(RenameListEvent event) {
+        view.checkButtonAvailability();
+    }
+
+    private void onDeleteListEvent(DeleteListEvent event) {
+        view.checkButtonAvailability();
+    }
+
+    private void onListItemCreated(AddListItemEvent event) {
         String message = String.format(
                 "\"%s\" añadido a la lista \"%s\" exitosamente.",
                 event.listItemDTO().getMultimedia().getTitle(),
@@ -67,7 +84,7 @@ public class DetailUIController {
         view.checkButtonAvailability();
     }
 
-    private void onListItemDeleted(ListItemDeletedEvent event) {
+    private void onListItemDeleted(DeleteListItemEvent event) {
         view.checkButtonAvailability();
     }
 

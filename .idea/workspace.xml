@@ -4,22 +4,86 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Some code optimizations">
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/dto/request/RenameListRequest.java" afterDir="false" />
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Rename list featured remade">
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/DeleteListEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/DetailApiEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/LoginUserEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/RegisterUserEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/RenameListEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/SearchApiEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/DeleteListRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/response/LoginResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/service/SearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/SearchService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/service/UserListService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/UserListService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/CollapsableListUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/CollapsableListUIController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/ConfigureDialogUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/ConfigureDialogUIController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/DetailUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/DetailUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/RegisterUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/RegisterUIController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/RemoveDialogUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/RemoveDialogUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/SearchUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/SearchUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/UserListUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/UserListUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/event/GetListsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/GetListsEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/event/ListCreatedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/CreateListEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/event/ListItemAddedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/AddListItemEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/event/ListItemDeletedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/DeleteListItemEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/event/UserAuthenticatedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/UserAuthenticatedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/MainFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/ConfigureMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/ConfigureMultimediaDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/RemoveMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/RemoveMultimediaDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/CollapsableListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/CollapsableListPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/DetailPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/DetailPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/MultimediaItemPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/MultimediaItemPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/SearchPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/SearchPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/UserListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/UserListPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/UserListDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/dto/UserListDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/MovieDetailDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/dto/MovieDetailDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/MovieSummaryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/dto/MovieSummaryDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/MultimediaDetailDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/dto/MultimediaDetailDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/MultimediaListItemDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/dto/MultimediaListItemDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/MultimediaSummaryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/dto/MultimediaSummaryDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/SeriesDetailDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/dto/SeriesDetailDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/SeriesSummaryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/dto/SeriesSummaryDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/dto/UserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/UserListDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/dto/UserListDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/request/AddItemListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/AddItemListRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/request/CreateListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/CreateListRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/request/DeleteItemListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/DeleteItemListRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/request/GetAllListsRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/GetAllListsRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/request/LoginRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/LoginRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/request/MultimediaDetailRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/MultimediaDetailRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/request/RegisterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/RegisterRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/request/RenameListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/RenameListRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/request/SearchMultimediaRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/SearchMultimediaRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/response/ApiSearchResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/response/ApiSearchResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/response/GetAllListsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/response/GetAllListsResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/response/MultimediaDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/response/MultimediaDetailResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/dto/response/SearchMultimediaResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/response/SearchMultimediaResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/entity/Multimedia.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/Multimedia.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/entity/MultimediaListItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaListItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/entity/MultimediaListItemKey.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaListItemKey.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/entity/MultimediaStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/entity/MultimediaType.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/MultimediaType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/entity/UserList.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/UserList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/config/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/config/HibernateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaListItemDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaListItemDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaListItemDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/dao/MultimediaListItemDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/dao/UserDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/dao/UserListDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserListDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/dao/UserListDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/dao/UserListDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/filter/TMDBFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/filter/TMDBFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/ApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/ApiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/MultimediaListItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/MultimediaListItemService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/MultimediaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/MultimediaService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,9 +94,10 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Enum" />
-        <option value="Record" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="package-info" />
+        <option value="Record" />
       </list>
     </option>
   </component>
@@ -186,7 +251,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764952461029</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Rename list featured remade">
+      <option name="closed" value="true" />
+      <created>1764958868134</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1764958868134</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -209,6 +282,7 @@
     <MESSAGE value="Deleted old classes and packages" />
     <MESSAGE value="Fixed to not bring user lists when logged in" />
     <MESSAGE value="Some code optimizations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Some code optimizations" />
+    <MESSAGE value="Rename list featured remade" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rename list featured remade" />
   </component>
 </project>

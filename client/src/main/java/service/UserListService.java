@@ -1,46 +1,41 @@
 package service;
 
 import context.SessionContext;
-import dto.MultimediaListItemDTO;
-import dto.UserDTO;
-import dto.UserListDTO;
-import dto.request.*;
-import dto.response.GetAllListsResponse;
+import model.dto.MultimediaListItemDTO;
+import model.dto.UserDTO;
+import model.dto.UserListDTO;
 import protocol.Message;
 import protocol.MessageType;
 import protocol.SocketCommunication;
+import protocol.dto.request.*;
+import protocol.dto.response.GetAllListsResponse;
 import tools.jackson.databind.ObjectMapper;
-import ui.event.ListCreatedEvent;
-import ui.event.ListItemAddedEvent;
-import ui.event.ListItemDeletedEvent;
+import ui.event.*;
 import ui.util.EventBus;
-
-import java.util.List;
 
 public class UserListService {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final UserDTO user = SessionContext.getInstance().getUser();
 
-    public UserListDTO createList(String listName) {
+    public void createList(String listName) {
         CreateListRequest request = new CreateListRequest(user.getId(), listName, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.CREATE_USER_LIST, request));
         UserListDTO userList = mapper.convertValue(serverMessage.content(), UserListDTO.class);
         user.getLists().add(userList);
-        EventBus.publish(new ListCreatedEvent(userList));
 
-        return userList;
+        EventBus.publish(new CreateListEvent(userList));
     }
 
-    public List<UserListDTO> getAllListsWithItems() {
+    public void getAllListsWithItems() {
         GetAllListsRequest request = new GetAllListsRequest(user.getId(), user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.GET_USER_LISTS, request));
         GetAllListsResponse response = mapper.convertValue(serverMessage.content(), GetAllListsResponse.class);
         user.setLists(response.lists());
 
-        return response.lists();
+        EventBus.publish(new GetListsEvent(response.lists()));
     }
 
     public void renameList(UserListDTO userList, String newListName) {
@@ -49,6 +44,17 @@ public class UserListService {
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.RENAME_USER_LIST, request));
         UserListDTO renamedUserList = mapper.convertValue(serverMessage.content(), UserListDTO.class);
         userList.setName(renamedUserList.getName());
+
+        EventBus.publish(new RenameListEvent(newListName));
+    }
+
+    public void deleteList(UserListDTO userListDTO) {
+        DeleteListRequest request = new DeleteListRequest(user.getId(), userListDTO.getId(), user.getSessionToken());
+
+        SocketCommunication.sendMessageToServer(new Message(MessageType.DELETE_USER_LIST, request));
+        user.getLists().remove(userListDTO);
+
+        EventBus.publish(new DeleteListEvent(userListDTO));
     }
 
     public void addItemToList(UserListDTO userListDTO, MultimediaListItemDTO multimedia) {
@@ -58,7 +64,7 @@ public class UserListService {
         MultimediaListItemDTO listItem = mapper.convertValue(serverMessage.content(), MultimediaListItemDTO.class);
         userListDTO.getListItems().add(listItem);
 
-        EventBus.publish(new ListItemAddedEvent(userListDTO, listItem));
+        EventBus.publish(new AddListItemEvent(userListDTO, listItem));
     }
 
     public void deleteItemFromList(UserListDTO userListDTO, MultimediaListItemDTO listItem) {
@@ -71,6 +77,6 @@ public class UserListService {
         SocketCommunication.sendMessageToServer(new Message(MessageType.REMOVE_MULTIMEDIA, request));
         userListDTO.getListItems().remove(listItem);
 
-        EventBus.publish(new ListItemDeletedEvent(userListDTO, listItem));
+        EventBus.publish(new DeleteListItemEvent(userListDTO, listItem));
     }
 }

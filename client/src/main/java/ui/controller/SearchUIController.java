@@ -1,9 +1,10 @@
 package ui.controller;
 
-import dto.MultimediaDetailDTO;
-import dto.MultimediaSummaryDTO;
+import model.dto.MultimediaSummaryDTO;
 import service.SearchService;
+import ui.event.DetailApiEvent;
 import ui.event.HideDetailsEvent;
+import ui.event.SearchApiEvent;
 import ui.util.ErrorHandler;
 import ui.util.EventBus;
 import ui.view.component.panel.SearchPanel;
@@ -21,6 +22,9 @@ public class SearchUIController {
         this.service = service;
 
         EventBus.subscribe(HideDetailsEvent.class, this::onHideDetailPanelEvent);
+        EventBus.subscribe(SearchApiEvent.class, this::onSearchApiEvent);
+        EventBus.subscribe(DetailApiEvent.class, this::onDetailApiEvent);
+
         initListeners();
     }
 
@@ -36,15 +40,7 @@ public class SearchUIController {
         }
 
         try {
-            List<MultimediaSummaryDTO> elementList = service.searchByName(text);
-
-            if (elementList == null || elementList.isEmpty()) {
-                JOptionPane.showMessageDialog(view,"No se ha encontrado resultados",
-                        "No hay resultados", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-
-            view.addResultPanel(elementList, this::onItemClicked);
+            service.searchByName(text);
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
         }
@@ -53,8 +49,7 @@ public class SearchUIController {
 
     private void onItemClicked(MultimediaSummaryDTO summaryDTO) {
         try {
-            MultimediaDetailDTO detailDTO = service.getMultimediaDetail(summaryDTO);
-            view.showDetailPanel(detailDTO, summaryDTO);
+            service.getMultimediaDetail(summaryDTO);
         } catch(Exception e) {
             ErrorHandler.showError(view, e);
         }
@@ -62,5 +57,20 @@ public class SearchUIController {
 
     private void onHideDetailPanelEvent(HideDetailsEvent event) {
         view.showResultPanel();
+    }
+
+    private void onSearchApiEvent(SearchApiEvent event) {
+        List<MultimediaSummaryDTO> elementList = event.multimediaList();
+        if (elementList == null || elementList.isEmpty()) {
+            JOptionPane.showMessageDialog(view,"No se ha encontrado resultados",
+                    "No hay resultados", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        view.addResultPanel(elementList, this::onItemClicked);
+    }
+
+    private void onDetailApiEvent(DetailApiEvent event) {
+        view.showDetailPanel(event.multimediaDetail(), event.multimediaSummary());
     }
 }
