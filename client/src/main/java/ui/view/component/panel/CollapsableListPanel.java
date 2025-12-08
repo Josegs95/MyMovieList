@@ -7,6 +7,8 @@ import model.dto.SeriesSummaryDTO;
 import model.dto.UserListDTO;
 import model.entity.MultimediaType;
 import net.miginfocom.swing.MigLayout;
+import service.UserListService;
+import ui.controller.ListItemUIController;
 import ui.view.MainFrame;
 
 import javax.imageio.ImageIO;
@@ -35,7 +37,7 @@ public class CollapsableListPanel extends JPanel {
     private JLabel lblListName;
 
     private boolean expanded = false;
-    private final Map<MultimediaListItemDTO, MultimediaItemPanel> multimediaDict = new HashMap<>();
+    private final Map<MultimediaListItemDTO, ListItemPanel> multimediaDict = new HashMap<>();
 
     public CollapsableListPanel(MainFrame mainFrame, UserListDTO userList){
         this.mainFrame = mainFrame;
@@ -107,14 +109,15 @@ public class CollapsableListPanel extends JPanel {
     }
 
     public void addMultimediaListItem(MultimediaListItemDTO item) {
-        MultimediaItemPanel panel = new MultimediaItemPanel(item);
+        ListItemPanel panel = new ListItemPanel(item);
+        new ListItemUIController(panel, new UserListService());
         panelItems.add(panel);
 
         multimediaDict.put(item, panel);
     }
 
     public void removeMultimediaItem(MultimediaListItemDTO item) {
-        MultimediaItemPanel panel = multimediaDict.remove(item);
+        ListItemPanel panel = multimediaDict.remove(item);
         panelItems.remove(panel);
 
         updateListNameLabel();
@@ -229,27 +232,27 @@ public class CollapsableListPanel extends JPanel {
         return btnDelete;
     }
 
-    private class MultimediaItemPanel extends JPanel{
+    public class ListItemPanel extends JPanel{
 
         private static final Color MOVIE_COLOR = new Color(250, 219, 111);
         private static final Color SERIE_COLOR = new Color(132, 182, 244);
 
-        private final MultimediaListItemDTO listItemDTO;
+        private final MultimediaListItemDTO multimediaItem;
 
         private JButton btnConfig;
         private JButton btnDelete;
         private JLabel lblStatus;
         private JLabel lblCurrentEpisode;
 
-        public MultimediaItemPanel(MultimediaListItemDTO listItemDTO) {
-            this.listItemDTO = listItemDTO;
+        public ListItemPanel(MultimediaListItemDTO multimediaItem) {
+            this.multimediaItem = multimediaItem;
 
             createUI();
             createListeners();
         }
 
         private void createUI() {
-            MultimediaSummaryDTO multimediaDTO = listItemDTO.getMultimedia();
+            MultimediaSummaryDTO multimediaDTO = multimediaItem.getMultimedia();
             MultimediaType multimediaType = multimediaDTO.getType();
 
             setLayout(new MigLayout(
@@ -269,12 +272,12 @@ public class CollapsableListPanel extends JPanel {
             JLabel lblType = new JLabel(multimediaType.toString(), SwingConstants.CENTER);
 
             // Status
-            lblStatus = new JLabel(listItemDTO.getStatus().toString(), SwingConstants.CENTER);
+            lblStatus = new JLabel(multimediaItem.getStatus().toString(), SwingConstants.CENTER);
 
             // Episode
             String episodeString = "";
             if (multimediaDTO instanceof SeriesSummaryDTO serie){
-                episodeString = listItemDTO.getCurrentEpisode() + "/" + serie.getTotalEpisodes();
+                episodeString = multimediaItem.getCurrentEpisode() + "/" + serie.getTotalEpisodes();
             }
             lblCurrentEpisode = new JLabel(episodeString, SwingConstants.CENTER);
 
@@ -300,6 +303,16 @@ public class CollapsableListPanel extends JPanel {
             add(pnlButtons);
         }
 
+        public boolean showDeleteDialog() {
+            String message = String.format("¿Estás seguro/a de eliminar \"%s\" de la lista \"%s\"?",
+                    multimediaItem.getMultimedia().getTitle(),
+                    userList.getName());
+            int response = JOptionPane.showConfirmDialog(mainFrame, message, "Eliminar elemento", JOptionPane.YES_NO_OPTION);
+
+            return response == JOptionPane.YES_OPTION;
+        }
+
+        // * BORRAR *
         private void createListeners() {
 //            btnDelete.addActionListener((_ -> {
 //                String message = String.format("¿Are you sure that you want to delete \"%s\" from your list?",
@@ -364,6 +377,15 @@ public class CollapsableListPanel extends JPanel {
 //                    ViewController.getInstance().notifyView("userListPanel", event);
 //                }
 //            });
+        }
+        //
+
+        public MultimediaListItemDTO getMultimediaItem() {
+            return multimediaItem;
+        }
+
+        public UserListDTO getUserList() {
+            return userList;
         }
 
         public JButton getBtnConfig() {

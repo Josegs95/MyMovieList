@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-public class MultimediaItemPanel extends JPanel {
+public class SearchItemPanel extends JPanel {
 
     private static final Color MOVIE_COLOR = new Color(250, 219, 111);
     private static final Color SERIES_COLOR = new Color(132, 182, 244);
@@ -28,7 +28,7 @@ public class MultimediaItemPanel extends JPanel {
     private final MultimediaSummaryDTO multimedia;
     private final Consumer<MultimediaSummaryDTO> consumer;
 
-    public MultimediaItemPanel(MultimediaSummaryDTO multimedia, Consumer<MultimediaSummaryDTO> consumer) throws MalformedURLException {
+    public SearchItemPanel(MultimediaSummaryDTO multimedia, Consumer<MultimediaSummaryDTO> consumer) {
         this.multimedia = multimedia;
         this.consumer = consumer;
 

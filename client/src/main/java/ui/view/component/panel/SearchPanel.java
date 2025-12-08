@@ -1,8 +1,8 @@
 package ui.view.component.panel;
 
+import lib.ScrollablePanel;
 import model.dto.MultimediaDetailDTO;
 import model.dto.MultimediaSummaryDTO;
-import lib.ScrollablePanel;
 import net.miginfocom.swing.MigLayout;
 import ui.controller.DetailUIController;
 import ui.view.MainFrame;
@@ -11,7 +11,6 @@ import ui.view.component.MySearchTextField;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -80,16 +79,12 @@ public class SearchPanel extends JPanel{
 
     public void addResultPanel(List<MultimediaSummaryDTO> multiList, Consumer<MultimediaSummaryDTO> consumer) {
         pnlResults.removeAll();
-        try {
-            for (MultimediaSummaryDTO multimedia : multiList) {
-                pnlResults.add(new MultimediaItemPanel(multimedia, consumer));
-            }
-
-            // Opcional. Es para esperar a que las imágenes de los elementos carguen.
-//            Thread.sleep(500);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        for (MultimediaSummaryDTO multimedia : multiList) {
+            pnlResults.add(new SearchItemPanel(multimedia, consumer));
         }
+
+        // Opcional. Es para esperar a que las imágenes de los elementos carguen.
+        // Thread.sleep(500);
 
         if (getComponentZOrder(scrollPaneResult) == -1) {
             pnlGeneral.add(scrollPaneResult, "push");
