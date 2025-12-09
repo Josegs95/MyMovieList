@@ -1,25 +1,21 @@
 package ui.controller;
 
 import model.dto.MultimediaListItemDTO;
-import model.dto.MultimediaSummaryDTO;
-import model.dto.UserListDTO;
-import service.UserListService;
 import ui.util.ErrorHandler;
 import ui.view.component.dialog.ConfigureMultimediaDialog;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.function.Consumer;
 
 public class ConfigureDialogUIController {
 
     private final ConfigureMultimediaDialog view;
-    private final MultimediaSummaryDTO summaryDTO;
-    private final UserListService service;
+    private final Consumer<MultimediaListItemDTO> onAcceptConsumer;
 
-    public ConfigureDialogUIController(ConfigureMultimediaDialog view, MultimediaSummaryDTO summaryDTO, UserListService service) {
+    public ConfigureDialogUIController(ConfigureMultimediaDialog view, Consumer<MultimediaListItemDTO> onAcceptConsumer) {
         this.view = view;
-        this.summaryDTO = summaryDTO;
-        this.service = service;
+        this.onAcceptConsumer = onAcceptConsumer;
 
         initListeners();
     }
@@ -36,15 +32,15 @@ public class ConfigureDialogUIController {
     }
 
     private void onAcceptButton() {
-        UserListDTO userList = view.getSelectedList();
-        try {
-            MultimediaListItemDTO listItem = new MultimediaListItemDTO(
-                    userList.getId(),
-                    view.getSelectedMultimediaStatus(),
-                    view.getSelectedCurrentEpisode(),
-                    summaryDTO);
+        if (!view.hasMultimediaChanges()) {
+            view.dispose();
+            return;
+        }
 
-            service.addItemToList(userList, listItem);
+        try {
+            MultimediaListItemDTO listItem = view.getListItemResult();
+            onAcceptConsumer.accept(listItem);
+
             view.dispose();
         } catch (Exception e) {
             ErrorHandler.showError(view, e);

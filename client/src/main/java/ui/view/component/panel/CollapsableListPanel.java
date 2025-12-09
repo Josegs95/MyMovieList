@@ -110,10 +110,30 @@ public class CollapsableListPanel extends JPanel {
 
     public void addMultimediaListItem(MultimediaListItemDTO item) {
         ListItemPanel panel = new ListItemPanel(item);
-        new ListItemUIController(panel, new UserListService());
+        new ListItemUIController(mainFrame, panel, new UserListService());
         panelItems.add(panel);
 
         multimediaDict.put(item, panel);
+    }
+
+    public void modifyListItem(MultimediaListItemDTO item) {
+        ListItemPanel oldPanel = multimediaDict.get(item);
+        if (oldPanel == null) return;
+
+        Container parent = oldPanel.getParent();
+        if (parent == null) return;
+
+        int position = parent.getComponentZOrder(oldPanel);
+        ListItemPanel panel = new ListItemPanel(item);
+        new ListItemUIController(mainFrame, panel, new UserListService());
+
+        parent.remove(oldPanel);
+        parent.add(panel, position);
+
+        multimediaDict.put(item, panel);
+
+        parent.revalidate();
+        parent.repaint();
     }
 
     public void removeMultimediaItem(MultimediaListItemDTO item) {
@@ -144,27 +164,6 @@ public class CollapsableListPanel extends JPanel {
                 CollapsableListPanel.this.repaint();
             }
         });
-//        btnDelete.addActionListener(_ ->{
-//            String listName = userList.name();
-//            int dialogResponse = JOptionPane.showConfirmDialog(
-//                    mainFrame,
-//                    String.format("¿Are you sure that you want to delete the list \"%s\"?", listName),
-//                    "Confirmation",
-//                    JOptionPane.OK_CANCEL_OPTION
-//            );
-//
-//            if (dialogResponse != JOptionPane.YES_OPTION) {
-//                return;
-//            }
-//
-//            Message response = UserListController.deleteUserList(user, listName);
-//            if (response.status() != 200) {
-//                processErrorMessage(response, String.format("Couldn't delete the list \"%s\"", listName));
-//            } else {
-//                Event event = new Event(EventType.DELETE_USER_LIST, Map.of("userList", userList));
-//                ViewController.getInstance().notifyView("userListPanel", event);
-//            }
-//        });
     }
 
     private JButton getJButtonWithIcon(String iconPath) {

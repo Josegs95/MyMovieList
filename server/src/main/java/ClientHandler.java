@@ -77,7 +77,7 @@ public class ClientHandler implements Runnable{
                 case DELETE_USER_LIST -> deleteUserList();
                 case GET_USER_LISTS -> serverResponseData = getUserLists();
                 case ADD_MULTIMEDIA -> serverResponseData = addMultimediaToList();
-//                case MODIFY_MULTIMEDIA -> serverResponseData = new HashMap<>(modifyMultimedia());
+                case MODIFY_MULTIMEDIA -> serverResponseData = modifyMultimedia();
                 case REMOVE_MULTIMEDIA -> removeMultimediaFromList();
                 case API_SEARCH_MULTIMEDIA -> serverResponseData = searchMultimedia();
                 case API_DETAIL_MULTIMEDIA -> serverResponseData = detailMultimedia();
@@ -178,37 +178,16 @@ public class ClientHandler implements Runnable{
     }
 
     private MultimediaListItemDTO addMultimediaToList(){
-        AddItemListRequest request = mapper.convertValue(clientData, AddItemListRequest.class);
+        AddListItemRequest request = mapper.convertValue(clientData, AddListItemRequest.class);
 
         return MULTIMEDIA_LIST_ITEM_SERVICE.addMultimediaToList(request.idUser(), request.multimedia(), request.sessionToken());
     }
 
-//    @SuppressWarnings({"unckecked", "unchecked"})
-//    private Map<String, Object> modifyMultimedia() throws AuthenticationException, SQLException, DatabaseException {
-//        // User verification
-//        String username = clientData.get("username").toString();
-//        Integer token = (Integer) clientData.get("token");
-//        int idUser = Database.validateUser(username, token);
-//
-//        // Get the multimedia ID
-//        Map<String, Object> multimediaData = (Map<String, Object>) (clientData.get("multimedia"));
-//        int apiId = (int) (multimediaData.get("apiId"));
-//        String multimediaType = multimediaData.get("type").toString();
-//
-//        int idMultimedia = Database.existMultimedia(apiId, multimediaType);
-//
-//        // Modify multimedia
-//        String listName = clientData.get("listName").toString();
-//        String status = clientData.get("status").toString();
-//        int currentEpisode = (int) (clientData.get("currentEpisode"));
-//
-//        Map<String, Object> result = Database.modifyMultimedia(idUser, idMultimedia, listName, status, currentEpisode);
-//        if (result == null) {
-//            throw new DatabaseException("Couldn't modify the multimedia cause unknown reasons.");
-//        } else {
-//            return result;
-//        }
-//    }
+    private MultimediaListItemDTO modifyMultimedia() {
+        ModifyListItemRequest request = mapper.convertValue(clientData, ModifyListItemRequest.class);
+
+        return MULTIMEDIA_LIST_ITEM_SERVICE.modify(request.userId(), request.listItemDTO(), request.sessionToken());
+    }
 
     private void removeMultimediaFromList() {
         DeleteItemListRequest request = mapper.convertValue(clientData, DeleteItemListRequest.class);

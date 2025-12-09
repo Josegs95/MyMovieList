@@ -71,33 +71,32 @@ public class MultimediaListItemService {
         }
     }
 
-    public MultimediaListItem modify(Long idUser, MultimediaListItem itemFromClient, Integer sessionToken) {
-        Transaction transaction = null;
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+    public MultimediaListItemDTO modify(Long idUser, MultimediaListItemDTO listItem, Integer sessionToken) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
 
-            Long idList = itemFromClient.getList().getId();
-            Long idMultimedia = itemFromClient.getMultimedia().getId();
+                authService.authenticate(session, idUser, sessionToken);
+                userListService.checkListOwnership(session, listItem.getListId(), idUser);
+                MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, listItem.getListId(), listItem.getMultimedia().getIdDb());
 
-            authService.authenticate(session, idUser, sessionToken);
-            userListService.checkListOwnership(session, idList, idUser);
-            MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, idList, idMultimedia);
+                if (itemAtBD == null) {
+                    throw new RuntimeException("That multimedia item does not exists in that list");
+                }
 
-            if (itemAtBD == null) {
-                throw new RuntimeException("That multimedia item does not exists in that list");
+                itemAtBD.setCurrentEpisode(listItem.getCurrentEpisode());
+                itemAtBD.setStatus(listItem.getStatus());
+
+                transaction.commit();
+
+                return new MultimediaListItemDTO(itemAtBD);
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                return null;
             }
-
-            itemAtBD.setCurrentEpisode(itemFromClient.getCurrentEpisode());
-            itemAtBD.setStatus(itemFromClient.getStatus());
-
-            transaction.commit();
-
-            return itemAtBD;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            return null;
         }
     }
 

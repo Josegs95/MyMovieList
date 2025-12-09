@@ -1,10 +1,11 @@
 package ui.controller;
 
 import service.UserListService;
+import ui.event.ModifyListItemEvent;
 import ui.event.RenameListEvent;
+import ui.util.CompositeSubscription;
 import ui.util.ErrorHandler;
 import ui.util.EventBus;
-import ui.util.Subscription;
 import ui.view.component.panel.CollapsableListPanel;
 
 public class CollapsableListUIController {
@@ -12,13 +13,14 @@ public class CollapsableListUIController {
     private final CollapsableListPanel view;
     private final UserListService service;
 
-    private final Subscription subscription;
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     public CollapsableListUIController(CollapsableListPanel view, UserListService service) {
         this.view = view;
         this.service = service;
 
-        subscription = EventBus.subscribe(RenameListEvent.class, this::onRenameListEvent);
+        subscriptions.add(EventBus.subscribe(RenameListEvent.class, this::onRenameListEvent));
+        subscriptions.add(EventBus.subscribe(ModifyListItemEvent.class, this::onModifyListItemEvent));
 
         initListeners();
     }
@@ -58,7 +60,11 @@ public class CollapsableListUIController {
         view.updateListNameLabel();
     }
 
+    private void onModifyListItemEvent(ModifyListItemEvent modifyListItemEvent) {
+        view.modifyListItem(modifyListItemEvent.modifiedListItem());
+    }
+
     public void dispose() {
-        subscription.unsubscribe();
+        subscriptions.unsubscribe();
     }
 }

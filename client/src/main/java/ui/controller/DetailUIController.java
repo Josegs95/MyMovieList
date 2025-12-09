@@ -16,11 +16,13 @@ public class DetailUIController {
 
     private final MainFrame mainFrame;
     private final DetailPanel view;
+    private final UserListService service;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    public DetailUIController(MainFrame mainFrame, DetailPanel view) {
+    public DetailUIController(MainFrame mainFrame, DetailPanel view, UserListService service) {
         this.mainFrame = mainFrame;
         this.view = view;
+        this.service = service;
 
         subscriptions.add(EventBus.subscribe(CreateListEvent.class, this::onCreateListEvent));
         subscriptions.add(EventBus.subscribe(GetListsEvent.class, this::onGetListsEvent));
@@ -43,7 +45,7 @@ public class DetailUIController {
         MultimediaSummaryDTO multimedia = view.getSummaryDTO();
 
         ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimedia);
-        new ConfigureDialogUIController(dialog, multimedia, new UserListService());
+        new ConfigureDialogUIController(dialog, service::addItemToList);
         dialog.setVisible(true);
     }
 

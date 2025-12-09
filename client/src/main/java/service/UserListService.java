@@ -57,14 +57,36 @@ public class UserListService {
         EventBus.publish(new DeleteListEvent(userListDTO));
     }
 
-    public void addItemToList(UserListDTO userListDTO, MultimediaListItemDTO multimedia) {
-        AddItemListRequest request = new AddItemListRequest(user.getId(), multimedia, user.getSessionToken());
+    public void addItemToList(MultimediaListItemDTO multimedia) {
+        AddListItemRequest request = new AddListItemRequest(user.getId(), multimedia, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.ADD_MULTIMEDIA, request));
         MultimediaListItemDTO listItem = mapper.convertValue(serverMessage.content(), MultimediaListItemDTO.class);
+
+        UserListDTO userListDTO = user.getLists().stream()
+                .filter(list -> list.getId().equals(multimedia.getListId()))
+                .findFirst().orElseThrow();
         userListDTO.getListItems().add(listItem);
 
         EventBus.publish(new AddListItemEvent(userListDTO, listItem));
+    }
+
+    public void modifyItemList(MultimediaListItemDTO multimedia) {
+        ModifyListItemRequest request = new ModifyListItemRequest(user.getId(), multimedia, user.getSessionToken());
+
+        Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.MODIFY_MULTIMEDIA, request));
+        MultimediaListItemDTO listItem = mapper.convertValue(serverMessage.content(), MultimediaListItemDTO.class);
+
+        UserListDTO userListDTO = user.getLists().stream()
+                .filter(list -> list.getId().equals(multimedia.getListId()))
+                .findFirst().orElseThrow();
+        MultimediaListItemDTO oldListItem = userListDTO.getListItems().stream()
+                .filter(item -> item.getMultimedia().getIdDb().equals(listItem.getMultimedia().getIdDb()))
+                .findFirst().orElseThrow();
+        oldListItem.setCurrentEpisode(listItem.getCurrentEpisode());
+        oldListItem.setStatus(listItem.getStatus());
+
+        EventBus.publish(new ModifyListItemEvent(listItem));
     }
 
     public void deleteItemFromList(UserListDTO userListDTO, MultimediaListItemDTO listItem) {
