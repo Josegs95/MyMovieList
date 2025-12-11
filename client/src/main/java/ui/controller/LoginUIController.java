@@ -1,5 +1,6 @@
 package ui.controller;
 
+import context.SessionContext;
 import service.AuthService;
 import ui.util.ErrorHandler;
 import ui.view.component.dialog.auth.LoginDialog;
@@ -10,9 +11,9 @@ public class LoginUIController {
     private final LoginDialog view;
     private final AuthService authService;
 
-    public LoginUIController(LoginDialog view, AuthService authService) {
+    public LoginUIController(LoginDialog view) {
         this.view = view;
-        this.authService = authService;
+        this.authService = SessionContext.getAuthService();
 
         initListeners();
     }
@@ -38,7 +39,7 @@ public class LoginUIController {
     private void onRegister() {
         view.clearFields();
         RegisterDialog registerDialog = new RegisterDialog(view);
-        new RegisterUIController(registerDialog, authService);
+        new RegisterUIController(registerDialog);
         registerDialog.setVisible(true);
     }
 

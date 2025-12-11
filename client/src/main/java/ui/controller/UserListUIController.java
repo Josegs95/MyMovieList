@@ -1,5 +1,6 @@
 package ui.controller;
 
+import context.SessionContext;
 import service.UserListService;
 import ui.event.*;
 import ui.util.ErrorHandler;
@@ -14,9 +15,9 @@ public class UserListUIController {
     private final UserListPanel view;
     private final UserListService userListService;
 
-    public UserListUIController(UserListPanel view, UserListService userListService) {
+    public UserListUIController(UserListPanel view) {
         this.view = view;
-        this.userListService = userListService;
+        this.userListService = SessionContext.getUserListService();
 
         EventBus.subscribe(CreateListEvent.class, this::onCreateListEvent);
         EventBus.subscribe(DeleteListEvent.class, this::onDeleteListEvent);

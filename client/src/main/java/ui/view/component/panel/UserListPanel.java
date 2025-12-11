@@ -1,12 +1,11 @@
 package ui.view.component.panel;
 
+import lib.ScrollablePanel;
 import model.dto.MultimediaDetailDTO;
 import model.dto.MultimediaListItemDTO;
 import model.dto.MultimediaSummaryDTO;
 import model.dto.UserListDTO;
-import lib.ScrollablePanel;
 import net.miginfocom.swing.MigLayout;
-import service.UserListService;
 import ui.controller.CollapsableListUIController;
 import ui.controller.DetailUIController;
 import ui.view.MainFrame;
@@ -82,7 +81,7 @@ public class UserListPanel extends JPanel {
 
     public void createUserList(UserListDTO userList) {
         CollapsableListPanel listPanel = new CollapsableListPanel(mainFrame, userList);
-        CollapsableListUIController controller = new CollapsableListUIController(listPanel, new UserListService());
+        CollapsableListUIController controller = new CollapsableListUIController(listPanel);
 
         listPanelMap.put(userList.getId(), listPanel);
         listControllerMap.put(listPanel, controller);
@@ -110,7 +109,7 @@ public class UserListPanel extends JPanel {
 
     public void showDetailPanel(MultimediaDetailDTO detailDTO, MultimediaSummaryDTO summaryDTO, UserListDTO userListDTO) {
         detailPanel = new DetailPanel(mainFrame, detailDTO, summaryDTO);
-        new DetailUIController(mainFrame, detailPanel, new UserListService(), userListDTO);
+        new DetailUIController(mainFrame, detailPanel, userListDTO);
 
         remove(pnlContainer);
         add(detailPanel);

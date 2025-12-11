@@ -1,5 +1,6 @@
 package ui.controller;
 
+import context.SessionContext;
 import model.dto.MultimediaDetailDTO;
 import model.dto.MultimediaListItemDTO;
 import service.SearchService;
@@ -21,11 +22,11 @@ public class ListItemUIController {
     private final UserListService listService;
     private final SearchService searchService;
 
-    public ListItemUIController(MainFrame mainFrame, CollapsableListPanel.ListItemPanel view, UserListService listService) {
+    public ListItemUIController(MainFrame mainFrame, CollapsableListPanel.ListItemPanel view) {
         this.mainFrame = mainFrame;
         this.view = view;
-        this.listService = listService;
-        this.searchService = new SearchService();
+        this.listService = SessionContext.getUserListService();
+        this.searchService = SessionContext.getSearchService();
 
         initListeners();
     }

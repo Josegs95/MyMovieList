@@ -1,5 +1,6 @@
 package ui.controller;
 
+import context.SessionContext;
 import model.dto.MultimediaDetailDTO;
 import model.dto.MultimediaSummaryDTO;
 import service.SearchService;
@@ -15,9 +16,9 @@ public class SearchUIController {
     private final SearchPanel view;
     private final SearchService service;
 
-    public SearchUIController(SearchPanel view, SearchService service) {
+    public SearchUIController(SearchPanel view) {
         this.view = view;
-        this.service = service;
+        this.service = SessionContext.getSearchService();
 
         EventBus.subscribe(HideDetailsEvent.class, this::onHideDetailPanelEvent);
 

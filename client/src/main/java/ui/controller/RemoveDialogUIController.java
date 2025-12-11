@@ -1,5 +1,6 @@
 package ui.controller;
 
+import context.SessionContext;
 import model.dto.MultimediaListItemDTO;
 import model.dto.MultimediaSummaryDTO;
 import model.dto.UserListDTO;
@@ -16,9 +17,9 @@ public class RemoveDialogUIController {
     private final RemoveMultimediaDialog view;
     private final UserListService service;
 
-    public RemoveDialogUIController(RemoveMultimediaDialog view, UserListService service) {
+    public RemoveDialogUIController(RemoveMultimediaDialog view) {
         this.view = view;
-        this.service = service;
+        this.service = SessionContext.getUserListService();
 
         initListeners();
     }

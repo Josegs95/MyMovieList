@@ -1,5 +1,6 @@
 package ui.controller;
 
+import context.SessionContext;
 import model.dto.MultimediaListItemDTO;
 import model.dto.MultimediaSummaryDTO;
 import model.dto.UserListDTO;
@@ -24,11 +25,11 @@ public class DetailUIController {
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    public DetailUIController(MainFrame mainFrame, DetailPanel view, UserListService service, UserListDTO userList) {
+    public DetailUIController(MainFrame mainFrame, DetailPanel view, UserListDTO userList) {
         this.mainFrame = mainFrame;
         this.view = view;
-        this.service = service;
         this.userList = userList;
+        this.service = SessionContext.getUserListService();
 
         subscriptions.add(EventBus.subscribe(CreateListEvent.class, this::onCreateListEvent));
         subscriptions.add(EventBus.subscribe(GetListsEvent.class, this::onGetListsEvent));
@@ -60,7 +61,7 @@ public class DetailUIController {
 
         if (userList == null) {
             RemoveMultimediaDialog dialog = new RemoveMultimediaDialog(mainFrame, multimedia);
-            new RemoveDialogUIController(dialog, new UserListService());
+            new RemoveDialogUIController(dialog);
             dialog.setVisible(true);
             return;
         }

@@ -1,5 +1,6 @@
 package ui.controller;
 
+import context.SessionContext;
 import service.AuthService;
 import ui.event.RegisterUserEvent;
 import ui.util.ErrorHandler;
@@ -14,9 +15,9 @@ public class RegisterUIController {
 
     private final Subscription subscription;
 
-    public RegisterUIController(RegisterDialog view, AuthService authService) {
+    public RegisterUIController(RegisterDialog view) {
         this.view = view;
-        this.authService = authService;
+        this.authService = SessionContext.getAuthService();
 
         subscription = EventBus.subscribe(RegisterUserEvent.class, this::onRegisterUser);
 

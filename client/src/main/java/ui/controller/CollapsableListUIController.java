@@ -1,5 +1,6 @@
 package ui.controller;
 
+import context.SessionContext;
 import service.UserListService;
 import ui.event.ModifyListItemEvent;
 import ui.event.RenameListEvent;
@@ -15,9 +16,9 @@ public class CollapsableListUIController {
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    public CollapsableListUIController(CollapsableListPanel view, UserListService service) {
+    public CollapsableListUIController(CollapsableListPanel view) {
         this.view = view;
-        this.service = service;
+        this.service = SessionContext.getUserListService();
 
         subscriptions.add(EventBus.subscribe(RenameListEvent.class, this::onRenameListEvent));
         subscriptions.add(EventBus.subscribe(ModifyListItemEvent.class, this::onModifyListItemEvent));

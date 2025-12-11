@@ -3,9 +3,6 @@ package ui.view;
 import context.SessionContext;
 import model.dto.UserDTO;
 import net.miginfocom.swing.MigLayout;
-import service.AuthService;
-import service.SearchService;
-import service.UserListService;
 import ui.controller.LoginUIController;
 import ui.controller.SearchUIController;
 import ui.controller.UserListUIController;
@@ -62,8 +59,8 @@ public class MainFrame extends JFrame{
         ));
         searchPanel = new SearchPanel(this);
         userListPanel = new UserListPanel(this);
-        new SearchUIController(searchPanel, new SearchService());
-        new UserListUIController(userListPanel, new UserListService());
+        new SearchUIController(searchPanel);
+        new UserListUIController(userListPanel);
 
         // Set central panel to "search mode"
 
@@ -129,7 +126,7 @@ public class MainFrame extends JFrame{
 
     private boolean doLogin() {
         LoginDialog loginDialog = new LoginDialog(this);
-        new LoginUIController(loginDialog, new AuthService());
+        new LoginUIController(loginDialog);
         loginDialog.setVisible(true);
 
         return loginDialog.isSuccessful();

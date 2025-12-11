@@ -4,7 +4,6 @@ import lib.ScrollablePanel;
 import model.dto.MultimediaDetailDTO;
 import model.dto.MultimediaSummaryDTO;
 import net.miginfocom.swing.MigLayout;
-import service.UserListService;
 import ui.controller.DetailUIController;
 import ui.view.MainFrame;
 import ui.view.component.MySearchTextField;
@@ -106,7 +105,7 @@ public class SearchPanel extends JPanel{
 
     public void showDetailPanel(MultimediaDetailDTO detailDTO, MultimediaSummaryDTO summaryDTO) {
         detailPanel = new DetailPanel(mainFrame, detailDTO, summaryDTO);
-        new DetailUIController(mainFrame, detailPanel, new UserListService(), null);
+        new DetailUIController(mainFrame, detailPanel, null);
 
         add(detailPanel, "DETAILS");
         cards.show(this, "DETAILS");

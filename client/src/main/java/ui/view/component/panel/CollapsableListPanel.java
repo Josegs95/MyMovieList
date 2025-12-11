@@ -7,7 +7,6 @@ import model.dto.SeriesSummaryDTO;
 import model.dto.UserListDTO;
 import model.entity.MultimediaType;
 import net.miginfocom.swing.MigLayout;
-import service.UserListService;
 import ui.controller.ListItemUIController;
 import ui.view.MainFrame;
 
@@ -110,7 +109,7 @@ public class CollapsableListPanel extends JPanel {
 
     public void addMultimediaListItem(MultimediaListItemDTO item) {
         ListItemPanel panel = new ListItemPanel(item);
-        new ListItemUIController(mainFrame, panel, new UserListService());
+        new ListItemUIController(mainFrame, panel);
         panelItems.add(panel);
 
         multimediaDict.put(item, panel);
@@ -125,7 +124,7 @@ public class CollapsableListPanel extends JPanel {
 
         int position = parent.getComponentZOrder(oldPanel);
         ListItemPanel panel = new ListItemPanel(item);
-        new ListItemUIController(mainFrame, panel, new UserListService());
+        new ListItemUIController(mainFrame, panel);
 
         parent.remove(oldPanel);
         parent.add(panel, position);
