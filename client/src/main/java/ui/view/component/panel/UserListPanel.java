@@ -1,11 +1,14 @@
 package ui.view.component.panel;
 
+import model.dto.MultimediaDetailDTO;
 import model.dto.MultimediaListItemDTO;
+import model.dto.MultimediaSummaryDTO;
 import model.dto.UserListDTO;
 import lib.ScrollablePanel;
 import net.miginfocom.swing.MigLayout;
 import service.UserListService;
 import ui.controller.CollapsableListUIController;
+import ui.controller.DetailUIController;
 import ui.view.MainFrame;
 
 import javax.swing.*;
@@ -18,6 +21,7 @@ public class UserListPanel extends JPanel {
     private final MainFrame mainFrame;
 
     private JPanel pnlContainer;
+    private DetailPanel detailPanel;
     private ScrollablePanel pnlLists;
     private JButton btnCreateList;
 
@@ -104,21 +108,26 @@ public class UserListPanel extends JPanel {
         repaint();
     }
 
-//    private void showDetailPanel(DetailPanel panel) {
-//        remove(0);
-//        add(panel);
-//
-//        revalidate();
-//        repaint();
-//    }
-//
-//    private void removeDetailPanel() {
-//        remove(0);
-//        add(pnlContainer);
-//
-//        revalidate();
-//        repaint();
-//    }
+    public void showDetailPanel(MultimediaDetailDTO detailDTO, MultimediaSummaryDTO summaryDTO, UserListDTO userListDTO) {
+        detailPanel = new DetailPanel(mainFrame, detailDTO, summaryDTO);
+        new DetailUIController(mainFrame, detailPanel, new UserListService(), userListDTO);
+
+        remove(pnlContainer);
+        add(detailPanel);
+
+        revalidate();
+        repaint();
+    }
+
+    public void removeDetailPanel(DetailPanel closingDetailPanel) {
+        if (closingDetailPanel.equals(detailPanel)) {
+            remove(closingDetailPanel);
+            add(pnlContainer);
+
+            revalidate();
+            repaint();
+        }
+    }
 
     public void deleteUserList(UserListDTO userListDTO) {
         CollapsableListPanel listPanel = listPanelMap.remove(userListDTO.getId());

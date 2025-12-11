@@ -23,6 +23,8 @@ public class UserListUIController {
         EventBus.subscribe(GetListsEvent.class, this::onGetListsEvent);
         EventBus.subscribe(AddListItemEvent.class, this::onAddListItemEvent);
         EventBus.subscribe(DeleteListItemEvent.class, this::onDeleteListItemEvent);
+        EventBus.subscribe(DetailPanelOnListsEvent.class, this::onDetailPanelOnListsEvent);
+        EventBus.subscribe(HideDetailsEvent.class, this::onHideDetailsEvent);
 
         initListeners();
         getUserData();
@@ -73,5 +75,13 @@ public class UserListUIController {
 
     private void onDeleteListItemEvent(DeleteListItemEvent event) {
         view.removeMultimediaFromList(event.userListDTO(), event.deletedItem());
+    }
+
+    private void onDetailPanelOnListsEvent(DetailPanelOnListsEvent event) {
+        view.showDetailPanel(event.multimediaDetail(), event.multimediaSummary(), event.userList());
+    }
+
+    private void onHideDetailsEvent(HideDetailsEvent event) {
+        view.removeDetailPanel(event.detailPanel());
     }
 }

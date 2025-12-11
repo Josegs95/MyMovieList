@@ -1,9 +1,12 @@
 package ui.controller;
 
+import model.dto.MultimediaListItemDTO;
 import model.dto.MultimediaSummaryDTO;
+import model.dto.UserListDTO;
 import service.UserListService;
 import ui.event.*;
 import ui.util.CompositeSubscription;
+import ui.util.ErrorHandler;
 import ui.util.EventBus;
 import ui.view.MainFrame;
 import ui.view.component.dialog.ConfigureMultimediaDialog;
@@ -17,12 +20,15 @@ public class DetailUIController {
     private final MainFrame mainFrame;
     private final DetailPanel view;
     private final UserListService service;
+    private final UserListDTO userList;
+
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    public DetailUIController(MainFrame mainFrame, DetailPanel view, UserListService service) {
+    public DetailUIController(MainFrame mainFrame, DetailPanel view, UserListService service, UserListDTO userList) {
         this.mainFrame = mainFrame;
         this.view = view;
         this.service = service;
+        this.userList = userList;
 
         subscriptions.add(EventBus.subscribe(CreateListEvent.class, this::onCreateListEvent));
         subscriptions.add(EventBus.subscribe(GetListsEvent.class, this::onGetListsEvent));
@@ -52,13 +58,28 @@ public class DetailUIController {
     private void onRemoveButton() {
         MultimediaSummaryDTO multimedia = view.getSummaryDTO();
 
-        RemoveMultimediaDialog dialog = new RemoveMultimediaDialog(mainFrame, multimedia);
-        new RemoveDialogUIController(dialog, new UserListService());
-        dialog.setVisible(true);
+        if (userList == null) {
+            RemoveMultimediaDialog dialog = new RemoveMultimediaDialog(mainFrame, multimedia);
+            new RemoveDialogUIController(dialog, new UserListService());
+            dialog.setVisible(true);
+            return;
+        }
+
+        boolean confirmRemove = view.showRemoveDialog(multimedia, userList);
+        if(confirmRemove) {
+            try {
+                MultimediaListItemDTO listItem = userList.getListItems().stream()
+                        .filter(item -> item.getMultimedia().equals(multimedia))
+                        .findFirst().orElseThrow();
+                service.deleteItemFromList(userList, listItem);
+            } catch (Exception e) {
+                ErrorHandler.showError(mainFrame, e);
+            }
+        }
     }
 
     private void onBackButton() {
-        EventBus.publish(new HideDetailsEvent());
+        EventBus.publish(new HideDetailsEvent(view));
     }
 
     private void onCreateListEvent(CreateListEvent createListEvent) {

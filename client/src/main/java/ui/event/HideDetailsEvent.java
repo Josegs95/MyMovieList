@@ -1,4 +1,6 @@
 package ui.event;
 
-public record HideDetailsEvent() implements Event {
+import ui.view.component.panel.DetailPanel;
+
+public record HideDetailsEvent(DetailPanel detailPanel) implements Event {
 }

@@ -25,6 +25,7 @@ public class SearchPanel extends JPanel{
     private JPanel pnlGeneral;
     private ScrollablePanel pnlResults;
     private JScrollPane scrollPaneResult;
+    private DetailPanel detailPanel;
     private JButton btnSearch;
 
     public SearchPanel(MainFrame mainFrame) {
@@ -95,16 +96,24 @@ public class SearchPanel extends JPanel{
         repaint();
     }
 
-    public void showResultPanel() {
-        cards.show(this, "RESULTS");
-        txtSearch.requestFocusInWindow();
+    public void showResultPanel(DetailPanel closingDetailPanel) {
+        if (closingDetailPanel.equals(detailPanel)) {
+            detailPanel = null;
+            cards.show(this, "RESULTS");
+            txtSearch.requestFocusInWindow();
+        }
     }
 
     public void showDetailPanel(MultimediaDetailDTO detailDTO, MultimediaSummaryDTO summaryDTO) {
-        DetailPanel detailPanel = new DetailPanel(detailDTO, summaryDTO);
-        new DetailUIController(mainFrame, detailPanel, new UserListService());
+        detailPanel = new DetailPanel(mainFrame, detailDTO, summaryDTO);
+        new DetailUIController(mainFrame, detailPanel, new UserListService(), null);
+
         add(detailPanel, "DETAILS");
         cards.show(this, "DETAILS");
+    }
+
+    public void showNoResultsDialog() {
+        JOptionPane.showMessageDialog(mainFrame,"No se ha encontrado resultados","Información", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public MySearchTextField getTxtSearch() {

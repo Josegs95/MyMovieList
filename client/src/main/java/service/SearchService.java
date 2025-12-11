@@ -12,10 +12,8 @@ import protocol.dto.request.SearchMultimediaRequest;
 import protocol.dto.response.MultimediaDetailResponse;
 import protocol.dto.response.SearchMultimediaResponse;
 import tools.jackson.databind.ObjectMapper;
-import ui.event.DetailApiEvent;
-import ui.event.SearchApiEvent;
-import ui.util.EventBus;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,22 +24,21 @@ public class SearchService {
     private final ObjectMapper mapper = new ObjectMapper();
     private final UserDTO user = SessionContext.getInstance().getUser();
 
-    public void searchByName(String text) {
+    public List<MultimediaSummaryDTO> searchByName(String text) {
         SearchMultimediaRequest request = new SearchMultimediaRequest(user.getId(), text, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.API_SEARCH_MULTIMEDIA, request));
         SearchMultimediaResponse response = mapper.convertValue(serverMessage.content(), SearchMultimediaResponse.class);
+        List<MultimediaSummaryDTO> resultList = response.results();
 
-        response.results()
-                .forEach(dto -> dto.setPosterPath(response.baseImageUrl() + dto.getPosterPath()));
+        resultList.forEach(dto -> dto.setPosterPath(response.baseImageUrl() + dto.getPosterPath()));
 
-        EventBus.publish(new SearchApiEvent(response.results()));
+        return resultList;
     }
 
-    public void getMultimediaDetail(MultimediaSummaryDTO multimediaSummary) {
+    public MultimediaDetailDTO getMultimediaDetail(MultimediaSummaryDTO multimediaSummary) {
         if (API_CACHE.containsKey(multimediaSummary)) {
-            EventBus.publish(new DetailApiEvent(API_CACHE.get(multimediaSummary), multimediaSummary));
-            return;
+            return API_CACHE.get(multimediaSummary);
         }
 
         MultimediaDetailRequest request = new MultimediaDetailRequest(
@@ -56,6 +53,6 @@ public class SearchService {
         multimediaDetail.setPosterPath(response.baseImageUrl() + response.multimedia().getPosterPath());
         API_CACHE.put(multimediaSummary, multimediaDetail);
 
-        EventBus.publish(new DetailApiEvent(multimediaDetail, multimediaSummary));
+        return multimediaDetail;
     }
 }

@@ -5,6 +5,7 @@ import lib.ScrollablePanel;
 import lib.StretchIcon;
 import model.dto.*;
 import net.miginfocom.swing.MigLayout;
+import ui.view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -18,6 +19,7 @@ public class DetailPanel extends JPanel {
     private static final Color MOVIE_COLOR = new Color(250, 219, 111);
     private static final Color SERIES_COLOR = new Color(132, 182, 244);
 
+    private final MainFrame mainFrame;
     private final UserDTO user;
     private final MultimediaDetailDTO detailDTO;
     private final MultimediaSummaryDTO summaryDTO;
@@ -26,7 +28,8 @@ public class DetailPanel extends JPanel {
     private JButton btnAddToList;
     private JButton btnRemoveFromList;
 
-    public DetailPanel(MultimediaDetailDTO detailDTO, MultimediaSummaryDTO summaryDTO) {
+    public DetailPanel(MainFrame mainFrame, MultimediaDetailDTO detailDTO, MultimediaSummaryDTO summaryDTO) {
+        this.mainFrame = mainFrame;
         this.detailDTO = detailDTO;
         this.summaryDTO = summaryDTO;
         this.user = SessionContext.getInstance().getUser();
@@ -205,6 +208,15 @@ public class DetailPanel extends JPanel {
 
         btnAddToList.setEnabled(!multimediaAlreadyExistsInAllLists);
         btnRemoveFromList.setEnabled(multimediaAlreadyExistsInAnyList);
+    }
+
+    public boolean showRemoveDialog(MultimediaSummaryDTO summaryDTO, UserListDTO userListDTO) {
+        String message = String.format("¿Estás seguro/a de que quieres borrar \"%s\" de la lista \"%s\"?",
+                summaryDTO.getTitle(),
+                userListDTO.getName());
+        int result = JOptionPane.showConfirmDialog(mainFrame, message, "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        return result == JOptionPane.YES_OPTION;
     }
 
     public MultimediaSummaryDTO getSummaryDTO() {

@@ -240,8 +240,6 @@ public class CollapsableListPanel extends JPanel {
 
         private JButton btnConfig;
         private JButton btnDelete;
-        private JLabel lblStatus;
-        private JLabel lblCurrentEpisode;
 
         public ListItemPanel(MultimediaListItemDTO multimediaItem) {
             this.multimediaItem = multimediaItem;
@@ -271,14 +269,14 @@ public class CollapsableListPanel extends JPanel {
             JLabel lblType = new JLabel(multimediaType.toString(), SwingConstants.CENTER);
 
             // Status
-            lblStatus = new JLabel(multimediaItem.getStatus().toString(), SwingConstants.CENTER);
+            JLabel lblStatus = new JLabel(multimediaItem.getStatus().toString(), SwingConstants.CENTER);
 
             // Episode
             String episodeString = "";
             if (multimediaDTO instanceof SeriesSummaryDTO serie){
                 episodeString = multimediaItem.getCurrentEpisode() + "/" + serie.getTotalEpisodes();
             }
-            lblCurrentEpisode = new JLabel(episodeString, SwingConstants.CENTER);
+            JLabel lblCurrentEpisode = new JLabel(episodeString, SwingConstants.CENTER);
 
             // Buttons
             JPanel pnlButtons = new JPanel(new MigLayout(
@@ -310,74 +308,6 @@ public class CollapsableListPanel extends JPanel {
 
             return response == JOptionPane.YES_OPTION;
         }
-
-        // * BORRAR *
-        private void createListeners() {
-//            btnDelete.addActionListener((_ -> {
-//                String message = String.format("¿Are you sure that you want to delete \"%s\" from your list?",
-//                        multimedia.getTitle());
-//                int dialogResponse = JOptionPane.showConfirmDialog(mainFrame, message,"Confirmation",
-//                        JOptionPane.OK_CANCEL_OPTION);
-//                if (dialogResponse != JOptionPane.YES_OPTION) {
-//                    return;
-//                }
-//
-//                Message serverMessage = UserListController.deleteMultimediaFromList(user, userList, multimedia);
-//
-//                if (serverMessage.status() != 200) {
-//                    String defaultErrorMessage = "Couldn't remove \"" + multimedia.getTitle() + "\" from the list.";
-//                    processErrorMessage(serverMessage, defaultErrorMessage);
-//                } else {
-//                    message = String.format("\"%s\" has been modified successfully.", multimedia.getTitle());
-//                    JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
-//
-//                    Event event = new Event(EventType.REMOVE_MULTIMEDIA,
-//                            Map.of("userList", userList, "multimediaListItem", multimediaListItem));
-//                    ViewController.getInstance().notifyView("userListPanel", event);
-//                }
-//
-//            }));
-//            btnConfig.addActionListener(_ -> {
-//                ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, multimediaListItem);
-//                dialog.setVisible(true);
-//
-//                if (dialog.isCancelled()) {
-//                    return;
-//                }
-//
-//                MultimediaStatus selectedStatus = dialog.getSelectedMultimediaStatus();
-//                int selectedCurrentEpisode = dialog.getSelectedCurrentEpisode();
-//                MultimediaListItem multimediaListItem = new MultimediaListItem(multimedia, userList,
-//                        selectedStatus, selectedCurrentEpisode);
-//
-//                // Send the information to the server
-//
-//                Message response =
-//                        UserListController.modifyMultimediaAttributes(user, userList, multimediaListItem);
-//                if (response.status() != 200) {
-//                    processErrorMessage(response, "Couldn't modify the multimedia.");
-//                } else {
-//                    String message = String.format("\"%s\" has been modified successfully.", multimedia.getTitle());
-//                    JOptionPane.showMessageDialog(mainFrame, message, "Success", JOptionPane.INFORMATION_MESSAGE);
-//
-//                    MultimediaStatus status = MultimediaStatus.valueOf(response.getContentAsMap().get("status").toString());
-//                    int currentEpisode = (int) (response.getContentAsMap().get("currentEpisode"));
-//
-//                    this.multimediaListItem = new MultimediaListItem(multimedia, userList, status, currentEpisode);
-//                    updateMultimediaAttributes();
-//                }
-//            });
-//            addMouseListener(new MouseAdapter() {
-//                @Override
-//                public void mouseClicked(MouseEvent e) {
-//                    DetailMultimediaPanel detailMultimediaPanel = new DetailMultimediaPanel(mainFrame, userListPanel, multimedia);
-//                    Event event = new Event(EventType.SHOW_DETAIL_PANEL,
-//                            Map.of("detailPanel", detailMultimediaPanel));
-//                    ViewController.getInstance().notifyView("userListPanel", event);
-//                }
-//            });
-        }
-        //
 
         public MultimediaListItemDTO getMultimediaItem() {
             return multimediaItem;
