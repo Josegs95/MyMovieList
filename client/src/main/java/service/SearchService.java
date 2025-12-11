@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SearchService {
 
-    private static final Map<MultimediaSummaryDTO, MultimediaDetailDTO> API_CACHE = new ConcurrentHashMap<>();
+    private final Map<MultimediaSummaryDTO, MultimediaDetailDTO> API_CACHE = new ConcurrentHashMap<>();
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final UserDTO user = SessionContext.getInstance().getUser();

@@ -7,16 +7,17 @@ import service.UserListService;
 
 public class SessionContext {
 
-    private static final AuthService AUTH_SERVICE = new AuthService();
-    private static final SearchService SEARCH_SERVICE = new SearchService();
-    private static final UserListService USER_LIST_SERVICE = new UserListService();
+    private AuthService authService;
+    private SearchService searchService;
+    private UserListService userListService;
 
     private static SessionContext instance;
     private UserDTO currentUser;
 
-    private SessionContext() {}
+    private SessionContext() {
+    }
 
-    public static synchronized SessionContext getInstance() {
+    public static SessionContext getInstance() {
         if (instance == null) {
             instance = new SessionContext();
         }
@@ -31,19 +32,31 @@ public class SessionContext {
         return currentUser;
     }
 
-    public void setUser(UserDTO user){
+    public void setUser(UserDTO user) {
         this.currentUser = user;
     }
 
-    public static AuthService getAuthService() {
-        return AUTH_SERVICE;
+    public AuthService getAuthService() {
+        if (authService == null) {
+            authService = new AuthService();
+        }
+
+        return authService;
     }
 
-    public static SearchService getSearchService() {
-        return SEARCH_SERVICE;
+    public SearchService getSearchService() {
+        if (searchService == null) {
+            searchService = new SearchService();
+        }
+
+        return searchService;
     }
 
-    public static UserListService getUserListService() {
-        return USER_LIST_SERVICE;
+    public UserListService getUserListService() {
+        if (userListService == null) {
+            userListService = new UserListService();
+        }
+
+        return userListService;
     }
 }

@@ -18,7 +18,7 @@ public class CollapsableListUIController {
 
     public CollapsableListUIController(CollapsableListPanel view) {
         this.view = view;
-        this.service = SessionContext.getUserListService();
+        this.service = SessionContext.getInstance().getUserListService();
 
         subscriptions.add(EventBus.subscribe(RenameListEvent.class, this::onRenameListEvent));
         subscriptions.add(EventBus.subscribe(ModifyListItemEvent.class, this::onModifyListItemEvent));

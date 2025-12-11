@@ -18,7 +18,7 @@ public class SearchUIController {
 
     public SearchUIController(SearchPanel view) {
         this.view = view;
-        this.service = SessionContext.getSearchService();
+        this.service = SessionContext.getInstance().getSearchService();
 
         EventBus.subscribe(HideDetailsEvent.class, this::onHideDetailPanelEvent);
 

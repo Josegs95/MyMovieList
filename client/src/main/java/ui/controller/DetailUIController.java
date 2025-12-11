@@ -29,7 +29,7 @@ public class DetailUIController {
         this.mainFrame = mainFrame;
         this.view = view;
         this.userList = userList;
-        this.service = SessionContext.getUserListService();
+        this.service = SessionContext.getInstance().getUserListService();
 
         subscriptions.add(EventBus.subscribe(CreateListEvent.class, this::onCreateListEvent));
         subscriptions.add(EventBus.subscribe(GetListsEvent.class, this::onGetListsEvent));

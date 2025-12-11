@@ -17,7 +17,7 @@ public class UserListUIController {
 
     public UserListUIController(UserListPanel view) {
         this.view = view;
-        this.userListService = SessionContext.getUserListService();
+        this.userListService = SessionContext.getInstance().getUserListService();
 
         EventBus.subscribe(CreateListEvent.class, this::onCreateListEvent);
         EventBus.subscribe(DeleteListEvent.class, this::onDeleteListEvent);

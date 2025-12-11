@@ -25,8 +25,8 @@ public class ListItemUIController {
     public ListItemUIController(MainFrame mainFrame, CollapsableListPanel.ListItemPanel view) {
         this.mainFrame = mainFrame;
         this.view = view;
-        this.listService = SessionContext.getUserListService();
-        this.searchService = SessionContext.getSearchService();
+        this.listService = SessionContext.getInstance().getUserListService();
+        this.searchService = SessionContext.getInstance().getSearchService();
 
         initListeners();
     }

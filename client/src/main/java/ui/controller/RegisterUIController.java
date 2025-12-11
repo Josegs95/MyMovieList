@@ -17,7 +17,7 @@ public class RegisterUIController {
 
     public RegisterUIController(RegisterDialog view) {
         this.view = view;
-        this.authService = SessionContext.getAuthService();
+        this.authService = SessionContext.getInstance().getAuthService();
 
         subscription = EventBus.subscribe(RegisterUserEvent.class, this::onRegisterUser);
 

@@ -200,7 +200,8 @@ public class ConfigureMultimediaDialog extends JDialog {
     }
 
     public boolean hasMultimediaChanges() {
-        return !listItem.getListId().equals(getSelectedList().getId())
+        return listItem.getListId() == null
+                || !listItem.getListId().equals(getSelectedList().getId())
                 || !listItem.getCurrentEpisode().equals(getSelectedCurrentEpisode())
                 || listItem.getStatus() != getSelectedMultimediaStatus();
     }

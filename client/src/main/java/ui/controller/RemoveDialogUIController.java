@@ -19,7 +19,7 @@ public class RemoveDialogUIController {
 
     public RemoveDialogUIController(RemoveMultimediaDialog view) {
         this.view = view;
-        this.service = SessionContext.getUserListService();
+        this.service = SessionContext.getInstance().getUserListService();
 
         initListeners();
     }

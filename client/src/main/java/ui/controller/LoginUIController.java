@@ -13,7 +13,7 @@ public class LoginUIController {
 
     public LoginUIController(LoginDialog view) {
         this.view = view;
-        this.authService = SessionContext.getAuthService();
+        this.authService = SessionContext.getInstance().getAuthService();
 
         initListeners();
     }
