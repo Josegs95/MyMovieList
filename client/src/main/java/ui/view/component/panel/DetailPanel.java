@@ -219,6 +219,14 @@ public class DetailPanel extends JPanel {
         return result == JOptionPane.YES_OPTION;
     }
 
+    public void showAddedToListSuccessDialog(MultimediaSummaryDTO summaryDTO, UserListDTO userListDTO) {
+        String message = String.format(
+                "\"%s\" añadido a la lista \"%s\" exitosamente.",
+                summaryDTO.getTitle(),
+                userListDTO.getName());
+        JOptionPane.showMessageDialog(mainFrame, message,"Información", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public MultimediaSummaryDTO getSummaryDTO() {
         return summaryDTO;
     }

@@ -14,8 +14,6 @@ import ui.view.component.dialog.ConfigureMultimediaDialog;
 import ui.view.component.dialog.RemoveMultimediaDialog;
 import ui.view.component.panel.DetailPanel;
 
-import javax.swing.*;
-
 public class DetailUIController {
 
     private final MainFrame mainFrame;
@@ -100,11 +98,7 @@ public class DetailUIController {
     }
 
     private void onListItemCreated(AddListItemEvent event) {
-        String message = String.format(
-                "\"%s\" añadido a la lista \"%s\" exitosamente.",
-                event.listItemDTO().getMultimedia().getTitle(),
-                event.userListDTO().getName());
-        JOptionPane.showMessageDialog(view, message,"Información", JOptionPane.INFORMATION_MESSAGE);
+        view.showAddedToListSuccessDialog(event.listItemDTO().getMultimedia(), event.userListDTO());
         view.checkButtonAvailability();
     }
 
