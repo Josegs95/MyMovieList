@@ -4,19 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Use of singleton for all client services">
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Fixed an error with the initialization of the services">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/service/SearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/SearchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/CollapsableListUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/CollapsableListUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/DetailUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/DetailUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/ListItemUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/ListItemUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/LoginUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/LoginUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/RegisterUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/RegisterUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/RemoveDialogUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/RemoveDialogUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/SearchUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/SearchUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/UserListUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/UserListUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/ConfigureMultimediaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/ConfigureMultimediaDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/CollapsableListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/CollapsableListPanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -240,7 +230,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765460941301</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Fixed an error with the initialization of the services">
+      <option name="closed" value="true" />
+      <created>1765473256266</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1765473256268</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -270,6 +268,7 @@
     <MESSAGE value="Added API cache for multi details in the client" />
     <MESSAGE value="Details panel added to the list view" />
     <MESSAGE value="Use of singleton for all client services" />
-    <option name="LAST_COMMIT_MESSAGE" value="Use of singleton for all client services" />
+    <MESSAGE value="Fixed an error with the initialization of the services" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed an error with the initialization of the services" />
   </component>
 </project>

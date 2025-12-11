@@ -152,15 +152,22 @@ public class CollapsableListPanel extends JPanel {
         pnlUserList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (!expanded && !userList.getListItems().isEmpty()){
-                    CollapsableListPanel.this.add(panelItems);
-                } else {
+                if (expanded) {
                     CollapsableListPanel.this.remove(panelItems);
+                    CollapsableListPanel.this.revalidate();
+                    CollapsableListPanel.this.repaint();
+
+                    expanded = false;
+                    return;
                 }
 
-                expanded = !expanded;
+                if (userList.getListItems().isEmpty()) return;
+
+                CollapsableListPanel.this.add(panelItems);
                 CollapsableListPanel.this.revalidate();
                 CollapsableListPanel.this.repaint();
+
+                expanded = true;
             }
         });
     }
@@ -244,7 +251,6 @@ public class CollapsableListPanel extends JPanel {
             this.multimediaItem = multimediaItem;
 
             createUI();
-            createListeners();
         }
 
         private void createUI() {
