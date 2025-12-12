@@ -21,7 +21,7 @@ public class AuthService {
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.LOGIN, request));
 
-        LoginResponse response = mapper.convertValue(serverMessage.content(), LoginResponse.class);
+        LoginResponse response = mapper.convertValue(serverMessage.getContent(), LoginResponse.class);
         SessionContext.getInstance().setUser(response.userDTO());
 
         EventBus.publish(new LoginUserEvent(response.userDTO()));

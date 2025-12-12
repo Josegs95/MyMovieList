@@ -22,7 +22,7 @@ public class UserListService {
         CreateListRequest request = new CreateListRequest(user.getId(), listName, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.CREATE_USER_LIST, request));
-        UserListDTO userList = mapper.convertValue(serverMessage.content(), UserListDTO.class);
+        UserListDTO userList = mapper.convertValue(serverMessage.getContent(), UserListDTO.class);
         user.getLists().add(userList);
 
         EventBus.publish(new CreateListEvent(userList));
@@ -32,7 +32,7 @@ public class UserListService {
         GetAllListsRequest request = new GetAllListsRequest(user.getId(), user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.GET_USER_LISTS, request));
-        GetAllListsResponse response = mapper.convertValue(serverMessage.content(), GetAllListsResponse.class);
+        GetAllListsResponse response = mapper.convertValue(serverMessage.getContent(), GetAllListsResponse.class);
         user.setLists(response.lists());
 
         EventBus.publish(new GetListsEvent(response.lists()));
@@ -42,7 +42,7 @@ public class UserListService {
         RenameListRequest request = new RenameListRequest(user.getId(), userList.getId(), newListName, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.RENAME_USER_LIST, request));
-        UserListDTO renamedUserList = mapper.convertValue(serverMessage.content(), UserListDTO.class);
+        UserListDTO renamedUserList = mapper.convertValue(serverMessage.getContent(), UserListDTO.class);
         userList.setName(renamedUserList.getName());
 
         EventBus.publish(new RenameListEvent(newListName));
@@ -61,7 +61,7 @@ public class UserListService {
         AddListItemRequest request = new AddListItemRequest(user.getId(), multimedia, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.ADD_MULTIMEDIA, request));
-        MultimediaListItemDTO listItem = mapper.convertValue(serverMessage.content(), MultimediaListItemDTO.class);
+        MultimediaListItemDTO listItem = mapper.convertValue(serverMessage.getContent(), MultimediaListItemDTO.class);
 
         UserListDTO userListDTO = user.getLists().stream()
                 .filter(list -> list.getId().equals(multimedia.getListId()))
@@ -75,7 +75,7 @@ public class UserListService {
         ModifyListItemRequest request = new ModifyListItemRequest(user.getId(), multimedia, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.MODIFY_MULTIMEDIA, request));
-        MultimediaListItemDTO listItem = mapper.convertValue(serverMessage.content(), MultimediaListItemDTO.class);
+        MultimediaListItemDTO listItem = mapper.convertValue(serverMessage.getContent(), MultimediaListItemDTO.class);
 
         UserListDTO userListDTO = user.getLists().stream()
                 .filter(list -> list.getId().equals(multimedia.getListId()))

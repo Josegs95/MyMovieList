@@ -7,11 +7,11 @@ import service.UserListService;
 
 public class SessionContext {
 
-    private AuthService authService;
-    private SearchService searchService;
-    private UserListService userListService;
+    private volatile AuthService authService;
+    private volatile SearchService searchService;
+    private volatile UserListService userListService;
 
-    private static SessionContext instance;
+    private static volatile SessionContext instance;
     private UserDTO currentUser;
 
     private SessionContext() {
@@ -19,7 +19,11 @@ public class SessionContext {
 
     public static SessionContext getInstance() {
         if (instance == null) {
-            instance = new SessionContext();
+            synchronized (SessionContext.class) {
+                if (instance == null) {
+                    instance = new SessionContext();
+                }
+            }
         }
 
         return instance;
@@ -38,7 +42,11 @@ public class SessionContext {
 
     public AuthService getAuthService() {
         if (authService == null) {
-            authService = new AuthService();
+            synchronized (SessionContext.class) {
+                if (authService == null) {
+                    authService = new AuthService();
+                }
+            }
         }
 
         return authService;
@@ -46,7 +54,11 @@ public class SessionContext {
 
     public SearchService getSearchService() {
         if (searchService == null) {
-            searchService = new SearchService();
+            synchronized (SessionContext.class) {
+                if (searchService == null) {
+                    searchService = new SearchService();
+                }
+            }
         }
 
         return searchService;
@@ -54,7 +66,11 @@ public class SessionContext {
 
     public UserListService getUserListService() {
         if (userListService == null) {
-            userListService = new UserListService();
+            synchronized (SessionContext.class) {
+                if (userListService == null) {
+                    userListService = new UserListService();
+                }
+            }
         }
 
         return userListService;

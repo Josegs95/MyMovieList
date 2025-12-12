@@ -152,6 +152,8 @@ public class CollapsableListPanel extends JPanel {
         pnlUserList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (userList.getListItems().isEmpty()) return;
+
                 if (expanded) {
                     CollapsableListPanel.this.remove(panelItems);
                     CollapsableListPanel.this.revalidate();
@@ -160,8 +162,6 @@ public class CollapsableListPanel extends JPanel {
                     expanded = false;
                     return;
                 }
-
-                if (userList.getListItems().isEmpty()) return;
 
                 CollapsableListPanel.this.add(panelItems);
                 CollapsableListPanel.this.revalidate();

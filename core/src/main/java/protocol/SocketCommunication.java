@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 
 public class SocketCommunication implements AutoCloseable {
 
@@ -41,8 +42,9 @@ public class SocketCommunication implements AutoCloseable {
         try (SocketCommunication socketCommunication = new SocketCommunication()) {
             Message serverMessage = socketCommunication.writeToServer(clientMessage);
 
-            if (serverMessage.status() != 200L) {
-                String errorMessage = serverMessage.getErrorMessage().orElse("Error desconocido");
+            if (serverMessage.getStatus() != 200L) {
+                String errorMessage = Optional.ofNullable(serverMessage.getErrorDetail().getMessage())
+                        .orElse("Error desconocido");
                 throw new ServerException(errorMessage);
             }
 
@@ -57,7 +59,7 @@ public class SocketCommunication implements AutoCloseable {
         writeStringToSocket(objectMapper.writeValueAsString(new Message(MessageType.KNOCK, null, null)));
         Message serverResponse = objectMapper.readValue(readStringFromSocket(), Message.class);
 
-        if (serverResponse.messageType() != MessageType.KNOCK || serverResponse.status() != 200) {
+        if (serverResponse.getMessageType() != MessageType.KNOCK || serverResponse.getStatus() != 200) {
             throw new RuntimeException("Error de comunicación con el servidor");
         }
 
@@ -66,9 +68,11 @@ public class SocketCommunication implements AutoCloseable {
         return objectMapper.readValue(readStringFromSocket(), Message.class);
     }
 
-    public void writeToClient(MessageType messageType, Long status, Object messageData)
+    public void writeToClient(MessageType messageType, Long status, Object messageData, ErrorDetails errorDetails)
             throws IOException {
-        writeStringToSocket(objectMapper.writeValueAsString(new Message(messageType, status, messageData)));
+        Message message = new Message(messageType, status, messageData);
+        message.setErrorDetail(errorDetails);
+        writeStringToSocket(objectMapper.writeValueAsString(message));
     }
 
     public String readStringFromSocket() throws IOException {

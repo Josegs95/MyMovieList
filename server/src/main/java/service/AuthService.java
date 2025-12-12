@@ -17,10 +17,10 @@ public class AuthService {
     public User authenticate(Session session, Long idUser, Integer sessionToken) {
         User user = userDAO.findBySessionToken(session, sessionToken);
         if (user == null) {
-            throw new AuthenticationException("Invalid session token");
+            throw new AuthenticationException("Token de sesión inválido");
         }
         if (!idUser.equals(user.getId())) {
-            throw new AuthorizationException("User does not own this resource");
+            throw new AuthorizationException("El usuario no posee este recurso");
         }
 
         return user;

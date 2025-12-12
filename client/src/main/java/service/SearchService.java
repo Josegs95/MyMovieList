@@ -28,7 +28,7 @@ public class SearchService {
         SearchMultimediaRequest request = new SearchMultimediaRequest(user.getId(), text, user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.API_SEARCH_MULTIMEDIA, request));
-        SearchMultimediaResponse response = mapper.convertValue(serverMessage.content(), SearchMultimediaResponse.class);
+        SearchMultimediaResponse response = mapper.convertValue(serverMessage.getContent(), SearchMultimediaResponse.class);
         List<MultimediaSummaryDTO> resultList = response.results();
 
         resultList.forEach(dto -> dto.setPosterPath(response.baseImageUrl() + dto.getPosterPath()));
@@ -48,7 +48,7 @@ public class SearchService {
                 user.getSessionToken());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.API_DETAIL_MULTIMEDIA, request));
-        MultimediaDetailResponse response = mapper.convertValue(serverMessage.content(), MultimediaDetailResponse.class);
+        MultimediaDetailResponse response = mapper.convertValue(serverMessage.getContent(), MultimediaDetailResponse.class);
         MultimediaDetailDTO multimediaDetail = response.multimedia();
         multimediaDetail.setPosterPath(response.baseImageUrl() + response.multimedia().getPosterPath());
         API_CACHE.put(multimediaSummary, multimediaDetail);

@@ -30,7 +30,7 @@ public class UserService {
 
                 User user = userDAO.findByUsername(session, request.username());
                 if (user != null) {
-                    throw new ConflictException("That username is already in use.");
+                    throw new ConflictException("Ya hay un usuario registrado con ese nombre de usuario");
                 }
 
                 int salt = new Random().nextInt();
@@ -56,11 +56,11 @@ public class UserService {
 
                 User user = userDAO.findByUsername(session, request.username());
                 if (user == null) {
-                    throw new AuthenticationException("It doesn't exists a user with that username.");
+                    throw new AuthenticationException("No existe el usuario \"" + request.username() + "\"");
                 }
 
                 if (!user.getPassword().equals(Security.hashString(request.password(), user.getSessionToken()))) {
-                    throw new AuthenticationException("Wrong password");
+                    throw new AuthenticationException("Contraseña incorrecta");
                 }
                 transaction.commit();
 

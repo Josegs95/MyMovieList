@@ -4,6 +4,7 @@ import model.dto.MultimediaListItemDTO;
 import model.dto.UserListDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import protocol.ErrorDetails;
 import protocol.Message;
 import protocol.MessageType;
 import protocol.SocketCommunication;
@@ -17,7 +18,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Map;
+import java.time.LocalDateTime;
 
 public class ClientHandler implements Runnable{
 
@@ -60,13 +61,14 @@ public class ClientHandler implements Runnable{
         MessageType messageType = null;
         long status;
         Object serverResponseData = null;
+        ErrorDetails errorDetails = null;
         try{
             knockMessage(socketCommunication);
 
             String clientJSONMessage = socketCommunication.readStringFromSocket();
             Message clientMessage = mapper.readValue(clientJSONMessage, Message.class);
-            messageType = clientMessage.messageType();
-            clientData = clientMessage.content();
+            messageType = clientMessage.getMessageType();
+            clientData = clientMessage.getContent();
 
             switch (messageType){
                 case TEST -> LOGGER.info("Ha llegado un mensaje de tipo Test");
@@ -99,17 +101,17 @@ public class ClientHandler implements Runnable{
                 default -> throw new IllegalStateException("Unexpected value: " + e);
             };
 
-            serverResponseData = Map.of("error_message", e.getMessage());
+            errorDetails = new ErrorDetails(e.getClass().getSimpleName(), e.getMessage(), LocalDateTime.now());
             LOGGER.info(e.getMessage());
         } catch (Exception e) {
             status = 500L;
             String errorMessage = "Error interno del servidor";
-            serverResponseData = Map.of("error_message", errorMessage);
+            errorDetails = new ErrorDetails("Error desconocido", errorMessage, LocalDateTime.now());
             LOGGER.error(errorMessage, e);
         }
 
         try {
-            socketCommunication.writeToClient(messageType, status, serverResponseData);
+            socketCommunication.writeToClient(messageType, status, serverResponseData, errorDetails);
         } catch (IOException ex) {
             LOGGER.error("Couldn't send the message. Disconnected client: {}", ex.getMessage());
         }
@@ -117,11 +119,11 @@ public class ClientHandler implements Runnable{
 
     private void knockMessage(SocketCommunication socketCommunication) throws IOException {
         Message clientMessage = mapper.readValue(socketCommunication.readStringFromSocket(), Message.class);
-        if (clientMessage.messageType() != MessageType.KNOCK){
+        if (clientMessage.getMessageType() != MessageType.KNOCK){
             throw new RuntimeException("Message with unknown comm protocol");
         }
 
-        socketCommunication.writeToClient(MessageType.KNOCK, 200L, null);
+        socketCommunication.writeToClient(MessageType.KNOCK, 200L, null, null);
     }
 
     private void registerUser() {
