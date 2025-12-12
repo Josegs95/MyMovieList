@@ -33,7 +33,7 @@ public class UserListService {
 
                 UserList sameNameList = userListDAO.findByNameAndUser(session, request.listName(), user);
                 if (sameNameList != null) {
-                    throw new ConflictException("It already exists a list with that name for that user");
+                    throw new ConflictException("Ya existe una lista con ese nombre para este usuario");
                 }
 
                 UserList list = new UserList(request.listName(), user);
@@ -85,7 +85,7 @@ public class UserListService {
 
                 UserList sameNameList = userListDAO.findByNameAndUser(session, newListName, user);
                 if (sameNameList != null) {
-                    throw new ConflictException("It already exists a list with that name for that user");
+                    throw new ConflictException("Ya existe una lista con ese nombre para este usuario");
                 }
 
                 list.setName(newListName);
@@ -126,10 +126,10 @@ public class UserListService {
     public UserList checkListOwnership(Session session, Long idList, Long idOwner) {
         UserList list = userListDAO.findById(session, idList);
         if (list == null) {
-            throw new ResourceNotFoundException("It does not exist a list with that id");
+            throw new ResourceNotFoundException("No existe una lista con ese id");
         }
         if (!list.getUser().getId().equals(idOwner)) {
-            throw new AuthorizationException("The user does not own the specified list");
+            throw new AuthorizationException("El usuario no es el propietario de esta lista");
         }
 
         return list;

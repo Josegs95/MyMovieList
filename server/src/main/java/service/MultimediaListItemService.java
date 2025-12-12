@@ -36,7 +36,7 @@ public class MultimediaListItemService {
 
                 MultimediaSummaryDTO summaryDTO = listItemDTO.getMultimedia();
                 if (isMultimediaContainedOnList(list, summaryDTO)) {
-                    throw new RuntimeException("That multimedia item already exists in that list");
+                    throw new RuntimeException("Ya existe este objeto multimedia en esta lista");
                 }
 
                 Integer totalEpisodes = 0;
@@ -82,7 +82,7 @@ public class MultimediaListItemService {
                 MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, listItem.getListId(), listItem.getMultimedia().getIdDb());
 
                 if (itemAtBD == null) {
-                    throw new RuntimeException("That multimedia item does not exists in that list");
+                    throw new RuntimeException("Este objeto multimedia no existe en esta lista");
                 }
 
                 itemAtBD.setCurrentEpisode(listItem.getCurrentEpisode());
@@ -111,7 +111,7 @@ public class MultimediaListItemService {
                 MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, idList, idMultimedia);
 
                 if (itemAtBD == null) {
-                    throw new RuntimeException("That multimedia item does not exists in that list");
+                    throw new RuntimeException("Este objeto multimedia no existe en esta lista");
                 }
 
                 multimediaListItemDAO.delete(session, itemAtBD);
