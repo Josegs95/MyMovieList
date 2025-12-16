@@ -9,7 +9,7 @@ public class UserDTO {
 
     private Long id;
     private String username;
-    private Integer sessionToken;
+    private String sessionToken;
     private List<UserListDTO> lists;
 
     public UserDTO(){}
@@ -17,7 +17,6 @@ public class UserDTO {
     public UserDTO(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        this.sessionToken = user.getSessionToken();
         this.lists = new ArrayList<>();
     }
 
@@ -37,11 +36,11 @@ public class UserDTO {
         this.username = username;
     }
 
-    public Integer getSessionToken() {
+    public String getSessionToken() {
         return sessionToken;
     }
 
-    public void setSessionToken(Integer sessionToken) {
+    public void setSessionToken(String sessionToken) {
         this.sessionToken = sessionToken;
     }
 

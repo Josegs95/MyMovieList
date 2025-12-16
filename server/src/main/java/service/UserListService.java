@@ -29,7 +29,7 @@ public class UserListService {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                User user = authService.authenticate(session, request.userId(), request.token());
+                User user = authService.validateSession(session, request.userId(), request.sessionToken());
 
                 UserList sameNameList = userListDAO.findByNameAndUser(session, request.listName(), user);
                 if (sameNameList != null) {
@@ -51,12 +51,12 @@ public class UserListService {
         }
     }
 
-    public List<UserListDTO> getAllListsFromUser(Long idOwner, Integer sessionToken) {
+    public List<UserListDTO> getAllListsFromUser(Long idOwner, String sessionToken) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                User user = authService.authenticate(session, idOwner, sessionToken);
+                User user = authService.validateSession(session, idOwner, sessionToken);
 
                 List<UserList> lists = userListDAO.findAllByUserWithItems(session, user);
 
@@ -74,12 +74,12 @@ public class UserListService {
         }
     }
 
-    public UserListDTO rename(Long idUser, Long idList, String newListName, Integer sessionToken) {
+    public UserListDTO rename(Long idUser, Long idList, String newListName, String sessionToken) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                User user = authService.authenticate(session, idUser, sessionToken);
+                User user = authService.validateSession(session, idUser, sessionToken);
 
                 UserList list = checkListOwnership(session, idList, idUser);
 
@@ -102,12 +102,12 @@ public class UserListService {
         }
     }
 
-    public void delete(Long idOwner, Long idList, Integer sessionToken) {
+    public void delete(Long idOwner, Long idList, String sessionToken) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                authService.authenticate(session, idOwner, sessionToken);
+                authService.validateSession(session, idOwner, sessionToken);
 
                 checkListOwnership(session, idList, idOwner);
 

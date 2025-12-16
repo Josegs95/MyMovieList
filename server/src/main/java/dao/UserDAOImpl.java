@@ -13,7 +13,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User findById(Session session, Integer id) {
+    public User findById(Session session, Long id) {
         return session.createQuery("FROM User WHERE id = :id", User.class)
                 .setParameter("id", id)
                 .uniqueResult();
@@ -23,13 +23,6 @@ public class UserDAOImpl implements UserDAO {
     public User findByUsername(Session session, String username) {
         return session.createQuery("FROM User WHERE username = :username", User.class)
                 .setParameter("username", username)
-                .uniqueResult();
-    }
-
-    @Override
-    public User findBySessionToken(Session session, Integer sessionToken) {
-        return session.createQuery("FROM User WHERE sessionToken = :sessionToken", User.class)
-                .setParameter("sessionToken", sessionToken)
                 .uniqueResult();
     }
 }

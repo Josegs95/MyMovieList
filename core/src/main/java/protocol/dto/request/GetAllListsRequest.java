@@ -1,4 +1,4 @@
 package protocol.dto.request;
 
-public record GetAllListsRequest(Long idUser, Integer sessionToken) {
+public record GetAllListsRequest(Long idUser, String sessionToken) {
 }

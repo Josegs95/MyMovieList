@@ -23,7 +23,7 @@ public class User {
     private String email;
 
     @Column(name = "salt", nullable = false)
-    private Integer sessionToken;
+    private Integer salt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "owner")
@@ -32,16 +32,16 @@ public class User {
     public User() {
     }
 
-    public User(String username, Integer sessionToken) {
+    public User(String username, Integer salt) {
         this.username = username;
-        this.sessionToken = sessionToken;
+        this.salt = salt;
     }
 
-    public User(String username, String password, String email, Integer sessionToken) {
+    public User(String username, String password, String email, Integer salt) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.sessionToken = sessionToken;
+        this.salt = salt;
     }
 
     public Long getId() {
@@ -76,12 +76,12 @@ public class User {
         this.email = email;
     }
 
-    public Integer getSessionToken() {
-        return sessionToken;
+    public Integer getSalt() {
+        return salt;
     }
 
-    public void setSessionToken(Integer sessionToken) {
-        this.sessionToken = sessionToken;
+    public void setSalt(Integer salt) {
+        this.salt = salt;
     }
 
     public List<UserList> getMultimediaLists() {
@@ -110,7 +110,7 @@ public class User {
                 ", username = \"" + username + '\"' +
                 ", password = \"" + password + '\"' +
                 ", email = \"" + email + '\"' +
-                ", sessionToken = " + sessionToken +
+                ", sessionToken = " + salt +
                 ", multimediaLists = " + multimediaLists +
                 '}';
     }

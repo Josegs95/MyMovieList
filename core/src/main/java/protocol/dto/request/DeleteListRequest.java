@@ -1,4 +1,4 @@
 package protocol.dto.request;
 
-public record DeleteListRequest(Long userId, Long listId, Integer sessionToken) {
+public record DeleteListRequest(Long userId, Long listId, String sessionToken) {
 }

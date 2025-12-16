@@ -1,9 +1,6 @@
 package config;
 
-import model.entity.Multimedia;
-import model.entity.MultimediaListItem;
-import model.entity.User;
-import model.entity.UserList;
+import model.entity.*;
 import init.EnvironmentVariables;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -33,6 +30,7 @@ public class HibernateUtil {
             properties.put("hibernate.connection.password", System.getProperty("DB_PASS"));
             properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 
+            // properties.put("hibernate.hbm2ddl.auto", "create-drop");
             properties.put("hibernate.hbm2ddl.auto", "create-only");
             properties.put("hibernate.show_sql", "true");
 
@@ -40,6 +38,7 @@ public class HibernateUtil {
             configuration.setProperties(properties);
 
             // Entities
+            configuration.addAnnotatedClass(ClientSession.class);
             configuration.addAnnotatedClass(User.class);
             configuration.addAnnotatedClass(UserList.class);
             configuration.addAnnotatedClass(Multimedia.class);

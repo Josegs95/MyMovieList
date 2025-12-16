@@ -44,7 +44,7 @@ public class ApiService {
     }
 
     public SearchMultimediaResponse searchAllByName(SearchMultimediaRequest request) {
-        checkUserAuthentication(request.userId(), request.token());
+        checkUserAuthentication(request.userId(), request.sessionToken());
 
         String text = request.searchText().replace(" ", "%20");
         String urlString = ApiConfiguration.getBaseUrl()
@@ -71,7 +71,7 @@ public class ApiService {
     }
 
     public MultimediaDetailResponse getMultimediaDetails(MultimediaDetailRequest request) {
-        checkUserAuthentication(request.userId(), request.token());
+        checkUserAuthentication(request.userId(), request.sessionToken());
 
         String typeEndpoint = request.type() == MultimediaType.MOVIE ? "movie/" : "tv/";
         String urlString = ApiConfiguration.getBaseUrl()
@@ -93,12 +93,12 @@ public class ApiService {
         return MAPPER.readTree(makeGetRequest(urlString));
     }
 
-    private void checkUserAuthentication(Long idUser, Integer sessionToken) {
+    private void checkUserAuthentication(Long idUser, String sessionToken) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                authService.authenticate(session, idUser, sessionToken);
+                authService.validateSession(session, idUser, sessionToken);
 
                 transaction.commit();
             } catch (Exception e) {

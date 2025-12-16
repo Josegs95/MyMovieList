@@ -42,13 +42,12 @@ public class SocketCommunication implements AutoCloseable {
         try (SocketCommunication socketCommunication = new SocketCommunication()) {
             Message serverMessage = socketCommunication.writeToServer(clientMessage);
 
-            if (serverMessage.getStatus() != 200L) {
-                String errorMessage = Optional.ofNullable(serverMessage.getErrorDetail().getMessage())
-                        .orElse("Error desconocido");
-                throw new ServerException(errorMessage);
-            }
+            if (serverMessage.getStatus() == 200L) return serverMessage;
 
-            return serverMessage;
+            ErrorDetails errorDetails = serverMessage.getErrorDetail();
+            String errorMessage = Optional.ofNullable(errorDetails.getMessage())
+                    .orElse("Error desconocido");
+            throw new ServerException(errorMessage);
         } catch (IOException e) {
             throw new CommunicationException("Error al intentar comunicarse al servidor");
         }

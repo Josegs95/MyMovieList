@@ -7,9 +7,7 @@ public interface UserDAO {
 
     User create(Session session, User user);
 
-    User findById(Session session, Integer id);
+    User findById(Session session, Long id);
 
     User findByUsername(Session session, String username);
-
-    User findBySessionToken(Session session, Integer sessionToken);
 }

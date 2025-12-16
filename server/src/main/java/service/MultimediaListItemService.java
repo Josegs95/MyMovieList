@@ -18,20 +18,21 @@ public class MultimediaListItemService {
     private final UserListService userListService;
     private final MultimediaService multimediaService;
 
-    public MultimediaListItemService(MultimediaListItemDAO multimediaListItemDAO, AuthService authService, UserListService userListService, MultimediaService multimediaService) {
+    public MultimediaListItemService(MultimediaListItemDAO multimediaListItemDAO, AuthService authService,
+                                     UserListService userListService, MultimediaService multimediaService) {
         this.multimediaListItemDAO = multimediaListItemDAO;
         this.authService = authService;
         this.userListService = userListService;
         this.multimediaService = multimediaService;
     }
 
-    public MultimediaListItemDTO addMultimediaToList(Long idUser, MultimediaListItemDTO listItemDTO, Integer sessionToken) {
+    public MultimediaListItemDTO addMultimediaToList(Long idUser, MultimediaListItemDTO listItemDTO, String sessionToken) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
 
-                authService.authenticate(session, idUser, sessionToken);
+                authService.validateSession(session, idUser, sessionToken);
                 UserList list = userListService.checkListOwnership(session, listItemDTO.getListId(), idUser);
 
                 MultimediaSummaryDTO summaryDTO = listItemDTO.getMultimedia();
@@ -71,15 +72,18 @@ public class MultimediaListItemService {
         }
     }
 
-    public MultimediaListItemDTO modify(Long idUser, MultimediaListItemDTO listItem, Integer sessionToken) {
+    public MultimediaListItemDTO modify(Long idUser, MultimediaListItemDTO listItem, String sessionToken) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
 
-                authService.authenticate(session, idUser, sessionToken);
+                authService.validateSession(session, idUser, sessionToken);
                 userListService.checkListOwnership(session, listItem.getListId(), idUser);
-                MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, listItem.getListId(), listItem.getMultimedia().getIdDb());
+                MultimediaListItem itemAtBD = multimediaListItemDAO.findById(
+                        session,
+                        listItem.getListId(),
+                        listItem.getMultimedia().getIdDb());
 
                 if (itemAtBD == null) {
                     throw new RuntimeException("Este objeto multimedia no existe en esta lista");
@@ -100,13 +104,13 @@ public class MultimediaListItemService {
         }
     }
 
-    public void delete(Long idUser, Long idList, Long idMultimedia, Integer sessionToken) {
+    public void delete(Long idUser, Long idList, Long idMultimedia, String sessionToken) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
 
-                authService.authenticate(session, idUser, sessionToken);
+                authService.validateSession(session, idUser, sessionToken);
                 userListService.checkListOwnership(session, idList, idUser);
                 MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, idList, idMultimedia);
 

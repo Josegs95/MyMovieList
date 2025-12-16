@@ -3,6 +3,7 @@ package service;
 import config.HibernateUtil;
 import dao.UserDAO;
 import model.dto.UserDTO;
+import model.entity.ClientSession;
 import protocol.dto.request.LoginRequest;
 import protocol.dto.request.RegisterRequest;
 import model.entity.User;
@@ -17,9 +18,11 @@ import java.util.Random;
 public class UserService {
 
     private final UserDAO userDAO;
+    private final AuthService authService;
 
-    public UserService(UserDAO userDAO) {
+    public UserService(UserDAO userDAO, AuthService authService) {
         this.userDAO = userDAO;
+        this.authService = authService;
     }
 
     public void register(RegisterRequest request) {
@@ -59,12 +62,16 @@ public class UserService {
                     throw new AuthenticationException("No existe el usuario \"" + request.username() + "\"");
                 }
 
-                if (!user.getPassword().equals(Security.hashString(request.password(), user.getSessionToken()))) {
+                if (!user.getPassword().equals(Security.hashString(request.password(), user.getSalt()))) {
                     throw new AuthenticationException("Contraseña incorrecta");
                 }
+                ClientSession clientSession = authService.createSession(session, user);
+
+                UserDTO userDTO = new UserDTO(user);
+                userDTO.setSessionToken(clientSession.getToken());
                 transaction.commit();
 
-                return new UserDTO(user);
+                return userDTO;
             } catch (Exception e) {
                 if (transaction != null) {
                     transaction.rollback();

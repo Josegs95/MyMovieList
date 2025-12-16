@@ -17,7 +17,8 @@ public class MultimediaService {
         return multimediaDAO.findByApiId(session, apiId, type);
     }
 
-    public Multimedia getOrCreate(Session session, String title, String apiId, String posterPath, Integer totalEpisodes, MultimediaType type) {
+    public Multimedia getOrCreate(Session session, String title, String apiId, String posterPath,
+                                  Integer totalEpisodes, MultimediaType type) {
         Multimedia multimedia = findByApiId(session, apiId, type);
         if (multimedia == null) {
             multimedia = new Multimedia(title, apiId, posterPath, totalEpisodes, type);

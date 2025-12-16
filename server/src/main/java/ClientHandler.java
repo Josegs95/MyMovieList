@@ -24,14 +24,15 @@ public class ClientHandler implements Runnable{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientHandler.class);
 
+    private static final ClientSessionDAO CLIENT_SESSION_DAO = new ClientSessionDAOImpl();
     private static final UserDAO USER_DAO = new UserDAOImpl();
     private static final UserListDAO USER_LIST_DAO = new UserListDAOImpl();
     private static final MultimediaDAO MULTIMEDIA_DAO = new MultimediaDAOImpl();
     private static final MultimediaListItemDAO MULTIMEDIA_LIST_ITEM_DAO = new MultimediaListItemDAOImpl();
 
-    private static final AuthService AUTH_SERVICE = new AuthService(USER_DAO);
+    private static final AuthService AUTH_SERVICE = new AuthService(USER_DAO, CLIENT_SESSION_DAO);
     private static final ApiService API_SERVICE = new ApiService(AUTH_SERVICE);
-    private static final UserService USER_SERVICE = new UserService(USER_DAO);
+    private static final UserService USER_SERVICE = new UserService(USER_DAO, AUTH_SERVICE);
     private static final UserListService USER_LIST_SERVICE = new UserListService(USER_LIST_DAO, AUTH_SERVICE);
     private static final MultimediaService MULTIMEDIA_SERVICE = new MultimediaService(MULTIMEDIA_DAO);
     private static final MultimediaListItemService MULTIMEDIA_LIST_ITEM_SERVICE = new MultimediaListItemService(
@@ -44,7 +45,8 @@ public class ClientHandler implements Runnable{
     final private Socket SOCKET;
 
     private Object clientData;
-    private final ObjectMapper mapper;
+    private String userSessionToken;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public ClientHandler(Socket socket){
         if (socket == null) {
@@ -52,65 +54,68 @@ public class ClientHandler implements Runnable{
         }
 
         this.SOCKET = socket;
-        mapper = new ObjectMapper();
     }
 
     @Override
     public void run() {
-        SocketCommunication socketCommunication = new SocketCommunication(SOCKET);
-        MessageType messageType = null;
-        long status;
-        Object serverResponseData = null;
-        ErrorDetails errorDetails = null;
-        try{
-            knockMessage(socketCommunication);
+        try (SocketCommunication socketCommunication = new SocketCommunication(SOCKET)) {
+            MessageType messageType = null;
+            long status;
+            Object serverResponseData = null;
+            ErrorDetails errorDetails = null;
 
-            String clientJSONMessage = socketCommunication.readStringFromSocket();
-            Message clientMessage = mapper.readValue(clientJSONMessage, Message.class);
-            messageType = clientMessage.getMessageType();
-            clientData = clientMessage.getContent();
+            try {
+                knockMessage(socketCommunication);
 
-            switch (messageType){
-                case TEST -> LOGGER.info("Ha llegado un mensaje de tipo Test");
-                case LOGIN -> serverResponseData = loginUser();
-                case REGISTER -> registerUser();
-                case CREATE_USER_LIST -> serverResponseData = createUserList();
-                case RENAME_USER_LIST -> serverResponseData = renameUserList();
-                case DELETE_USER_LIST -> deleteUserList();
-                case GET_USER_LISTS -> serverResponseData = getUserLists();
-                case ADD_MULTIMEDIA -> serverResponseData = addMultimediaToList();
-                case MODIFY_MULTIMEDIA -> serverResponseData = modifyMultimedia();
-                case REMOVE_MULTIMEDIA -> removeMultimediaFromList();
-                case API_SEARCH_MULTIMEDIA -> serverResponseData = searchMultimedia();
-                case API_DETAIL_MULTIMEDIA -> serverResponseData = detailMultimedia();
-                default -> {
-                    LOGGER.warn("Tipo de mensaje desconocido: {}", messageType);
-                    throw new RuntimeException("Error en el protocolo del mensaje: mensaje desconocido");
+                String clientJSONMessage = socketCommunication.readStringFromSocket();
+                Message clientMessage = MAPPER.readValue(clientJSONMessage, Message.class);
+                messageType = clientMessage.getMessageType();
+                clientData = clientMessage.getContent();
+
+                switch (messageType) {
+                    case TEST -> LOGGER.info("Ha llegado un mensaje de tipo Test");
+                    case LOGIN -> serverResponseData = loginUser();
+                    case REGISTER -> registerUser();
+                    case CREATE_USER_LIST -> serverResponseData = createUserList();
+                    case RENAME_USER_LIST -> serverResponseData = renameUserList();
+                    case DELETE_USER_LIST -> deleteUserList();
+                    case GET_USER_LISTS -> serverResponseData = getUserLists();
+                    case ADD_MULTIMEDIA -> serverResponseData = addMultimediaToList();
+                    case MODIFY_MULTIMEDIA -> serverResponseData = modifyMultimedia();
+                    case REMOVE_MULTIMEDIA -> removeMultimediaFromList();
+                    case API_SEARCH_MULTIMEDIA -> serverResponseData = searchMultimedia();
+                    case API_DETAIL_MULTIMEDIA -> serverResponseData = detailMultimedia();
+                    default -> {
+                        LOGGER.warn("Tipo de mensaje desconocido: {}", messageType);
+                        throw new RuntimeException("Error en el protocolo del mensaje: mensaje desconocido");
+                    }
                 }
+
+                status = 200L;
+            } catch (ServerException e) {
+                status = switch (e) {
+                    case ValidationException _ -> 400L;
+                    case AuthenticationException _, SessionExpiredException _ -> 401L;
+                    case AuthorizationException _ -> 403L;
+                    case ResourceNotFoundException _ -> 404L;
+                    case OperationNotAllowedException _ -> 405L;
+                    case ConflictException _ -> 409L;
+                    default -> throw new IllegalStateException("Unexpected value: " + e);
+                };
+
+                errorDetails = new ErrorDetails(e.getClass().getSimpleName(), e.getMessage(), LocalDateTime.now());
+                LOGGER.info(e.getMessage());
+            } catch (Exception e) {
+                status = 500L;
+                String errorMessage = "Error interno del servidor";
+                errorDetails = new ErrorDetails("Error desconocido", errorMessage, LocalDateTime.now());
+                LOGGER.error(errorMessage, e);
             }
 
-            status = 200L;
-        } catch (ServerException e) {
-            status = switch (e) {
-                case ValidationException _ -> 400L;
-                case AuthenticationException _ -> 401L;
-                case AuthorizationException _ -> 403L;
-                case ResourceNotFoundException _ -> 404L;
-                case OperationNotAllowedException _ -> 405L;
-                case ConflictException _ -> 409L;
-                default -> throw new IllegalStateException("Unexpected value: " + e);
-            };
+            if (status == 200L && userSessionToken != null) {
+                AUTH_SERVICE.refreshSessionToken(userSessionToken);
+            }
 
-            errorDetails = new ErrorDetails(e.getClass().getSimpleName(), e.getMessage(), LocalDateTime.now());
-            LOGGER.info(e.getMessage());
-        } catch (Exception e) {
-            status = 500L;
-            String errorMessage = "Error interno del servidor";
-            errorDetails = new ErrorDetails("Error desconocido", errorMessage, LocalDateTime.now());
-            LOGGER.error(errorMessage, e);
-        }
-
-        try {
             socketCommunication.writeToClient(messageType, status, serverResponseData, errorDetails);
         } catch (IOException ex) {
             LOGGER.error("Couldn't send the message. Disconnected client: {}", ex.getMessage());
@@ -118,7 +123,7 @@ public class ClientHandler implements Runnable{
     }
 
     private void knockMessage(SocketCommunication socketCommunication) throws IOException {
-        Message clientMessage = mapper.readValue(socketCommunication.readStringFromSocket(), Message.class);
+        Message clientMessage = MAPPER.readValue(socketCommunication.readStringFromSocket(), Message.class);
         if (clientMessage.getMessageType() != MessageType.KNOCK){
             throw new RuntimeException("Message with unknown comm protocol");
         }
@@ -127,38 +132,46 @@ public class ClientHandler implements Runnable{
     }
 
     private void registerUser() {
-        RegisterRequest request = mapper.convertValue(clientData, RegisterRequest.class);
+        RegisterRequest request = MAPPER.convertValue(clientData, RegisterRequest.class);
 
         USER_SERVICE.register(request);
     }
 
     private LoginResponse loginUser() {
-        LoginRequest request = mapper.convertValue(clientData, LoginRequest.class);
+        LoginRequest request = MAPPER.convertValue(clientData, LoginRequest.class);
         LOGGER.info("El usuario '{}' quiere identificarse", request.username());
 
         return new LoginResponse(USER_SERVICE.login(request));
     }
 
     private SearchMultimediaResponse searchMultimedia() {
-        SearchMultimediaRequest request = mapper.convertValue(clientData, SearchMultimediaRequest.class);
+        SearchMultimediaRequest request = MAPPER.convertValue(clientData, SearchMultimediaRequest.class);
+
+        userSessionToken = request.sessionToken();
 
         return API_SERVICE.searchAllByName(request);
     }
 
     private MultimediaDetailResponse detailMultimedia() {
-        MultimediaDetailRequest request = mapper.convertValue(clientData, MultimediaDetailRequest.class);
+        MultimediaDetailRequest request = MAPPER.convertValue(clientData, MultimediaDetailRequest.class);
+
+        userSessionToken = request.sessionToken();
 
         return API_SERVICE.getMultimediaDetails(request);
     }
 
     private UserListDTO createUserList() {
-        CreateListRequest request = mapper.convertValue(clientData, CreateListRequest.class);
+        CreateListRequest request = MAPPER.convertValue(clientData, CreateListRequest.class);
+
+        userSessionToken = request.sessionToken();
 
         return USER_LIST_SERVICE.create(request);
     }
 
     private UserListDTO renameUserList() {
-        RenameListRequest request = mapper.convertValue(clientData, RenameListRequest.class);
+        RenameListRequest request = MAPPER.convertValue(clientData, RenameListRequest.class);
+
+        userSessionToken = request.sessionToken();
 
         return USER_LIST_SERVICE.rename(
                 request.userId(),
@@ -168,31 +181,41 @@ public class ClientHandler implements Runnable{
     }
 
     private void deleteUserList() {
-        DeleteListRequest request = mapper.convertValue(clientData, DeleteListRequest.class);
+        DeleteListRequest request = MAPPER.convertValue(clientData, DeleteListRequest.class);
+
+        userSessionToken = request.sessionToken();
 
         USER_LIST_SERVICE.delete(request.userId(), request.listId(), request.sessionToken());
     }
 
     private GetAllListsResponse getUserLists() {
-        GetAllListsRequest request = mapper.convertValue(clientData, GetAllListsRequest.class);
+        GetAllListsRequest request = MAPPER.convertValue(clientData, GetAllListsRequest.class);
+
+        userSessionToken = request.sessionToken();
 
         return new GetAllListsResponse(USER_LIST_SERVICE.getAllListsFromUser(request.idUser(), request.sessionToken()));
     }
 
     private MultimediaListItemDTO addMultimediaToList(){
-        AddListItemRequest request = mapper.convertValue(clientData, AddListItemRequest.class);
+        AddListItemRequest request = MAPPER.convertValue(clientData, AddListItemRequest.class);
+
+        userSessionToken = request.sessionToken();
 
         return MULTIMEDIA_LIST_ITEM_SERVICE.addMultimediaToList(request.idUser(), request.multimedia(), request.sessionToken());
     }
 
     private MultimediaListItemDTO modifyMultimedia() {
-        ModifyListItemRequest request = mapper.convertValue(clientData, ModifyListItemRequest.class);
+        ModifyListItemRequest request = MAPPER.convertValue(clientData, ModifyListItemRequest.class);
+
+        userSessionToken = request.sessionToken();
 
         return MULTIMEDIA_LIST_ITEM_SERVICE.modify(request.userId(), request.listItemDTO(), request.sessionToken());
     }
 
     private void removeMultimediaFromList() {
-        DeleteItemListRequest request = mapper.convertValue(clientData, DeleteItemListRequest.class);
+        DeleteItemListRequest request = MAPPER.convertValue(clientData, DeleteItemListRequest.class);
+
+        userSessionToken = request.sessionToken();
 
         MULTIMEDIA_LIST_ITEM_SERVICE.delete(
                 request.idUser(),
