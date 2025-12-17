@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Some refactoring in server services">
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/UnexpectedMessageException.java" afterDir="false" />
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Fixed an issue with the handshake protocol">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/DatabaseException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/ErrorDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/ErrorDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/model/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,27 +53,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Client.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Server.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.MyMovieList [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.MyMovieList [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.MyMovieList [package].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.server [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.server [deploy].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.server [package].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;development&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Jose/Workplace/Java/Pruebas/CampoDePruebas&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Client.executor": "Run",
+    "Application.Server.executor": "Run",
+    "Maven.MyMovieList [clean].executor": "Run",
+    "Maven.MyMovieList [install].executor": "Run",
+    "Maven.MyMovieList [package].executor": "Run",
+    "Maven.server [clean].executor": "Run",
+    "Maven.server [deploy].executor": "Run",
+    "Maven.server [package].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "development",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Jose/Workplace/Java/Pruebas/CampoDePruebas",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.externalResources"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.Client">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client" />
@@ -299,7 +297,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765974863996</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Fixed an issue with the handshake protocol">
+      <option name="closed" value="true" />
+      <created>1765975930411</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1765975930411</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -337,6 +343,7 @@
     <MESSAGE value="User sessions reworked" />
     <MESSAGE value="User sessions refresh added" />
     <MESSAGE value="Some refactoring in server services" />
-    <option name="LAST_COMMIT_MESSAGE" value="Some refactoring in server services" />
+    <MESSAGE value="Fixed an issue with the handshake protocol" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed an issue with the handshake protocol" />
   </component>
 </project>

@@ -2,6 +2,7 @@ package model.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+@SuppressWarnings("unused")
 public enum MultimediaType {
     MOVIE("Movie"),
     SERIES("Series"),

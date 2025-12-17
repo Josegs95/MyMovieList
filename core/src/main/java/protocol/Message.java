@@ -2,6 +2,7 @@ package protocol;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+@SuppressWarnings("unused")
 public class Message {
 
     private MessageType messageType;

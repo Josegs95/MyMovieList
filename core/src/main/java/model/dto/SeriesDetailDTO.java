@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class SeriesDetailDTO extends MultimediaDetailDTO {
 
     @JsonProperty("status")

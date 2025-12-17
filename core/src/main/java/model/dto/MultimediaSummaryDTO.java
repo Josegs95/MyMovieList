@@ -6,6 +6,8 @@ import model.entity.MultimediaType;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
+
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.EXISTING_PROPERTY,

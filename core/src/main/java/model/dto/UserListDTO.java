@@ -5,6 +5,7 @@ import model.entity.UserList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class UserListDTO {
 
     private Long id;

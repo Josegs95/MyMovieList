@@ -2,6 +2,8 @@ package model.entity;
 
 import jakarta.persistence.*;
 
+@SuppressWarnings("unused")
+
 @Entity
 @IdClass(MultimediaListItemKey.class)
 @Table(name = "app_multimedia_list_item")

@@ -5,6 +5,7 @@ import model.entity.MultimediaStatus;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class MultimediaListItemDTO {
 
     private Long listId;

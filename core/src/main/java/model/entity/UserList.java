@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
+
 @Entity
 @Table(name = "app_list")
 public class UserList {

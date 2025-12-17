@@ -2,6 +2,7 @@ package protocol;
 
 import java.time.LocalDateTime;
 
+@SuppressWarnings("unused")
 public class ErrorDetails {
 
     private ErrorType error;

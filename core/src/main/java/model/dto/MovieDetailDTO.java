@@ -2,6 +2,7 @@ package model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@SuppressWarnings("unused")
 public class MovieDetailDTO extends MultimediaDetailDTO {
 
     @JsonProperty("runtime")

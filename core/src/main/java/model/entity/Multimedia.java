@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
+
 @Entity
 @Table(name = "app_multimedia")
 public class Multimedia {

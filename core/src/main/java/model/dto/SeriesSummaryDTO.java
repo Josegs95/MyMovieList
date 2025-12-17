@@ -2,6 +2,7 @@ package model.dto;
 
 import model.entity.Multimedia;
 
+@SuppressWarnings("unused")
 public class SeriesSummaryDTO extends MultimediaSummaryDTO{
 
     private Integer totalEpisodes;
