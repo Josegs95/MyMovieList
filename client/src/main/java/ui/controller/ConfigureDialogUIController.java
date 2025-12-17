@@ -1,8 +1,12 @@
 package ui.controller;
 
+import exception.SessionExpiredException;
 import model.dto.MultimediaListItemDTO;
+import ui.event.SessionExpiredEvent;
 import ui.util.ErrorHandler;
+import ui.util.EventBus;
 import ui.view.component.dialog.ConfigureMultimediaDialog;
+import util.PendingAction;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -37,11 +41,16 @@ public class ConfigureDialogUIController {
             return;
         }
 
-        try {
+        PendingAction action = () -> {
             MultimediaListItemDTO listItem = view.getListItemResult();
             onAcceptConsumer.accept(listItem);
 
             view.dispose();
+        };
+        try {
+            action.execute();
+        } catch (SessionExpiredException e) {
+            EventBus.publish(new SessionExpiredEvent(action));
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
         }

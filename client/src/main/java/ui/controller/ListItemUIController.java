@@ -1,16 +1,19 @@
 package ui.controller;
 
 import context.SessionContext;
+import exception.SessionExpiredException;
 import model.dto.MultimediaDetailDTO;
 import model.dto.MultimediaListItemDTO;
 import service.SearchService;
 import service.UserListService;
 import ui.event.DetailPanelOnListsEvent;
+import ui.event.SessionExpiredEvent;
 import ui.util.ErrorHandler;
 import ui.util.EventBus;
 import ui.view.MainFrame;
 import ui.view.component.dialog.ConfigureMultimediaDialog;
 import ui.view.component.panel.CollapsableListPanel;
+import util.PendingAction;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -43,21 +46,23 @@ public class ListItemUIController {
     }
 
     private void onBtnConfig() {
-        try {
+        PendingAction action = () -> {
             MultimediaListItemDTO item = view.getMultimediaItem();
             ConfigureMultimediaDialog dialog = new ConfigureMultimediaDialog(mainFrame, item);
             new ConfigureDialogUIController(dialog, listService::modifyItemList);
             dialog.setVisible(true);
-
+        };
+        try {
+            action.execute();
+        } catch (SessionExpiredException e) {
+            EventBus.publish(new SessionExpiredEvent(action));
         } catch (Exception e) {
             ErrorHandler.showError(mainFrame, e);
         }
     }
 
     private void onBtnDelete() {
-        if(!view.showDeleteDialog()) {
-            return;
-        }
+        if(!view.showDeleteDialog()) return;
 
         try {
             MultimediaListItemDTO item = view.getMultimediaItem();

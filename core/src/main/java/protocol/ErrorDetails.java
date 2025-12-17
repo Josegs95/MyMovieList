@@ -4,24 +4,24 @@ import java.time.LocalDateTime;
 
 public class ErrorDetails {
 
-    private String error;
+    private ErrorType error;
     private String message;
     private LocalDateTime timestamp;
 
     public ErrorDetails() {
     }
 
-    public ErrorDetails(String error, String message, LocalDateTime timestamp) {
+    public ErrorDetails(ErrorType error, String message, LocalDateTime timestamp) {
         this.error = error;
         this.message = message;
         this.timestamp = timestamp;
     }
 
-    public String getError() {
+    public ErrorType getError() {
         return error;
     }
 
-    public void setError(String error) {
+    public void setError(ErrorType error) {
         this.error = error;
     }
 

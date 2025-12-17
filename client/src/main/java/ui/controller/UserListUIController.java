@@ -1,21 +1,26 @@
 package ui.controller;
 
 import context.SessionContext;
+import exception.SessionExpiredException;
 import service.UserListService;
 import ui.event.*;
 import ui.util.ErrorHandler;
 import ui.util.EventBus;
+import ui.view.MainFrame;
 import ui.view.component.panel.UserListPanel;
+import util.PendingAction;
 
 import javax.swing.*;
 import java.util.concurrent.CompletableFuture;
 
 public class UserListUIController {
 
+    private final MainFrame mainFrame;
     private final UserListPanel view;
     private final UserListService userListService;
 
-    public UserListUIController(UserListPanel view) {
+    public UserListUIController(MainFrame mainFrame, UserListPanel view) {
+        this.mainFrame = mainFrame;
         this.view = view;
         this.userListService = SessionContext.getInstance().getUserListService();
 
@@ -48,13 +53,17 @@ public class UserListUIController {
         String listName = view.showListNameDialog();
         if (listName == null) return;
 
-        listName = listName.strip();
-        if (listName.isEmpty()) return;
+        String finalListName = listName.strip();
+        if (finalListName.isEmpty()) return;
+
+        PendingAction action = () -> userListService.createList(finalListName);
 
         try {
-            userListService.createList(listName);
+            action.execute();
+        } catch (SessionExpiredException e) {
+            EventBus.publish(new SessionExpiredEvent(action));
         } catch (Exception e) {
-            ErrorHandler.showError(view, e);
+            ErrorHandler.showError(mainFrame, e);
         }
     }
 

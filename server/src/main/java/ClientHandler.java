@@ -4,10 +4,7 @@ import model.dto.MultimediaListItemDTO;
 import model.dto.UserListDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import protocol.ErrorDetails;
-import protocol.Message;
-import protocol.MessageType;
-import protocol.SocketCommunication;
+import protocol.*;
 import protocol.dto.request.*;
 import protocol.dto.response.GetAllListsResponse;
 import protocol.dto.response.LoginResponse;
@@ -93,22 +90,13 @@ public class ClientHandler implements Runnable{
 
                 status = 200L;
             } catch (ServerException e) {
-                status = switch (e) {
-                    case ValidationException _ -> 400L;
-                    case AuthenticationException _, SessionExpiredException _ -> 401L;
-                    case AuthorizationException _ -> 403L;
-                    case ResourceNotFoundException _ -> 404L;
-                    case OperationNotAllowedException _ -> 405L;
-                    case ConflictException _ -> 409L;
-                    default -> throw new IllegalStateException("Unexpected value: " + e);
-                };
-
-                errorDetails = new ErrorDetails(e.getClass().getSimpleName(), e.getMessage(), LocalDateTime.now());
+                errorDetails = new ErrorDetails(ErrorType.fromException(e.getClass()), e.getMessage(), LocalDateTime.now());
+                status = errorDetails.getError().getStatusCode();
                 LOGGER.info(e.getMessage());
             } catch (Exception e) {
-                status = 500L;
                 String errorMessage = "Error interno del servidor";
-                errorDetails = new ErrorDetails("Error desconocido", errorMessage, LocalDateTime.now());
+                errorDetails = new ErrorDetails(ErrorType.INTERNAL_SERVER_ERROR, errorMessage, LocalDateTime.now());
+                status = errorDetails.getError().getStatusCode();
                 LOGGER.error(errorMessage, e);
             }
 

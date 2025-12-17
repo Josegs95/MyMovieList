@@ -2,48 +2,55 @@ package ui.controller;
 
 import context.SessionContext;
 import service.AuthService;
+import ui.event.RegisterUserEvent;
 import ui.util.ErrorHandler;
-import ui.view.component.dialog.auth.LoginDialog;
+import ui.util.EventBus;
+import ui.util.Subscription;
 import ui.view.component.dialog.auth.RegisterDialog;
 
-public class LoginUIController {
+public class RegisterDialogController {
 
-    private final LoginDialog view;
+    private final RegisterDialog view;
     private final AuthService authService;
 
-    public LoginUIController(LoginDialog view) {
+    private final Subscription subscription;
+
+    public RegisterDialogController(RegisterDialog view) {
         this.view = view;
         this.authService = SessionContext.getInstance().getAuthService();
+
+        subscription = EventBus.subscribe(RegisterUserEvent.class, this::onRegisterUser);
 
         initListeners();
     }
 
     private void initListeners() {
-        view.getBtnLogin().addActionListener(_ -> onLogin());
         view.getBtnRegister().addActionListener(_ -> onRegister());
         view.getBtnCancel().addActionListener(_ -> onCancel());
     }
 
-    private void onLogin() {
+    private void onRegister() {
+        if (!view.checkRegisterFields()) {
+            return;
+        }
+
         String username = view.getUsername();
         String password = view.getPassword();
+        String email = view.getEmail();
 
         try {
-            authService.login(username, password);
-            view.onLoginSuccess();
+            authService.register(username, password, email.isEmpty() ? null : email);
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
         }
     }
 
-    private void onRegister() {
-        view.clearFields();
-        RegisterDialog registerDialog = new RegisterDialog(view);
-        new RegisterUIController(registerDialog);
-        registerDialog.setVisible(true);
+    private void onCancel() {
+        subscription.unsubscribe();
+        view.dispose();
     }
 
-    private void onCancel() {
-        view.dispose();
+    private void onRegisterUser(RegisterUserEvent registerUserEvent) {
+        view.setRegisteredUser(registerUserEvent.username());
     }
 }

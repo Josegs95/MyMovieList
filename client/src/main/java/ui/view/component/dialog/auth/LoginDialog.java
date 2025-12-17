@@ -16,10 +16,13 @@ public class LoginDialog extends AuthenticationDialog {
     public LoginDialog(MainFrame mainFrame) {
         super(mainFrame, ModalityType.APPLICATION_MODAL);
 
-        init();
+        createUI();
+        setTextFieldListeners();
     }
 
-    private void init() {
+    private void createUI() {
+        setTitle("Login");
+
         JPanel pnlButtons = new JPanel(new MigLayout(
                 "fill",
                 "[center]15[center]15[center]",
@@ -37,8 +40,6 @@ public class LoginDialog extends AuthenticationDialog {
         pnlButtons.add(btnLogin, "sg button");
 
         add(pnlButtons);
-
-        setTextFieldListeners();
     }
 
     public void clearFields() {

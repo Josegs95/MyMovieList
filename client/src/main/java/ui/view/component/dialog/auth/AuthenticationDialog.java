@@ -9,6 +9,8 @@ import java.awt.event.FocusEvent;
 
 public abstract class AuthenticationDialog extends JDialog{
 
+    private static final Color BACKGROUND_COLOR = new Color(223, 223, 223);
+
     private final Window parentWindow;
     private JButton btnDefault;
     private JTextField txtUsername;
@@ -30,12 +32,11 @@ public abstract class AuthenticationDialog extends JDialog{
         setSize(400, 300);
         setLocationRelativeTo(parentWindow);
         setResizable(false);
-        getContentPane().setBackground(new Color(223, 223, 223));
-        setTitle("Login");
+        getContentPane().setBackground(BACKGROUND_COLOR);
 
-        //Components
+        // Components
 
-        //Username
+        // Username field
         JPanel pnlUsername = new JPanel(new MigLayout(
                 "fill, flowy",
                 "[fill]",
@@ -43,14 +44,13 @@ public abstract class AuthenticationDialog extends JDialog{
         ));
         pnlUsername.setOpaque(false);
 
-        JLabel lblUsername = new JLabel("Username");
-
+        JLabel lblUsername = new JLabel("Usuario:");
         txtUsername = new JTextField(null, 20);
 
         pnlUsername.add(lblUsername);
         pnlUsername.add(txtUsername);
 
-        //Password
+        // Password field
         JPanel pnlPassword = new JPanel(new MigLayout(
                 "fill, flowy",
                 "[fill]",
@@ -58,8 +58,7 @@ public abstract class AuthenticationDialog extends JDialog{
         ));
         pnlPassword.setOpaque(false);
 
-        JLabel lblPassword = new JLabel("Password");
-
+        JLabel lblPassword = new JLabel("Contraseña:");
         txtPassword = new JPasswordField(null, 20);
 
         pnlPassword.add(lblPassword);

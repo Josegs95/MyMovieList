@@ -1,12 +1,16 @@
 package ui.controller;
 
 import context.SessionContext;
+import exception.SessionExpiredException;
 import model.dto.MultimediaListItemDTO;
 import model.dto.MultimediaSummaryDTO;
 import model.dto.UserListDTO;
 import service.UserListService;
+import ui.event.SessionExpiredEvent;
 import ui.util.ErrorHandler;
+import ui.util.EventBus;
 import ui.view.component.dialog.RemoveMultimediaDialog;
+import util.PendingAction;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -36,7 +40,7 @@ public class RemoveDialogUIController {
     }
 
     private void onRemoveButton() {
-        try {
+        PendingAction action = () -> {
             UserListDTO list = view.getSelectedList();
             MultimediaSummaryDTO multimedia = view.getMultimedia();
             MultimediaListItemDTO listItemDTO = list.getListItems().stream()
@@ -51,6 +55,12 @@ public class RemoveDialogUIController {
             JOptionPane.showMessageDialog(view, message, "Información", JOptionPane.INFORMATION_MESSAGE);
 
             view.dispose();
+        };
+
+        try {
+            action.execute();
+        } catch (SessionExpiredException e) {
+            EventBus.publish(new SessionExpiredEvent(action));
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
         }

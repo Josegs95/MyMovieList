@@ -81,7 +81,7 @@ public class UserListPanel extends JPanel {
 
     public void createUserList(UserListDTO userList) {
         CollapsableListPanel listPanel = new CollapsableListPanel(mainFrame, userList);
-        CollapsableListUIController controller = new CollapsableListUIController(listPanel);
+        CollapsableListUIController controller = new CollapsableListUIController(mainFrame, listPanel);
 
         listPanelMap.put(userList.getId(), listPanel);
         listControllerMap.put(listPanel, controller);

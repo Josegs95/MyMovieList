@@ -1,6 +1,7 @@
 package service;
 
 import context.SessionContext;
+import model.dto.UserDTO;
 import protocol.Message;
 import protocol.MessageType;
 import protocol.SocketCommunication;
@@ -22,9 +23,19 @@ public class AuthService {
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.LOGIN, request));
 
         LoginResponse response = mapper.convertValue(serverMessage.getContent(), LoginResponse.class);
-        SessionContext.getInstance().setUser(response.userDTO());
+        UserDTO newUserDTO = response.userDTO();
 
-        EventBus.publish(new LoginUserEvent(response.userDTO()));
+        SessionContext context = SessionContext.getInstance();
+        if (context.getUser() == null) {
+            context.setUser(newUserDTO);
+            EventBus.publish(new LoginUserEvent(newUserDTO));
+
+            return;
+        }
+
+        UserDTO currentUserDTO = context.getUser();
+        currentUserDTO.setSessionToken(newUserDTO.getSessionToken());
+        currentUserDTO.setLists(newUserDTO.getLists());
     }
 
     public void register(String username, String password, String email) {

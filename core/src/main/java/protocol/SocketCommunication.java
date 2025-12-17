@@ -2,6 +2,7 @@ package protocol;
 
 import exception.CommunicationException;
 import exception.ServerException;
+import exception.SessionExpiredException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.DataInputStream;
@@ -45,6 +46,10 @@ public class SocketCommunication implements AutoCloseable {
             if (serverMessage.getStatus() == 200L) return serverMessage;
 
             ErrorDetails errorDetails = serverMessage.getErrorDetail();
+            if (errorDetails.getError() == ErrorType.SESSION_EXPIRED) {
+                throw new SessionExpiredException(errorDetails.getMessage());
+            }
+
             String errorMessage = Optional.ofNullable(errorDetails.getMessage())
                     .orElse("Error desconocido");
             throw new ServerException(errorMessage);

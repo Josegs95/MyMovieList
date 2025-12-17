@@ -18,22 +18,23 @@ public class RegisterDialog extends AuthenticationDialog{
         super(loginDialog, ModalityType.APPLICATION_MODAL);
 
         this.loginDialog = loginDialog;
-        init();
+
+        createUI();
+        setTextFieldListeners();
     }
 
-    private void init(){
+    private void createUI(){
         setLayout(new MigLayout(
                 "align 50% 50%, flowy",
                 "[align center, fill]",
                 "[][][][]30[]"
         ));
         setSize(400, 400);
-        setLocationRelativeTo(loginDialog);
         setTitle("Register");
 
-        //Components
+        // Components
 
-            //Password
+        // Repeat password field
         JPanel pnlPassword = new JPanel(new MigLayout(
                 "fill, flowy",
                 "[fill]",
@@ -41,14 +42,13 @@ public class RegisterDialog extends AuthenticationDialog{
         ));
         pnlPassword.setOpaque(false);
 
-        JLabel lblPassword = new JLabel("Repeat Password");
-
+        JLabel lblPassword = new JLabel("Repetir contraseña:");
         txtRepeatPassword = new JPasswordField(null, 20);
 
         pnlPassword.add(lblPassword);
         pnlPassword.add(txtRepeatPassword);
 
-            //Email
+        // Email field
         JPanel pnlEmail = new JPanel(new MigLayout(
                 "fill, flowy",
                 "[fill]",
@@ -56,16 +56,13 @@ public class RegisterDialog extends AuthenticationDialog{
         ));
         pnlEmail.setOpaque(false);
 
-        JLabel lblEmail = new JLabel(
-                "<html>Email <small>(optional)</small></html>"
-        );
-
+        JLabel lblEmail = new JLabel("<html>Email <small>(optional)</small></html>");
         txtEmail = new JTextField(null, 25);
 
         pnlEmail.add(lblEmail);
         pnlEmail.add(txtEmail);
 
-            //Buttons
+        // Buttons
         JPanel pnlButtons = new JPanel(new MigLayout(
                 "fill",
                 "[center]15[center]",
@@ -79,8 +76,6 @@ public class RegisterDialog extends AuthenticationDialog{
 
         pnlButtons.add(btnCancel, "sg button");
         pnlButtons.add(btnRegister, "sg button");
-
-        setTextFieldListeners();
 
         add(pnlPassword);
         add(pnlEmail);

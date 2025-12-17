@@ -1,6 +1,7 @@
 package ui.controller;
 
 import context.SessionContext;
+import exception.SessionExpiredException;
 import model.dto.MultimediaListItemDTO;
 import model.dto.MultimediaSummaryDTO;
 import model.dto.UserListDTO;
@@ -13,6 +14,7 @@ import ui.view.MainFrame;
 import ui.view.component.dialog.ConfigureMultimediaDialog;
 import ui.view.component.dialog.RemoveMultimediaDialog;
 import ui.view.component.panel.DetailPanel;
+import util.PendingAction;
 
 public class DetailUIController {
 
@@ -64,16 +66,20 @@ public class DetailUIController {
             return;
         }
 
-        boolean confirmRemove = view.showRemoveDialog(multimedia, userList);
-        if(confirmRemove) {
-            try {
-                MultimediaListItemDTO listItem = userList.getListItems().stream()
-                        .filter(item -> item.getMultimedia().equals(multimedia))
-                        .findFirst().orElseThrow();
-                service.deleteItemFromList(userList, listItem);
-            } catch (Exception e) {
-                ErrorHandler.showError(mainFrame, e);
-            }
+        if(!view.showRemoveDialog(multimedia, userList)) return;
+
+        PendingAction action = () -> {
+            MultimediaListItemDTO listItem = userList.getListItems().stream()
+                    .filter(item -> item.getMultimedia().equals(multimedia))
+                    .findFirst().orElseThrow();
+            service.deleteItemFromList(userList, listItem);
+        };
+        try {
+            action.execute();
+        } catch (SessionExpiredException e) {
+            EventBus.publish(new SessionExpiredEvent(action));
+        } catch (Exception e) {
+            ErrorHandler.showError(mainFrame, e);
         }
     }
 

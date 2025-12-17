@@ -30,9 +30,6 @@ public class SessionContext {
     }
 
     public UserDTO getUser() {
-        if (currentUser == null) {
-            throw new IllegalStateException("No user logged");
-        }
         return currentUser;
     }
 
