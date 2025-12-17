@@ -11,10 +11,10 @@ public class ErrorDetails {
     public ErrorDetails() {
     }
 
-    public ErrorDetails(ErrorType error, String message, LocalDateTime timestamp) {
+    public ErrorDetails(ErrorType error, String message) {
         this.error = error;
         this.message = message;
-        this.timestamp = timestamp;
+        this.timestamp = LocalDateTime.now();
     }
 
     public ErrorType getError() {

@@ -4,33 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="User sessions reworked">
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/SessionDialogController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/SessionExpiredEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/SessionDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/util/PendingAction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/protocol/ErrorType.java" afterDir="false" />
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Some refactoring in server services">
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/UnexpectedMessageException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/CollapsableListUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/CollapsableListUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/ConfigureDialogUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/ConfigureDialogUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/DetailUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/DetailUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/ListItemUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/ListItemUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/LoginUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/LoginDialogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/MainFrameUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/MainFrameUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/RegisterUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/RegisterDialogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/RemoveDialogUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/RemoveDialogUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/SearchUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/SearchUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/UserListUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/UserListUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/MainFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/AuthenticationDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/AuthenticationDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/LoginDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/LoginDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/RegisterDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/dialog/auth/RegisterDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/UserListPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/UserListPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/RegisterValidationException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/DatabaseException.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/ErrorDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/ErrorDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/SocketCommunication.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/SocketCommunication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,10 +21,10 @@
       <list>
         <option value="package-info" />
         <option value="Record" />
-        <option value="Exception" />
         <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Exception" />
       </list>
     </option>
   </component>
@@ -305,7 +283,23 @@
       <option name="project" value="LOCAL" />
       <updated>1765905780690</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="User sessions refresh added">
+      <option name="closed" value="true" />
+      <created>1765972733009</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1765972733009</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Some refactoring in server services">
+      <option name="closed" value="true" />
+      <created>1765974863996</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1765974863996</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -341,6 +335,8 @@
     <MESSAGE value="Changes in the message protocol" />
     <MESSAGE value="Translated error to spanish" />
     <MESSAGE value="User sessions reworked" />
-    <option name="LAST_COMMIT_MESSAGE" value="User sessions reworked" />
+    <MESSAGE value="User sessions refresh added" />
+    <MESSAGE value="Some refactoring in server services" />
+    <option name="LAST_COMMIT_MESSAGE" value="Some refactoring in server services" />
   </component>
 </project>

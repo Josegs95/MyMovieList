@@ -1,5 +1,6 @@
 import dao.*;
-import exception.*;
+import exception.ServerException;
+import exception.UnexpectedMessageException;
 import model.dto.MultimediaListItemDTO;
 import model.dto.UserListDTO;
 import org.slf4j.Logger;
@@ -15,7 +16,6 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.time.LocalDateTime;
 
 public class ClientHandler implements Runnable{
 
@@ -89,13 +89,16 @@ public class ClientHandler implements Runnable{
                 }
 
                 status = 200L;
+            } catch (UnexpectedMessageException e) {
+                LOGGER.warn(e.getMessage());
+                return;
             } catch (ServerException e) {
-                errorDetails = new ErrorDetails(ErrorType.fromException(e.getClass()), e.getMessage(), LocalDateTime.now());
+                errorDetails = new ErrorDetails(ErrorType.fromException(e.getClass()), e.getMessage());
                 status = errorDetails.getError().getStatusCode();
                 LOGGER.info(e.getMessage());
             } catch (Exception e) {
                 String errorMessage = "Error interno del servidor";
-                errorDetails = new ErrorDetails(ErrorType.INTERNAL_SERVER_ERROR, errorMessage, LocalDateTime.now());
+                errorDetails = new ErrorDetails(ErrorType.INTERNAL_SERVER_ERROR, errorMessage);
                 status = errorDetails.getError().getStatusCode();
                 LOGGER.error(errorMessage, e);
             }
@@ -113,7 +116,7 @@ public class ClientHandler implements Runnable{
     private void knockMessage(SocketCommunication socketCommunication) throws IOException {
         Message clientMessage = MAPPER.readValue(socketCommunication.readStringFromSocket(), Message.class);
         if (clientMessage.getMessageType() != MessageType.KNOCK){
-            throw new RuntimeException("Message with unknown comm protocol");
+            throw new UnexpectedMessageException("Expected KNOCK message but found " + clientMessage.getMessageType().name());
         }
 
         socketCommunication.writeToClient(MessageType.KNOCK, 200L, null, null);
