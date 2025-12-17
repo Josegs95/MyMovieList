@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Fixed an issue with the handshake protocol">
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Suppressed all warning caused by reflection usage.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/core/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/model/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/model/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/util/ErrorHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/util/ErrorHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -305,7 +304,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765975930411</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Suppressed all warning caused by reflection usage.">
+      <option name="closed" value="true" />
+      <created>1765978029962</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1765978029962</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -344,6 +351,7 @@
     <MESSAGE value="User sessions refresh added" />
     <MESSAGE value="Some refactoring in server services" />
     <MESSAGE value="Fixed an issue with the handshake protocol" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed an issue with the handshake protocol" />
+    <MESSAGE value="Suppressed all warning caused by reflection usage." />
+    <option name="LAST_COMMIT_MESSAGE" value="Suppressed all warning caused by reflection usage." />
   </component>
 </project>

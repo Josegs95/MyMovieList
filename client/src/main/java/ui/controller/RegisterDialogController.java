@@ -8,6 +8,8 @@ import ui.util.EventBus;
 import ui.util.Subscription;
 import ui.view.component.dialog.auth.RegisterDialog;
 
+import java.util.Arrays;
+
 public class RegisterDialogController {
 
     private final RegisterDialog view;
@@ -35,13 +37,15 @@ public class RegisterDialogController {
         }
 
         String username = view.getUsername();
-        String password = view.getPassword();
+        char[] password = view.getPassword();
         String email = view.getEmail();
 
         try {
-            authService.register(username, password, email.isEmpty() ? null : email);
+            authService.register(username, new String(password).strip(), email.isEmpty() ? null : email);
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
+        } finally {
+            Arrays.fill(password, '0');
         }
     }
 

@@ -4,6 +4,8 @@ import service.AuthService;
 import ui.util.ErrorHandler;
 import ui.view.component.dialog.auth.SessionDialog;
 
+import java.util.Arrays;
+
 public class SessionDialogController {
 
     private final SessionDialog view;
@@ -23,15 +25,17 @@ public class SessionDialogController {
 
     private void onBtnAccept() {
         String username = view.getUsername();
-        String password = view.getPassword();
+        char[] password = view.getPassword();
 
         try {
-            authService.login(username, password);
+            authService.login(username, new String(password).strip());
 
             view.setSessionRefreshed(true);
             view.dispose();
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
+        } finally {
+            Arrays.fill(password, '0');
         }
     }
 

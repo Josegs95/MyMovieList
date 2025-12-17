@@ -6,6 +6,8 @@ import ui.util.ErrorHandler;
 import ui.view.component.dialog.auth.LoginDialog;
 import ui.view.component.dialog.auth.RegisterDialog;
 
+import java.util.Arrays;
+
 public class LoginDialogController {
 
     private final LoginDialog view;
@@ -26,14 +28,16 @@ public class LoginDialogController {
 
     private void onLogin() {
         String username = view.getUsername();
-        String password = view.getPassword();
+        char[] password = view.getPassword();
 
         try {
-            authService.login(username, password);
+            authService.login(username, new String(password).strip());
 
             view.onLoginSuccess();
         } catch (Exception e) {
             ErrorHandler.showError(view, e);
+        } finally {
+            Arrays.fill(password, '0');
         }
     }
 

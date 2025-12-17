@@ -93,8 +93,8 @@ public abstract class AuthenticationDialog extends JDialog{
         txtUsername.setText(username);
     }
 
-    public String getPassword() {
-        return new String(txtPassword.getPassword()).strip();
+    public char[] getPassword() {
+        return txtPassword.getPassword();
     }
 
     public JButton getBtnDefault() {

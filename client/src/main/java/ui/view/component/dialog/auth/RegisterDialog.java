@@ -5,6 +5,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.Arrays;
 
 public class RegisterDialog extends AuthenticationDialog{
 
@@ -109,10 +110,10 @@ public class RegisterDialog extends AuthenticationDialog{
     }
 
     private boolean checkPasswordFields() {
-        String password = this.getPassword();
-        String repeatedPassword = this.getRepeatedPassword();
+        char[] password = getPassword();
+        char[] repeatedPassword = getRepeatedPassword();
 
-        if (password.isEmpty() || repeatedPassword.isEmpty()) {
+        if (password.length == 0 || repeatedPassword.length == 0) {
             JOptionPane.showMessageDialog(
                     loginDialog,
                     "Los campos contraseña son obligatorios",
@@ -122,7 +123,7 @@ public class RegisterDialog extends AuthenticationDialog{
             return false;
         }
 
-        if (!password.equals(repeatedPassword)) {
+        if (!Arrays.equals(password, repeatedPassword)) {
             JOptionPane.showMessageDialog(
                     loginDialog,
                     "Las contraseñas no coinciden entre sí",
@@ -189,8 +190,8 @@ public class RegisterDialog extends AuthenticationDialog{
         return getTxtEmail().getText().strip();
     }
 
-    public String getRepeatedPassword() {
-        return new String(getTxtRepeatPassword().getPassword()).strip();
+    public char[] getRepeatedPassword() {
+        return getTxtRepeatPassword().getPassword();
     }
 
     public JPasswordField getTxtRepeatPassword() {
