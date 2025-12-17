@@ -122,14 +122,14 @@ public class ClientHandler implements Runnable{
     private void registerUser() {
         RegisterRequest request = MAPPER.convertValue(clientData, RegisterRequest.class);
 
-        USER_SERVICE.register(request);
+        USER_SERVICE.register(request.username(), request.password(), request.email());
     }
 
     private LoginResponse loginUser() {
         LoginRequest request = MAPPER.convertValue(clientData, LoginRequest.class);
         LOGGER.info("El usuario '{}' quiere identificarse", request.username());
 
-        return new LoginResponse(USER_SERVICE.login(request));
+        return new LoginResponse(USER_SERVICE.login(request.username(), request.password()));
     }
 
     private SearchMultimediaResponse searchMultimedia() {
@@ -137,7 +137,7 @@ public class ClientHandler implements Runnable{
 
         userSessionToken = request.sessionToken();
 
-        return API_SERVICE.searchAllByName(request);
+        return API_SERVICE.searchAllByName(request.userId(), request.searchText(), request.sessionToken());
     }
 
     private MultimediaDetailResponse detailMultimedia() {
@@ -145,7 +145,7 @@ public class ClientHandler implements Runnable{
 
         userSessionToken = request.sessionToken();
 
-        return API_SERVICE.getMultimediaDetails(request);
+        return API_SERVICE.getMultimediaDetails(request.userId(), request.apiId(), request.type(), request.sessionToken());
     }
 
     private UserListDTO createUserList() {
@@ -153,7 +153,7 @@ public class ClientHandler implements Runnable{
 
         userSessionToken = request.sessionToken();
 
-        return USER_LIST_SERVICE.create(request);
+        return USER_LIST_SERVICE.create(request.userId(), request.listName(), request.sessionToken());
     }
 
     private UserListDTO renameUserList() {

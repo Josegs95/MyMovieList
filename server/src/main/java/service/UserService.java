@@ -2,13 +2,11 @@ package service;
 
 import config.HibernateUtil;
 import dao.UserDAO;
-import model.dto.UserDTO;
-import model.entity.ClientSession;
-import protocol.dto.request.LoginRequest;
-import protocol.dto.request.RegisterRequest;
-import model.entity.User;
 import exception.AuthenticationException;
 import exception.ConflictException;
+import model.dto.UserDTO;
+import model.entity.ClientSession;
+import model.entity.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import security.Security;
@@ -25,20 +23,20 @@ public class UserService {
         this.authService = authService;
     }
 
-    public void register(RegisterRequest request) {
+    public void register(String username, String password, String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
 
-                User user = userDAO.findByUsername(session, request.username());
+                User user = userDAO.findByUsername(session, username);
                 if (user != null) {
                     throw new ConflictException("Ya hay un usuario registrado con ese nombre de usuario");
                 }
 
                 int salt = new Random().nextInt();
-                String securedPassword = Security.hashString(request.password(), salt);
-                user = new User(request.username(), securedPassword, request.email(), salt);
+                String securedPassword = Security.hashString(password, salt);
+                user = new User(username, securedPassword, email, salt);
 
                 userDAO.create(session, user);
                 transaction.commit();
@@ -51,18 +49,18 @@ public class UserService {
         }
     }
 
-    public UserDTO login(LoginRequest request) {
+    public UserDTO login(String username, String password) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
 
-                User user = userDAO.findByUsername(session, request.username());
+                User user = userDAO.findByUsername(session, username);
                 if (user == null) {
-                    throw new AuthenticationException("No existe el usuario \"" + request.username() + "\"");
+                    throw new AuthenticationException("No existe el usuario \"" + username + "\"");
                 }
 
-                if (!user.getPassword().equals(Security.hashString(request.password(), user.getSalt()))) {
+                if (!user.getPassword().equals(Security.hashString(password, user.getSalt()))) {
                     throw new AuthenticationException("Contraseña incorrecta");
                 }
                 ClientSession clientSession = authService.createSession(session, user);

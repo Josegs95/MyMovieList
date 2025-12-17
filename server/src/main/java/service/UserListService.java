@@ -2,11 +2,10 @@ package service;
 
 import config.HibernateUtil;
 import dao.UserListDAO;
-import model.dto.UserListDTO;
-import protocol.dto.request.CreateListRequest;
 import exception.AuthorizationException;
 import exception.ConflictException;
 import exception.ResourceNotFoundException;
+import model.dto.UserListDTO;
 import model.entity.User;
 import model.entity.UserList;
 import org.hibernate.Session;
@@ -24,19 +23,19 @@ public class UserListService {
         this.authService = authService;
     }
 
-    public UserListDTO create(CreateListRequest request) {
+    public UserListDTO create(Long userId, String listName, String sessionToken) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                User user = authService.validateSession(session, request.userId(), request.sessionToken());
+                User user = authService.validateSession(session, userId, sessionToken);
 
-                UserList sameNameList = userListDAO.findByNameAndUser(session, request.listName(), user);
+                UserList sameNameList = userListDAO.findByNameAndUser(session, listName, user);
                 if (sameNameList != null) {
                     throw new ConflictException("Ya existe una lista con ese nombre para este usuario");
                 }
 
-                UserList list = new UserList(request.listName(), user);
+                UserList list = new UserList(listName, user);
                 list = userListDAO.create(session, list);
 
                 transaction.commit();

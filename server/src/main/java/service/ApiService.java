@@ -2,21 +2,19 @@ package service;
 
 import config.ApiConfiguration;
 import config.HibernateUtil;
+import filter.TMDBFilter;
 import model.dto.MovieDetailDTO;
 import model.dto.MultimediaDetailDTO;
 import model.dto.MultimediaSummaryDTO;
 import model.dto.SeriesDetailDTO;
-import protocol.dto.request.MultimediaDetailRequest;
-import protocol.dto.request.SearchMultimediaRequest;
-import protocol.dto.response.ApiSearchResponse;
-import protocol.dto.response.MultimediaDetailResponse;
-import protocol.dto.response.SearchMultimediaResponse;
-import filter.TMDBFilter;
 import model.entity.MultimediaType;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import protocol.dto.response.ApiSearchResponse;
+import protocol.dto.response.MultimediaDetailResponse;
+import protocol.dto.response.SearchMultimediaResponse;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -43,10 +41,10 @@ public class ApiService {
         this.authService = authService;
     }
 
-    public SearchMultimediaResponse searchAllByName(SearchMultimediaRequest request) {
-        checkUserAuthentication(request.userId(), request.sessionToken());
+    public SearchMultimediaResponse searchAllByName(Long userId, String searchText, String sessionToken) {
+        checkUserAuthentication(userId, sessionToken);
 
-        String text = request.searchText().replace(" ", "%20");
+        String text = searchText.replace(" ", "%20");
         String urlString = ApiConfiguration.getBaseUrl()
                 + "search/multi?query=" + text
                 + "&language=" + ApiConfiguration.getLanguage();
@@ -65,22 +63,22 @@ public class ApiService {
             throw new RuntimeException(e);
         }
 
-        elementList = TMDBFilter.sortResults(elementList, request.searchText());
+        elementList = TMDBFilter.sortResults(elementList, searchText);
 
         return new SearchMultimediaResponse(ApiConfiguration.getIconSize(), elementList);
     }
 
-    public MultimediaDetailResponse getMultimediaDetails(MultimediaDetailRequest request) {
-        checkUserAuthentication(request.userId(), request.sessionToken());
+    public MultimediaDetailResponse getMultimediaDetails(Long userId, String apiId, MultimediaType type, String sessionToken) {
+        checkUserAuthentication(userId, sessionToken);
 
-        String typeEndpoint = request.type() == MultimediaType.MOVIE ? "movie/" : "tv/";
+        String typeEndpoint = type == MultimediaType.MOVIE ? "movie/" : "tv/";
         String urlString = ApiConfiguration.getBaseUrl()
                 + typeEndpoint
-                + request.apiId()
+                + apiId
                 + "?language=" + ApiConfiguration.getLanguage();
 
         MultimediaDetailDTO dto;
-        if (request.type() == MultimediaType.MOVIE) {
+        if (type == MultimediaType.MOVIE) {
             dto = MAPPER.readValue(makeGetRequest(urlString), MovieDetailDTO.class);
         } else {
             dto = MAPPER.readValue(makeGetRequest(urlString), SeriesDetailDTO.class);
