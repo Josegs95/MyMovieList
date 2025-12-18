@@ -3,9 +3,9 @@ package service;
 import config.HibernateUtil;
 import dao.ClientSessionDAO;
 import dao.UserDAO;
-import exception.AuthenticationException;
-import exception.AuthorizationException;
 import exception.SessionExpiredException;
+import exception.SessionNotFoundException;
+import exception.UserNotFoundException;
 import model.entity.ClientSession;
 import model.entity.User;
 import org.hibernate.Session;
@@ -19,7 +19,7 @@ public class AuthService {
 
     private static final SecureRandom random = new SecureRandom();
     private static final int SESSION_TOKEN_LENGTH = 32;
-    private static final int SESSION_TOKEN_EXPIRATION_TIME = 3600;
+    private static final int SESSION_TOKEN_EXPIRATION_TIME = 1;
 
     private final UserDAO userDAO;
     private final ClientSessionDAO sessionDAO;
@@ -49,12 +49,12 @@ public class AuthService {
     public User validateSession(Session session, Long idUser, String sessionToken) {
         User user = userDAO.findById(session, idUser);
         if (user == null) {
-            throw new AuthenticationException("Error. ¿No existe el usuario?");
+            throw new UserNotFoundException("Error. ¿No existe el usuario?");
         }
 
         ClientSession clientSession = sessionDAO.findByTokenAndUser(session, sessionToken, user);
         if (clientSession == null) {
-            throw new AuthorizationException("Error. No existe la sesión para este usuario");
+            throw new SessionNotFoundException("Error. No existe la sesión para este usuario");
         }
         if (!LocalDateTime.now().isBefore(clientSession.getExpirationTime())) {
             deleteExpiredSession(clientSession);
@@ -73,7 +73,7 @@ public class AuthService {
 
                 ClientSession clientSession = sessionDAO.findByToken(session, sessionToken);
                 if (clientSession == null) {
-                    throw new AuthorizationException("Error. ¿No existe la sesión?");
+                    throw new SessionNotFoundException("Error. ¿No existe la sesión?");
                 }
 
                 clientSession.setExpirationTime(LocalDateTime.now().plusSeconds(SESSION_TOKEN_EXPIRATION_TIME));

@@ -4,9 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Suppressed all warning caused by reflection usage.">
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Added more security at the client for passwords.">
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/ExternalServiceException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/InvalidCredentialsException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/ListDoesNotBelongToUserException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/ListNameAlreadyExistsForUserException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/MultimediaAlreadyExistsInListException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/MultimediaNotFoundInListException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/SessionNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/UserListNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/UserNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/UsernameAlreadyExistsException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/util/ErrorHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/util/ErrorHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/AuthenticationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/AuthenticationException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/AuthorizationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/AuthorizationException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/ConflictException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/ConflictException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/OperationNotAllowedException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/ResourceNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/ResourceNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/ServerException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/ServerException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/SessionExpiredException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/SessionExpiredException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/UnexpectedMessageException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/UnexpectedMessageException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/ValidationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/ValidationException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/ErrorType.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/ErrorType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/SocketCommunication.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/SocketCommunication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/ApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/ApiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/MultimediaListItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/MultimediaListItemService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,28 +78,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Client.executor": "Run",
-    "Application.Server.executor": "Run",
-    "Maven.MyMovieList [clean].executor": "Run",
-    "Maven.MyMovieList [install].executor": "Run",
-    "Maven.MyMovieList [package].executor": "Run",
-    "Maven.server [clean].executor": "Run",
-    "Maven.server [deploy].executor": "Run",
-    "Maven.server [package].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "development",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Jose/Workplace/Java/Pruebas/CampoDePruebas",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.externalResources"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Client.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Server.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.MyMovieList [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.MyMovieList [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.MyMovieList [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.server [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.server [deploy].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.server [package].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;development&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Jose/Workplace/Java/Pruebas/CampoDePruebas&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.externalResources&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Application.Client">
+}</component>
+  <component name="RunManager" selected="Application.Server">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client" />
       <module name="client" />
@@ -312,7 +338,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765978029962</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Added more security at the client for passwords.">
+      <option name="closed" value="true" />
+      <created>1765980786453</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1765980786453</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -327,7 +361,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Jackson library for GSON, Docker and some file architecture improvement" />
     <MESSAGE value="Fixed docker files to work both locally and with a container" />
     <MESSAGE value="Model and Service creation on server side" />
     <MESSAGE value="Register and login service reworked" />
@@ -352,6 +385,7 @@
     <MESSAGE value="Some refactoring in server services" />
     <MESSAGE value="Fixed an issue with the handshake protocol" />
     <MESSAGE value="Suppressed all warning caused by reflection usage." />
-    <option name="LAST_COMMIT_MESSAGE" value="Suppressed all warning caused by reflection usage." />
+    <MESSAGE value="Added more security at the client for passwords." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added more security at the client for passwords." />
   </component>
 </project>

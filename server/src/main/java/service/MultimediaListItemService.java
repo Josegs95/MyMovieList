@@ -2,6 +2,8 @@ package service;
 
 import config.HibernateUtil;
 import dao.MultimediaListItemDAO;
+import exception.MultimediaAlreadyExistsInListException;
+import exception.MultimediaNotFoundInListException;
 import model.dto.MultimediaListItemDTO;
 import model.dto.MultimediaSummaryDTO;
 import model.dto.SeriesSummaryDTO;
@@ -37,7 +39,7 @@ public class MultimediaListItemService {
 
                 MultimediaSummaryDTO summaryDTO = listItemDTO.getMultimedia();
                 if (isMultimediaContainedOnList(list, summaryDTO)) {
-                    throw new RuntimeException("Ya existe este objeto multimedia en esta lista");
+                    throw new MultimediaAlreadyExistsInListException("Ya existe este objeto multimedia en esta lista");
                 }
 
                 Integer totalEpisodes = 0;
@@ -86,7 +88,7 @@ public class MultimediaListItemService {
                         listItem.getMultimedia().getIdDb());
 
                 if (itemAtBD == null) {
-                    throw new RuntimeException("Este objeto multimedia no existe en esta lista");
+                    throw new MultimediaNotFoundInListException("Este objeto multimedia no existe en esta lista");
                 }
 
                 itemAtBD.setCurrentEpisode(listItem.getCurrentEpisode());
@@ -115,7 +117,7 @@ public class MultimediaListItemService {
                 MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, idList, idMultimedia);
 
                 if (itemAtBD == null) {
-                    throw new RuntimeException("Este objeto multimedia no existe en esta lista");
+                    throw new MultimediaNotFoundInListException("Este objeto multimedia no existe en esta lista");
                 }
 
                 multimediaListItemDAO.delete(session, itemAtBD);

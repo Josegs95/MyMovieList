@@ -1,8 +1,10 @@
 package exception;
 
-public class SessionExpiredException extends ServerException {
+import protocol.ErrorType;
+
+public class SessionExpiredException extends AuthenticationException {
 
     public SessionExpiredException(String message) {
-        super(message);
+        super(ErrorType.SESSION_EXPIRED, message);
     }
 }

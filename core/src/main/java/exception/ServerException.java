@@ -1,8 +1,17 @@
 package exception;
 
+import protocol.ErrorType;
+
 public class ServerException extends RuntimeException{
 
-    public ServerException(String message) {
+    private final ErrorType errorType;
+
+    public ServerException(ErrorType errorType, String message) {
         super(message);
+        this.errorType = errorType;
+    }
+
+    public ErrorType getErrorType() {
+        return errorType;
     }
 }

@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Optional;
 
 public class SocketCommunication implements AutoCloseable {
 
@@ -46,13 +45,13 @@ public class SocketCommunication implements AutoCloseable {
             if (serverMessage.getStatus() == 200L) return serverMessage;
 
             ErrorDetails errorDetails = serverMessage.getErrorDetail();
-            if (errorDetails.getError() == ErrorType.SESSION_EXPIRED) {
+            ErrorType type = errorDetails.getError();
+
+            if (type == ErrorType.SESSION_EXPIRED) {
                 throw new SessionExpiredException(errorDetails.getMessage());
             }
 
-            String errorMessage = Optional.ofNullable(errorDetails.getMessage())
-                    .orElse("Error desconocido");
-            throw new ServerException(errorMessage);
+            throw new ServerException(type, errorDetails.getMessage());
         } catch (IOException e) {
             throw new CommunicationException("Error al intentar comunicarse al servidor");
         }

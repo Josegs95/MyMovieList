@@ -1,8 +1,10 @@
 package exception;
 
+import protocol.ErrorType;
+
 public class AuthenticationException extends ServerException{
 
-    public AuthenticationException(String message) {
-        super(message);
+    public AuthenticationException(ErrorType errorType, String message) {
+        super(errorType, message);
     }
 }

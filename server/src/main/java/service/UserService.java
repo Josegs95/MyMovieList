@@ -2,8 +2,8 @@ package service;
 
 import config.HibernateUtil;
 import dao.UserDAO;
-import exception.AuthenticationException;
-import exception.ConflictException;
+import exception.InvalidCredentialsException;
+import exception.UsernameAlreadyExistsException;
 import model.dto.UserDTO;
 import model.entity.ClientSession;
 import model.entity.User;
@@ -31,7 +31,7 @@ public class UserService {
 
                 User user = userDAO.findByUsername(session, username);
                 if (user != null) {
-                    throw new ConflictException("Ya hay un usuario registrado con ese nombre de usuario");
+                    throw new UsernameAlreadyExistsException("Ya hay un usuario registrado con ese nombre de usuario");
                 }
 
                 int salt = new Random().nextInt();
@@ -56,13 +56,10 @@ public class UserService {
                 transaction = session.beginTransaction();
 
                 User user = userDAO.findByUsername(session, username);
-                if (user == null) {
-                    throw new AuthenticationException("No existe el usuario \"" + username + "\"");
+                if (user == null || !user.getPassword().equals(Security.hashString(password, user.getSalt()))) {
+                    throw new InvalidCredentialsException("Invalid username or password");
                 }
 
-                if (!user.getPassword().equals(Security.hashString(password, user.getSalt()))) {
-                    throw new AuthenticationException("Contraseña incorrecta");
-                }
                 ClientSession clientSession = authService.createSession(session, user);
 
                 UserDTO userDTO = new UserDTO(user);

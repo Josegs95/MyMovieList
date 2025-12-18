@@ -2,6 +2,7 @@ package service;
 
 import config.ApiConfiguration;
 import config.HibernateUtil;
+import exception.ExternalServiceException;
 import filter.TMDBFilter;
 import model.dto.MovieDetailDTO;
 import model.dto.MultimediaDetailDTO;
@@ -128,7 +129,7 @@ public class ApiService {
             LOGGER.info("API message: {}", response.body());
             return response.body();
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new ExternalServiceException(e.getMessage());
         }
     }
 }

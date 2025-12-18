@@ -2,9 +2,7 @@ package service;
 
 import config.HibernateUtil;
 import dao.UserListDAO;
-import exception.AuthorizationException;
-import exception.ConflictException;
-import exception.ResourceNotFoundException;
+import exception.*;
 import model.dto.UserListDTO;
 import model.entity.User;
 import model.entity.UserList;
@@ -32,7 +30,7 @@ public class UserListService {
 
                 UserList sameNameList = userListDAO.findByNameAndUser(session, listName, user);
                 if (sameNameList != null) {
-                    throw new ConflictException("Ya existe una lista con ese nombre para este usuario");
+                    throw new ListNameAlreadyExistsForUserException("Ya existe una lista con ese nombre para este usuario");
                 }
 
                 UserList list = new UserList(listName, user);
@@ -84,7 +82,7 @@ public class UserListService {
 
                 UserList sameNameList = userListDAO.findByNameAndUser(session, newListName, user);
                 if (sameNameList != null) {
-                    throw new ConflictException("Ya existe una lista con ese nombre para este usuario");
+                    throw new ListNameAlreadyExistsForUserException("Ya existe una lista con ese nombre para este usuario");
                 }
 
                 list.setName(newListName);
@@ -125,10 +123,10 @@ public class UserListService {
     public UserList checkListOwnership(Session session, Long idList, Long idOwner) {
         UserList list = userListDAO.findById(session, idList);
         if (list == null) {
-            throw new ResourceNotFoundException("No existe una lista con ese id");
+            throw new UserListNotFoundException("No existe una lista con ese id");
         }
         if (!list.getUser().getId().equals(idOwner)) {
-            throw new AuthorizationException("El usuario no es el propietario de esta lista");
+            throw new ListDoesNotBelongToUserException("El usuario no es el propietario de esta lista");
         }
 
         return list;
