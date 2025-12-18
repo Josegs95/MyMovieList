@@ -1,6 +1,7 @@
 package protocol.dto.request;
 
 import model.dto.MultimediaListItemDTO;
+import protocol.AuthCredentials;
 
-public record AddListItemRequest(Long idUser, MultimediaListItemDTO multimedia, String sessionToken) {
+public record AddListItemRequest(AuthCredentials auth, MultimediaListItemDTO multimedia) {
 }

@@ -42,7 +42,7 @@ public class ClientHandler implements Runnable{
     final private Socket SOCKET;
 
     private Object clientData;
-    private String userSessionToken;
+    private AuthCredentials authCredentials;
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public ClientHandler(Socket socket){
@@ -103,8 +103,8 @@ public class ClientHandler implements Runnable{
                 LOGGER.error(errorMessage, e);
             }
 
-            if (status == 200L && userSessionToken != null) {
-                AUTH_SERVICE.refreshSessionToken(userSessionToken);
+            if (status == 200L && authCredentials != null) {
+                AUTH_SERVICE.refreshSessionToken(authCredentials.sessionToken());
             }
 
             socketCommunication.writeToClient(messageType, status, serverResponseData, errorDetails);
@@ -138,80 +138,72 @@ public class ClientHandler implements Runnable{
     private SearchMultimediaResponse searchMultimedia() {
         SearchMultimediaRequest request = MAPPER.convertValue(clientData, SearchMultimediaRequest.class);
 
-        userSessionToken = request.sessionToken();
+        authCredentials = request.auth();
 
-        return API_SERVICE.searchAllByName(request.userId(), request.searchText(), request.sessionToken());
+        return API_SERVICE.searchAllByName(authCredentials, request.searchText());
     }
 
     private MultimediaDetailResponse detailMultimedia() {
         MultimediaDetailRequest request = MAPPER.convertValue(clientData, MultimediaDetailRequest.class);
 
-        userSessionToken = request.sessionToken();
+        authCredentials = request.auth();
 
-        return API_SERVICE.getMultimediaDetails(request.userId(), request.apiId(), request.type(), request.sessionToken());
+        return API_SERVICE.getMultimediaDetails(authCredentials, request.apiId(), request.type());
     }
 
     private UserListDTO createUserList() {
         CreateListRequest request = MAPPER.convertValue(clientData, CreateListRequest.class);
 
-        userSessionToken = request.sessionToken();
+        authCredentials = request.auth();
 
-        return USER_LIST_SERVICE.create(request.userId(), request.listName(), request.sessionToken());
+        return USER_LIST_SERVICE.create(authCredentials, request.listName());
     }
 
     private UserListDTO renameUserList() {
         RenameListRequest request = MAPPER.convertValue(clientData, RenameListRequest.class);
 
-        userSessionToken = request.sessionToken();
+        authCredentials = request.auth();
 
-        return USER_LIST_SERVICE.rename(
-                request.userId(),
-                request.listId(),
-                request.newListName(),
-                request.sessionToken());
+        return USER_LIST_SERVICE.rename(authCredentials, request.listId(), request.newListName());
     }
 
     private void deleteUserList() {
         DeleteListRequest request = MAPPER.convertValue(clientData, DeleteListRequest.class);
 
-        userSessionToken = request.sessionToken();
+        authCredentials = request.auth();
 
-        USER_LIST_SERVICE.delete(request.userId(), request.listId(), request.sessionToken());
+        USER_LIST_SERVICE.delete(authCredentials, request.listId());
     }
 
     private GetAllListsResponse getUserLists() {
         GetAllListsRequest request = MAPPER.convertValue(clientData, GetAllListsRequest.class);
 
-        userSessionToken = request.sessionToken();
+        authCredentials = request.auth();
 
-        return new GetAllListsResponse(USER_LIST_SERVICE.getAllListsFromUser(request.idUser(), request.sessionToken()));
+        return new GetAllListsResponse(USER_LIST_SERVICE.getAllListsFromUser(authCredentials));
     }
 
     private MultimediaListItemDTO addMultimediaToList(){
         AddListItemRequest request = MAPPER.convertValue(clientData, AddListItemRequest.class);
 
-        userSessionToken = request.sessionToken();
+        authCredentials = request.auth();
 
-        return MULTIMEDIA_LIST_ITEM_SERVICE.addMultimediaToList(request.idUser(), request.multimedia(), request.sessionToken());
+        return MULTIMEDIA_LIST_ITEM_SERVICE.addMultimediaToList(authCredentials, request.multimedia());
     }
 
     private MultimediaListItemDTO modifyMultimedia() {
         ModifyListItemRequest request = MAPPER.convertValue(clientData, ModifyListItemRequest.class);
 
-        userSessionToken = request.sessionToken();
+        authCredentials = request.auth();
 
-        return MULTIMEDIA_LIST_ITEM_SERVICE.modify(request.userId(), request.listItemDTO(), request.sessionToken());
+        return MULTIMEDIA_LIST_ITEM_SERVICE.modify(authCredentials, request.listItemDTO());
     }
 
     private void removeMultimediaFromList() {
         DeleteItemListRequest request = MAPPER.convertValue(clientData, DeleteItemListRequest.class);
 
-        userSessionToken = request.sessionToken();
+        authCredentials = request.auth();
 
-        MULTIMEDIA_LIST_ITEM_SERVICE.delete(
-                request.idUser(),
-                request.idList(),
-                request.idMultimedia(),
-                request.sessionToken());
+        MULTIMEDIA_LIST_ITEM_SERVICE.delete(authCredentials, request.idList(), request.idMultimedia());
     }
 }

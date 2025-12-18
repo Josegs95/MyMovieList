@@ -4,35 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Added more security at the client for passwords.">
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/ExternalServiceException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/InvalidCredentialsException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/ListDoesNotBelongToUserException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/ListNameAlreadyExistsForUserException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/MultimediaAlreadyExistsInListException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/MultimediaNotFoundInListException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/SessionNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/UserListNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/UserNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/exception/UsernameAlreadyExistsException.java" afterDir="false" />
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Reworked the error display system in the client">
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/protocol/AuthCredentials.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/util/ErrorHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/util/ErrorHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/AuthenticationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/AuthenticationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/AuthorizationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/AuthorizationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/ConflictException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/ConflictException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/OperationNotAllowedException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/ResourceNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/ResourceNotFoundException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/ServerException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/ServerException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/SessionExpiredException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/SessionExpiredException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/UnexpectedMessageException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/UnexpectedMessageException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/exception/ValidationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/exception/ValidationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/ErrorType.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/ErrorType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/SocketCommunication.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/SocketCommunication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/service/SearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/SearchService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/service/UserListService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/UserListService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/ListItemUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/ListItemUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/AddListItemRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/AddListItemRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/CreateListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/CreateListRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/DeleteItemListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/DeleteItemListRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/DeleteListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/DeleteListRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/GetAllListsRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/GetAllListsRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/ModifyListItemRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/ModifyListItemRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/MultimediaDetailRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/MultimediaDetailRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/RenameListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/RenameListRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/SearchMultimediaRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/protocol/dto/request/SearchMultimediaRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/service/ApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/ApiService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/service/MultimediaListItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/MultimediaListItemService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/UserListService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,8 +38,8 @@
         <option value="Record" />
         <option value="Enum" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="Exception" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -99,7 +91,7 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.externalResources&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.Server">
+  <component name="RunManager" selected="Application.Client">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client" />
       <module name="client" />
@@ -346,7 +338,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765980786453</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Reworked the error display system in the client">
+      <option name="closed" value="true" />
+      <created>1766075369050</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1766075369050</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -361,7 +361,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed docker files to work both locally and with a container" />
     <MESSAGE value="Model and Service creation on server side" />
     <MESSAGE value="Register and login service reworked" />
     <MESSAGE value="API moved to server and some refactoring" />
@@ -386,6 +385,7 @@
     <MESSAGE value="Fixed an issue with the handshake protocol" />
     <MESSAGE value="Suppressed all warning caused by reflection usage." />
     <MESSAGE value="Added more security at the client for passwords." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added more security at the client for passwords." />
+    <MESSAGE value="Reworked the error display system in the client" />
+    <option name="LAST_COMMIT_MESSAGE" value="Reworked the error display system in the client" />
   </component>
 </project>

@@ -1,4 +1,6 @@
 package protocol.dto.request;
 
-public record GetAllListsRequest(Long idUser, String sessionToken) {
+import protocol.AuthCredentials;
+
+public record GetAllListsRequest(AuthCredentials auth) {
 }

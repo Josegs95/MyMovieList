@@ -64,20 +64,31 @@ public class ListItemUIController {
     private void onBtnDelete() {
         if(!view.showDeleteDialog()) return;
 
+        MultimediaListItemDTO item = view.getMultimediaItem();
+        PendingAction action = () -> listService.deleteItemFromList(view.getUserList(), item);
+
         try {
-            MultimediaListItemDTO item = view.getMultimediaItem();
-            listService.deleteItemFromList(view.getUserList(), item);
+            action.execute();
+        } catch (SessionExpiredException e) {
+            EventBus.publish(new SessionExpiredEvent(action));
         } catch (Exception e) {
             ErrorHandler.showError(mainFrame, e);
         }
     }
 
     private void onPanelClicked() {
-        try {
-            MultimediaListItemDTO listItem = view.getMultimediaItem();
+        MultimediaListItemDTO listItem = view.getMultimediaItem();
+
+        PendingAction action = () -> {
             MultimediaDetailDTO detailDTO = searchService.getMultimediaDetail(listItem.getMultimedia());
             EventBus.publish(new DetailPanelOnListsEvent(detailDTO, listItem.getMultimedia(), view.getUserList()));
-        } catch (Exception e){
+        };
+
+        try {
+            action.execute();
+        } catch (SessionExpiredException e) {
+            EventBus.publish(new SessionExpiredEvent(action));
+        } catch (Exception e) {
             ErrorHandler.showError(mainFrame, e);
         }
     }

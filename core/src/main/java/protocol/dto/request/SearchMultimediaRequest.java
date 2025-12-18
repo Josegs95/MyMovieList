@@ -1,3 +1,5 @@
 package protocol.dto.request;
 
-public record SearchMultimediaRequest(Long userId, String searchText, String sessionToken) {}
+import protocol.AuthCredentials;
+
+public record SearchMultimediaRequest(AuthCredentials auth, String searchText) {}

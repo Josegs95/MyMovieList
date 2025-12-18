@@ -12,6 +12,7 @@ import model.entity.MultimediaListItem;
 import model.entity.UserList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import protocol.AuthCredentials;
 
 public class MultimediaListItemService {
 
@@ -28,14 +29,14 @@ public class MultimediaListItemService {
         this.multimediaService = multimediaService;
     }
 
-    public MultimediaListItemDTO addMultimediaToList(Long idUser, MultimediaListItemDTO listItemDTO, String sessionToken) {
+    public MultimediaListItemDTO addMultimediaToList(AuthCredentials auth, MultimediaListItemDTO listItemDTO) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
 
-                authService.validateSession(session, idUser, sessionToken);
-                UserList list = userListService.checkListOwnership(session, listItemDTO.getListId(), idUser);
+                authService.validateSession(session, auth);
+                UserList list = userListService.checkListOwnership(session, listItemDTO.getListId(), auth.idUser());
 
                 MultimediaSummaryDTO summaryDTO = listItemDTO.getMultimedia();
                 if (isMultimediaContainedOnList(list, summaryDTO)) {
@@ -74,14 +75,14 @@ public class MultimediaListItemService {
         }
     }
 
-    public MultimediaListItemDTO modify(Long idUser, MultimediaListItemDTO listItem, String sessionToken) {
+    public MultimediaListItemDTO modify(AuthCredentials auth, MultimediaListItemDTO listItem) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
 
-                authService.validateSession(session, idUser, sessionToken);
-                userListService.checkListOwnership(session, listItem.getListId(), idUser);
+                authService.validateSession(session, auth);
+                userListService.checkListOwnership(session, listItem.getListId(), auth.idUser());
                 MultimediaListItem itemAtBD = multimediaListItemDAO.findById(
                         session,
                         listItem.getListId(),
@@ -106,14 +107,14 @@ public class MultimediaListItemService {
         }
     }
 
-    public void delete(Long idUser, Long idList, Long idMultimedia, String sessionToken) {
+    public void delete(AuthCredentials auth, Long idList, Long idMultimedia) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
 
-                authService.validateSession(session, idUser, sessionToken);
-                userListService.checkListOwnership(session, idList, idUser);
+                authService.validateSession(session, auth);
+                userListService.checkListOwnership(session, idList, auth.idUser());
                 MultimediaListItem itemAtBD = multimediaListItemDAO.findById(session, idList, idMultimedia);
 
                 if (itemAtBD == null) {

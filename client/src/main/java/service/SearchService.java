@@ -3,7 +3,6 @@ package service;
 import context.SessionContext;
 import model.dto.MultimediaDetailDTO;
 import model.dto.MultimediaSummaryDTO;
-import model.dto.UserDTO;
 import protocol.Message;
 import protocol.MessageType;
 import protocol.SocketCommunication;
@@ -22,10 +21,10 @@ public class SearchService {
     private final Map<MultimediaSummaryDTO, MultimediaDetailDTO> API_CACHE = new ConcurrentHashMap<>();
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final UserDTO user = SessionContext.getInstance().getUser();
+    private final SessionContext context = SessionContext.getInstance();
 
     public List<MultimediaSummaryDTO> searchByName(String text) {
-        SearchMultimediaRequest request = new SearchMultimediaRequest(user.getId(), text, user.getSessionToken());
+        SearchMultimediaRequest request = new SearchMultimediaRequest(context.getAuthCredentials(), text);
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.API_SEARCH_MULTIMEDIA, request));
         SearchMultimediaResponse response = mapper.convertValue(serverMessage.getContent(), SearchMultimediaResponse.class);
@@ -42,10 +41,9 @@ public class SearchService {
         }
 
         MultimediaDetailRequest request = new MultimediaDetailRequest(
-                user.getId(),
+                context.getAuthCredentials(),
                 multimediaSummary.getApiId(),
-                multimediaSummary.getType(),
-                user.getSessionToken());
+                multimediaSummary.getType());
 
         Message serverMessage = SocketCommunication.sendMessageToServer(new Message(MessageType.API_DETAIL_MULTIMEDIA, request));
         MultimediaDetailResponse response = mapper.convertValue(serverMessage.getContent(), MultimediaDetailResponse.class);

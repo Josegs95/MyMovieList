@@ -1,4 +1,6 @@
 package protocol.dto.request;
 
-public record DeleteListRequest(Long userId, Long listId, String sessionToken) {
+import protocol.AuthCredentials;
+
+public record DeleteListRequest(AuthCredentials auth, Long listId) {
 }

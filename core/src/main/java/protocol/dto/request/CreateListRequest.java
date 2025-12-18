@@ -1,4 +1,6 @@
 package protocol.dto.request;
 
-public record CreateListRequest(Long userId, String listName, String sessionToken) {
+import protocol.AuthCredentials;
+
+public record CreateListRequest(AuthCredentials auth, String listName) {
 }

@@ -10,6 +10,7 @@ import model.entity.ClientSession;
 import model.entity.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import protocol.AuthCredentials;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -46,13 +47,13 @@ public class AuthService {
         return sessionDAO.create(session, clientSession);
     }
 
-    public User validateSession(Session session, Long idUser, String sessionToken) {
-        User user = userDAO.findById(session, idUser);
+    public User validateSession(Session session, AuthCredentials auth) {
+        User user = userDAO.findById(session, auth.idUser());
         if (user == null) {
             throw new UserNotFoundException("Error. ¿No existe el usuario?");
         }
 
-        ClientSession clientSession = sessionDAO.findByTokenAndUser(session, sessionToken, user);
+        ClientSession clientSession = sessionDAO.findByTokenAndUser(session, auth.sessionToken(), user);
         if (clientSession == null) {
             throw new SessionNotFoundException("Error. No existe la sesión para este usuario");
         }

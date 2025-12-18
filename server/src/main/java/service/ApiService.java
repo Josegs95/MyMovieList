@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import protocol.AuthCredentials;
 import protocol.dto.response.ApiSearchResponse;
 import protocol.dto.response.MultimediaDetailResponse;
 import protocol.dto.response.SearchMultimediaResponse;
@@ -42,8 +43,8 @@ public class ApiService {
         this.authService = authService;
     }
 
-    public SearchMultimediaResponse searchAllByName(Long userId, String searchText, String sessionToken) {
-        checkUserAuthentication(userId, sessionToken);
+    public SearchMultimediaResponse searchAllByName(AuthCredentials auth, String searchText) {
+        checkUserAuthentication(auth);
 
         String text = searchText.replace(" ", "%20");
         String urlString = ApiConfiguration.getBaseUrl()
@@ -69,8 +70,8 @@ public class ApiService {
         return new SearchMultimediaResponse(ApiConfiguration.getIconSize(), elementList);
     }
 
-    public MultimediaDetailResponse getMultimediaDetails(Long userId, String apiId, MultimediaType type, String sessionToken) {
-        checkUserAuthentication(userId, sessionToken);
+    public MultimediaDetailResponse getMultimediaDetails(AuthCredentials auth, String apiId, MultimediaType type) {
+        checkUserAuthentication(auth);
 
         String typeEndpoint = type == MultimediaType.MOVIE ? "movie/" : "tv/";
         String urlString = ApiConfiguration.getBaseUrl()
@@ -92,12 +93,12 @@ public class ApiService {
         return MAPPER.readTree(makeGetRequest(urlString));
     }
 
-    private void checkUserAuthentication(Long idUser, String sessionToken) {
+    private void checkUserAuthentication(AuthCredentials auth) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                authService.validateSession(session, idUser, sessionToken);
+                authService.validateSession(session, auth);
 
                 transaction.commit();
             } catch (Exception e) {

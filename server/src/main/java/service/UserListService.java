@@ -2,12 +2,15 @@ package service;
 
 import config.HibernateUtil;
 import dao.UserListDAO;
-import exception.*;
+import exception.ListDoesNotBelongToUserException;
+import exception.ListNameAlreadyExistsForUserException;
+import exception.UserListNotFoundException;
 import model.dto.UserListDTO;
 import model.entity.User;
 import model.entity.UserList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import protocol.AuthCredentials;
 
 import java.util.List;
 
@@ -21,12 +24,12 @@ public class UserListService {
         this.authService = authService;
     }
 
-    public UserListDTO create(Long userId, String listName, String sessionToken) {
+    public UserListDTO create(AuthCredentials auth, String listName) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                User user = authService.validateSession(session, userId, sessionToken);
+                User user = authService.validateSession(session, auth);
 
                 UserList sameNameList = userListDAO.findByNameAndUser(session, listName, user);
                 if (sameNameList != null) {
@@ -48,12 +51,12 @@ public class UserListService {
         }
     }
 
-    public List<UserListDTO> getAllListsFromUser(Long idOwner, String sessionToken) {
+    public List<UserListDTO> getAllListsFromUser(AuthCredentials auth) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                User user = authService.validateSession(session, idOwner, sessionToken);
+                User user = authService.validateSession(session, auth);
 
                 List<UserList> lists = userListDAO.findAllByUserWithItems(session, user);
 
@@ -71,14 +74,14 @@ public class UserListService {
         }
     }
 
-    public UserListDTO rename(Long idUser, Long idList, String newListName, String sessionToken) {
+    public UserListDTO rename(AuthCredentials auth, Long idList, String newListName) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                User user = authService.validateSession(session, idUser, sessionToken);
+                User user = authService.validateSession(session, auth);
 
-                UserList list = checkListOwnership(session, idList, idUser);
+                UserList list = checkListOwnership(session, idList, auth.idUser());
 
                 UserList sameNameList = userListDAO.findByNameAndUser(session, newListName, user);
                 if (sameNameList != null) {
@@ -99,14 +102,14 @@ public class UserListService {
         }
     }
 
-    public void delete(Long idOwner, Long idList, String sessionToken) {
+    public void delete(AuthCredentials auth, Long idList) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
-                authService.validateSession(session, idOwner, sessionToken);
+                authService.validateSession(session, auth);
 
-                checkListOwnership(session, idList, idOwner);
+                checkListOwnership(session, idList, auth.idUser());
 
                 userListDAO.delete(session, idList);
 

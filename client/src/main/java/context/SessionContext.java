@@ -1,6 +1,7 @@
 package context;
 
 import model.dto.UserDTO;
+import protocol.AuthCredentials;
 import service.AuthService;
 import service.SearchService;
 import service.UserListService;
@@ -27,6 +28,14 @@ public class SessionContext {
         }
 
         return instance;
+    }
+
+    public AuthCredentials getAuthCredentials() {
+        if (currentUser == null) {
+            throw new IllegalStateException("Current user is null");
+        }
+
+        return new AuthCredentials(currentUser.getId(), currentUser.getSessionToken());
     }
 
     public UserDTO getUser() {
