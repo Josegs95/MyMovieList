@@ -35,7 +35,6 @@ public class AuthService {
 
         UserDTO currentUserDTO = context.getUser();
         currentUserDTO.setSessionToken(newUserDTO.getSessionToken());
-        currentUserDTO.setLists(newUserDTO.getLists());
     }
 
     public void register(String username, String password, String email) {

@@ -13,6 +13,7 @@ import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
 
 public class DetailPanel extends JPanel {
 
@@ -192,16 +193,17 @@ public class DetailPanel extends JPanel {
     }
 
     public void checkButtonAvailability() {
-        if (!user.getLists().isEmpty()) {
+        List<UserListDTO> lists = user.getLists();
+        if (!lists.isEmpty()) {
             btnAddToList.setEnabled(false);
             btnRemoveFromList.setEnabled(false);
         }
 
-        long listsContainingItemCount = user.getLists().stream()
+        long listsContainingItemCount = lists.stream()
                 .filter(userListDTO -> userListDTO.getListItems().stream()
                         .anyMatch(item -> item.getMultimedia().equals(summaryDTO)))
                 .count();
-        int userListsCount = user.getLists().size();
+        int userListsCount = lists.size();
 
         boolean multimediaAlreadyExistsInAllLists = listsContainingItemCount == userListsCount;
         boolean multimediaAlreadyExistsInAnyList = listsContainingItemCount > 0;
