@@ -38,6 +38,10 @@ public class SessionContext {
         return new AuthCredentials(currentUser.getId(), currentUser.getSessionToken());
     }
 
+    public void reset() {
+        currentUser = null;
+    }
+
     public UserDTO getUser() {
         return currentUser;
     }

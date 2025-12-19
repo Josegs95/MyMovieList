@@ -1,5 +1,7 @@
 package ui.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ui.event.Event;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("rawtypes")
 public class EventBus {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventBus.class);
     private static final Map<Class<? extends Event>, List<Consumer>> SUBSCRIBERS = new HashMap<>();
 
     private EventBus(){}
@@ -38,5 +41,10 @@ public class EventBus {
 
         List<Consumer> copyOfListeners = new ArrayList<>(listeners);
         copyOfListeners.forEach(consumer -> consumer.accept(event));
+    }
+
+    public static void reset() {
+        SUBSCRIBERS.clear();
+        LOGGER.info("EventBus reset: all subscribers deleted.");
     }
 }

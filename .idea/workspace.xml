@@ -4,9 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Added the AuthCredentials object to the communication protocol">
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/DetailPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/component/panel/DetailPanel.java" afterDir="false" />
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Fixed a bug caused when session expires">
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/ui/event/LogoutEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/context/SessionContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/controller/MainFrameUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/controller/MainFrameUIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/util/EventBus.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/util/EventBus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/view/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/view/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/service/AuthService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,11 +23,11 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="package-info" />
-        <option value="Record" />
         <option value="Enum" />
         <option value="Interface" />
         <option value="Exception" />
         <option value="Class" />
+        <option value="Record" />
       </list>
     </option>
   </component>
@@ -336,10 +342,33 @@
       <option name="project" value="LOCAL" />
       <updated>1766078041174</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Fixed a bug caused when session expires">
+      <option name="closed" value="true" />
+      <created>1766078425754</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1766078425754</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="development" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -351,7 +380,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Register and login service reworked" />
     <MESSAGE value="API moved to server and some refactoring" />
     <MESSAGE value="Deleted old classes and packages" />
     <MESSAGE value="Fixed to not bring user lists when logged in" />
@@ -376,6 +404,7 @@
     <MESSAGE value="Added more security at the client for passwords." />
     <MESSAGE value="Reworked the error display system in the client" />
     <MESSAGE value="Added the AuthCredentials object to the communication protocol" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the AuthCredentials object to the communication protocol" />
+    <MESSAGE value="Fixed a bug caused when session expires" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed a bug caused when session expires" />
   </component>
 </project>

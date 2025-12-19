@@ -29,15 +29,6 @@ public class MainFrame extends JFrame{
 
     public MainFrame() {
         initFrame();
-
-        if (LOGIN) {
-            if (!doLogin()) {
-                dispose();
-                throw new RuntimeException("The client closed the application");
-            }
-        }
-
-        finishInit();
     }
 
     private void initFrame() {
@@ -124,7 +115,9 @@ public class MainFrame extends JFrame{
         repaint();
     }
 
-    private boolean doLogin() {
+    public boolean doInitialLogin() {
+        if (!LOGIN) return true;
+
         LoginDialog loginDialog = new LoginDialog(this);
         new LoginDialogController(loginDialog);
         loginDialog.setVisible(true);

@@ -20,7 +20,7 @@ public class AuthService {
 
     private static final SecureRandom random = new SecureRandom();
     private static final int SESSION_TOKEN_LENGTH = 32;
-    private static final int SESSION_TOKEN_EXPIRATION_TIME = 1;
+    private static final int SESSION_TOKEN_EXPIRATION_TIME = 3600;
 
     private final UserDAO userDAO;
     private final ClientSessionDAO sessionDAO;
