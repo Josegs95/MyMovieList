@@ -31,7 +31,7 @@ public class UserService {
 
                 User user = userDAO.findByUsername(session, username);
                 if (user != null) {
-                    throw new UsernameAlreadyExistsException("Ya hay un usuario registrado con ese nombre de usuario");
+                    throw new UsernameAlreadyExistsException("This username is already in use");
                 }
 
                 int salt = new Random().nextInt();

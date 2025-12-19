@@ -50,17 +50,17 @@ public class AuthService {
     public User validateSession(Session session, AuthCredentials auth) {
         User user = userDAO.findById(session, auth.idUser());
         if (user == null) {
-            throw new UserNotFoundException("Error. ¿No existe el usuario?");
+            throw new UserNotFoundException("Error: The user does not exists");
         }
 
         ClientSession clientSession = sessionDAO.findByTokenAndUser(session, auth.sessionToken(), user);
         if (clientSession == null) {
-            throw new SessionNotFoundException("Error. No existe la sesión para este usuario");
+            throw new SessionNotFoundException("Error: This session does not exists for this user");
         }
         if (!LocalDateTime.now().isBefore(clientSession.getExpirationTime())) {
             deleteExpiredSession(clientSession);
 
-            throw new SessionExpiredException("Error. Sesión expirada");
+            throw new SessionExpiredException("Error: Expired session");
         }
 
         return user;
