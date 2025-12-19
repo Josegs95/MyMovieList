@@ -76,11 +76,11 @@ public class MainFrame extends JFrame{
         pnlUser.setBackground(new Color(224, 224, 224));
         pnlUser.setBorder(LineBorder.createBlackLineBorder());
 
-        String userName = "guest user";
+        String userName = "usuario invitado";
         if (user != null && !user.getUsername().isEmpty()) {
             userName = user.getUsername();
         }
-        JLabel lblUsername = new JLabel(String.format("<html><p text-align= center>Welcome, %s!</p></html>", userName),
+        JLabel lblUsername = new JLabel(String.format("<html><p text-align= center>Bienvenido/a, %s!</p></html>", userName),
                 SwingConstants.CENTER);
 
         lblUsername.setFont(lblUsername.getFont().deriveFont(Font.ITALIC, 18));
@@ -97,8 +97,8 @@ public class MainFrame extends JFrame{
         pnlMenuLateral.setBackground(new Color(224, 224, 224));
         pnlMenuLateral.setBorder(LineBorder.createBlackLineBorder());
 
-        btnLateralSearch = new MyLateralButton("Search");
-        btnLateralLists = new MyLateralButton("Lists");
+        btnLateralSearch = new MyLateralButton("Buscar");
+        btnLateralLists = new MyLateralButton("Listas");
 
         pnlMenuLateral.add(btnLateralSearch, "grow");
         pnlMenuLateral.add(btnLateralLists, "grow");

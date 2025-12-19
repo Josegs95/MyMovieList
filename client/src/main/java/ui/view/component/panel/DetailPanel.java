@@ -99,18 +99,18 @@ public class DetailPanel extends JPanel {
 
         //Release date & Country
 
-        String releaseDateString = releaseDate != null ? releaseDate.toString() : "Unknown";
-        JLabel lblReleaseDate = new JLabel(String.format("Release Date: %s", releaseDateString));
+        String releaseDateString = releaseDate != null ? releaseDate.toString() : "Desconocida";
+        JLabel lblReleaseDate = new JLabel(String.format("Fecha de lanzamiento: %s", releaseDateString));
 
-        JLabel lblCountry = new JLabel(String.format("Country: %s", detailDTO.getCountry()), SwingConstants.CENTER);
+        JLabel lblCountry = new JLabel(String.format("País: %s", detailDTO.getCountry()), SwingConstants.CENTER);
 
         // Duration & Status
 
         String duration = isAMovie ? ((MovieDetailDTO) detailDTO).getDuration() : ((SeriesDetailDTO) detailDTO).getEpisodeDuration();
-        JLabel lblDuration = new JLabel(String.format("Duration: %s", duration));
+        JLabel lblDuration = new JLabel(String.format("Duración: %s", duration));
 
         String status = isAMovie ? "" : ((SeriesDetailDTO) detailDTO).getAiringStatus();
-        JLabel lblStatus = new JLabel(String.format("Status: %s", status), SwingConstants.CENTER);
+        JLabel lblStatus = new JLabel(String.format("Estado: %s", status), SwingConstants.CENTER);
 
         // Synopsis
 
@@ -122,7 +122,7 @@ public class DetailPanel extends JPanel {
         pnlSynopsis.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
         pnlSynopsis.setOpaque(false);
 
-        String synopsis = String.format("<html><p style=\"text-align: center\">Synopsis: %s</p></html>", detailDTO.getOverview());
+        String synopsis = String.format("<html><p style=\"text-align: center\">Sinopsis: %s</p></html>", detailDTO.getOverview());
         JLabel lblSynopsis = new JLabel(synopsis, SwingConstants.CENTER);
 
         pnlSynopsis.add(lblSynopsis);
@@ -135,7 +135,7 @@ public class DetailPanel extends JPanel {
         //Genre List
 
         String genres = String.join(", ", detailDTO.getGenreList());
-        JLabel lblGenres = new JLabel(String.format("Genres: %s", genres), SwingConstants.CENTER);
+        JLabel lblGenres = new JLabel(String.format("Géneros: %s", genres), SwingConstants.CENTER);
 
         //Episode & Season count
 
@@ -144,8 +144,8 @@ public class DetailPanel extends JPanel {
             int totalEpisodes = serie.getTotalEpisodes();
             int totalSeasons = serie.getTotalSeasons();
             ((SeriesSummaryDTO) summaryDTO).setTotalEpisodes(serie.getTotalEpisodes());
-            lblEpisodeCount = new JLabel(String.format("# Episodes: %d", totalEpisodes), SwingConstants.CENTER);
-            lblSeasonCount = new JLabel(String.format("# Seasons: %d", totalSeasons), SwingConstants.CENTER);
+            lblEpisodeCount = new JLabel(String.format("# Episodios: %d", totalEpisodes), SwingConstants.CENTER);
+            lblSeasonCount = new JLabel(String.format("# Temporadas: %d", totalSeasons), SwingConstants.CENTER);
         }
 
         //Buttons
@@ -158,9 +158,9 @@ public class DetailPanel extends JPanel {
         pnlButton.setOpaque(false);
         pnlButton.setBorder(LineBorder.createBlackLineBorder());
 
-        btnBack = new JButton("Back");
-        btnAddToList = new JButton("Add");
-        btnRemoveFromList = new JButton("Remove");
+        btnBack = new JButton("Atrás");
+        btnAddToList = new JButton("Añadir");
+        btnRemoveFromList = new JButton("Borrar");
 
         btnBack.setFocusPainted(false);
         btnAddToList.setFocusPainted(false);

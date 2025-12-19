@@ -52,7 +52,7 @@ public class SearchItemPanel extends JPanel {
             lblPoster.setIcon(IMAGE_CACHE.get(posterUrlString));
         }
         else {
-            lblPoster.setText("Loading...");
+            lblPoster.setText("Cargando...");
             new ImageLoaderWorker(lblPoster, posterUrlString).execute();
         }
         JLabel lblTitle = new JLabel(String.format("<html><p>%s</p></html>", multimedia.getTitle()));

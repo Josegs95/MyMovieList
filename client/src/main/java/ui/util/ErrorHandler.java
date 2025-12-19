@@ -50,7 +50,7 @@ public class ErrorHandler {
             errorMessage = "Error desconocido";
             messageTitle = "Error";
 
-            LOGGER.error(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
         }
 
         JOptionPane.showMessageDialog(parent, errorMessage, messageTitle,JOptionPane.ERROR_MESSAGE);

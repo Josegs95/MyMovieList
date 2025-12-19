@@ -29,7 +29,7 @@ public class MySearchTextField extends JTextField {
     }
 
     private void setInitialValues(){
-        setText("Search...");
+        setText("Buscar...");
         setForeground(Color.GRAY);
     }
 }

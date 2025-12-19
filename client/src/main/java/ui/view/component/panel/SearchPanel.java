@@ -72,7 +72,7 @@ public class SearchPanel extends JPanel{
                 BorderFactory.createEmptyBorder(0, 20, 0, 0)
         ));
 
-        btnSearch = new JButton("Search");
+        btnSearch = new JButton("Buscar");
 
         pnlSearch.add(txtSearch, "push, sg group1");
         pnlSearch.add(btnSearch, "sg group1");

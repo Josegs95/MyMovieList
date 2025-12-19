@@ -31,8 +31,8 @@ public class LoginDialog extends AuthenticationDialog {
         pnlButtons.setOpaque(false);
 
         btnLogin = new JButton("Login");
-        btnRegister = new JButton("Register");
-        btnCancel = new JButton("Cancel");
+        btnRegister = new JButton("Registro");
+        btnCancel = new JButton("Cancelar");
         setDefaultButton(btnLogin);
 
         pnlButtons.add(btnCancel, "sg button");

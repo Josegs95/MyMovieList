@@ -274,7 +274,7 @@ public class CollapsableListPanel extends JPanel {
             JLabel lblType = new JLabel(multimediaType.toString(), SwingConstants.CENTER);
 
             // Status
-            JLabel lblStatus = new JLabel(multimediaItem.getStatus().toString(), SwingConstants.CENTER);
+            JLabel lblStatus = new JLabel(multimediaItem.getStatus().getSpanishLabel(), SwingConstants.CENTER);
 
             // Episode
             String episodeString = "";

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 @SuppressWarnings("unused")
 public enum MultimediaType {
-    MOVIE("Movie"),
-    SERIES("Series"),
-    PERSON("Person");
+    MOVIE("Película"),
+    SERIES("Serie"),
+    PERSON("Persona");
 
     private final String name;
 

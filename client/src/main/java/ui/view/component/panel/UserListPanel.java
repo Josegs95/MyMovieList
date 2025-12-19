@@ -54,7 +54,7 @@ public class UserListPanel extends JPanel {
         ));
         pnlButtons.setBorder(LineBorder.createBlackLineBorder());
 
-        btnCreateList = new JButton("Create List");
+        btnCreateList = new JButton("Crear Lista");
         btnCreateList.setFocusPainted(false);
 
         pnlButtons.add(btnCreateList);

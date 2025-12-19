@@ -55,7 +55,7 @@ public class ConfigureMultimediaDialog extends JDialog {
         setResizable(false);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         getContentPane().setBackground(BACKGROUND_COLOR);
-        setTitle("Configuration");
+        setTitle("Configuración");
 
         setLayout(new MigLayout(
                 "ins 10 20 10 20, fill",
@@ -65,7 +65,7 @@ public class ConfigureMultimediaDialog extends JDialog {
 
         // List selector component
 
-        JLabel lblLists = new JLabel("Lists:",SwingConstants.RIGHT);
+        JLabel lblLists = new JLabel("Listas:",SwingConstants.RIGHT);
 
         List<UserListDTO> lists;
         if (listItem.getListId() == null) {
@@ -83,16 +83,16 @@ public class ConfigureMultimediaDialog extends JDialog {
 
         // Status selector component
 
-        JLabel lblStatus = new JLabel("Status:", SwingConstants.RIGHT);
+        JLabel lblStatus = new JLabel("Estado:", SwingConstants.RIGHT);
 
         MultimediaStatus[] statuses = MultimediaStatus.getMultimediaStatusValues(listItem.getMultimedia().getType());
         cmbStatus = new JComboBox<>(statuses);
-        cmbStatus.setRenderer(new SimpleNameRenderer<>(MultimediaStatus::name));
+        cmbStatus.setRenderer(new SimpleNameRenderer<>(MultimediaStatus::getSpanishLabel));
         cmbStatus.setSelectedItem(listItem.getStatus());
 
         // Current episode selector component
 
-        JLabel lblCurrentEpisode = new JLabel("Current episode:", SwingConstants.RIGHT);
+        JLabel lblCurrentEpisode = new JLabel("Episodio actual:", SwingConstants.RIGHT);
 
         JPanel pnlSpinnerEpisode = new JPanel(new MigLayout(
                 "ins 0, aligny center",
@@ -111,7 +111,6 @@ public class ConfigureMultimediaDialog extends JDialog {
         spinnerTextField = spinnerEditor.getTextField();
 
         spinnerTextField.setHorizontalAlignment(SwingConstants.CENTER);
-        spnEpisode.setValue(listItem.getCurrentEpisode());
         spinnerEditor.getFormat().setGroupingUsed(false);
 
         JLabel lblTotalEpisodes = new JLabel("/ " + totalEpisodes);
@@ -120,10 +119,13 @@ public class ConfigureMultimediaDialog extends JDialog {
         pnlSpinnerEpisode.add(lblTotalEpisodes);
 
         if (listItem.getMultimedia().getType() == MultimediaType.MOVIE) {
+            listItem.setCurrentEpisode(1);
             spnEpisode.setEnabled(false);
             lblCurrentEpisode.setForeground(Color.LIGHT_GRAY);
             lblTotalEpisodes.setText(null);
         }
+
+        spnEpisode.setValue(listItem.getCurrentEpisode());
 
         // Buttons
 
@@ -134,8 +136,8 @@ public class ConfigureMultimediaDialog extends JDialog {
         ));
         pnlButtons.setOpaque(false);
 
-        btnCancel = new JButton("Cancel");
-        btnAccept = new JButton("Accept");
+        btnCancel = new JButton("Cancelar");
+        btnAccept = new JButton("Aceptar");
 
         pnlButtons.add(btnCancel, "sg 99, alignx right");
         pnlButtons.add(btnAccept, "sg 99, alignx left");

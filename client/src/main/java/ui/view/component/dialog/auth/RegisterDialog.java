@@ -31,7 +31,7 @@ public class RegisterDialog extends AuthenticationDialog{
                 "[][][][]30[]"
         ));
         setSize(400, 400);
-        setTitle("Register");
+        setTitle("Registro");
 
         // Components
 
@@ -57,7 +57,7 @@ public class RegisterDialog extends AuthenticationDialog{
         ));
         pnlEmail.setOpaque(false);
 
-        JLabel lblEmail = new JLabel("<html>Email <small>(optional)</small></html>");
+        JLabel lblEmail = new JLabel("<html>Email <small>(optional)</small>:</html>");
         txtEmail = new JTextField(null, 25);
 
         pnlEmail.add(lblEmail);
@@ -71,8 +71,8 @@ public class RegisterDialog extends AuthenticationDialog{
         ));
         pnlButtons.setOpaque(false);
 
-        btnRegister = new JButton("Register");
-        btnCancel = new JButton("Cancel");
+        btnRegister = new JButton("Registrar");
+        btnCancel = new JButton("Cancelar");
         setDefaultButton(btnRegister);
 
         pnlButtons.add(btnCancel, "sg button");

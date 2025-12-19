@@ -40,7 +40,7 @@ public class RemoveMultimediaDialog extends JDialog {
         setResizable(false);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         getContentPane().setBackground(BACKGROUND_COLOR);
-        setTitle("Remove");
+        setTitle("Borrar");
 
         setLayout(new MigLayout(
                 "ins 10 20 10 20, flowy, fill, alignx center",
@@ -56,7 +56,7 @@ public class RemoveMultimediaDialog extends JDialog {
                 "[]"));
         pnlLists.setOpaque(false);
 
-        JLabel lblLists = new JLabel("Lists:", SwingConstants.RIGHT);
+        JLabel lblLists = new JLabel("Listas:", SwingConstants.RIGHT);
 
         cmbLists = new JComboBox<>(getAllListContainingMultimedia());
         cmbLists.setRenderer(new SimpleNameRenderer<>(UserListDTO::getName));
@@ -73,8 +73,8 @@ public class RemoveMultimediaDialog extends JDialog {
         ));
         pnlButtons.setOpaque(false);
 
-        btnCancel = new JButton("Cancel");
-        btnRemove = new JButton("Remove");
+        btnCancel = new JButton("Cancelar");
+        btnRemove = new JButton("Borrar");
 
         pnlButtons.add(btnCancel, "sg 99, alignx right");
         pnlButtons.add(btnRemove, "sg 99, alignx left");
