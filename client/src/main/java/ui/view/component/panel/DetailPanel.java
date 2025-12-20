@@ -106,11 +106,11 @@ public class DetailPanel extends JPanel {
 
         // Duration & Status
 
-        String duration = isAMovie ? ((MovieDetailDTO) detailDTO).getDuration() : ((SeriesDetailDTO) detailDTO).getEpisodeDuration();
-        JLabel lblDuration = new JLabel(String.format("Duración: %s", duration));
+        Integer duration = isAMovie ? ((MovieDetailDTO) detailDTO).getDuration() : ((SeriesDetailDTO) detailDTO).getEpisodeDuration();
+        JLabel lblDuration = new JLabel(String.format("Duración: %s", getFormattedDuration(duration)));
 
         String status = isAMovie ? "" : ((SeriesDetailDTO) detailDTO).getAiringStatus();
-        JLabel lblStatus = new JLabel(String.format("Estado: %s", status), SwingConstants.CENTER);
+        JLabel lblStatus = new JLabel(String.format("Estado: %s", getTranslatedStatusToSpanish(status)), SwingConstants.CENTER);
 
         // Synopsis
 
@@ -227,6 +227,37 @@ public class DetailPanel extends JPanel {
                 summaryDTO.getTitle(),
                 userListDTO.getName());
         JOptionPane.showMessageDialog(mainFrame, message,"Información", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private String getFormattedDuration(int totalMinutes) {
+        int hours = totalMinutes / 60;
+        int minutes = totalMinutes % 60;
+
+        StringBuilder result = new StringBuilder();
+
+        if (hours > 0) {
+            result.append(hours).append("h ");
+        }
+
+        result.append(minutes)
+                .append(minutes == 1 ? " minuto" : " minutos");
+
+        return result.toString();
+    }
+
+    private String getTranslatedStatusToSpanish(String originalStatus) {
+        String langCode = System.getProperty("LANGUAGE");
+        if (!langCode.equalsIgnoreCase("es-ES")) return originalStatus;
+
+        return switch (originalStatus) {
+            case "Ended" -> "Finalizada";
+            case "Returning Series" -> "En emisión";
+            case "Canceled" -> "Cancelada";
+            case "In Production" -> "En producción";
+            case "Planned" -> "Planificada";
+            case "Pilot" -> "Piloto";
+            default -> originalStatus;
+        };
     }
 
     public MultimediaSummaryDTO getSummaryDTO() {

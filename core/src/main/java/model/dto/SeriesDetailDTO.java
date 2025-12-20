@@ -16,7 +16,7 @@ public class SeriesDetailDTO extends MultimediaDetailDTO {
     @JsonProperty("number_of_seasons")
     private Integer totalSeasons;
 
-    private String episodeDuration;
+    private Integer episodeDuration;
 
     public String getAiringStatus() {
         return airingStatus;
@@ -42,7 +42,7 @@ public class SeriesDetailDTO extends MultimediaDetailDTO {
         this.totalSeasons = totalSeasons;
     }
 
-    public String getEpisodeDuration() {
+    public Integer getEpisodeDuration() {
         return episodeDuration;
     }
 
@@ -52,10 +52,13 @@ public class SeriesDetailDTO extends MultimediaDetailDTO {
             int durationSum = list.stream()
                     .map(duration -> (Integer) duration)
                     .reduce(Math::addExact).orElse(0);
-            int averageDuration = (int) (durationSum / (double) list.size());
-            this.episodeDuration = String.valueOf(averageDuration);
-        } else {
-            this.episodeDuration = object.toString();
+            this.episodeDuration = (int) (durationSum / (double) list.size());
+        }
+        else if (object instanceof String s) {
+            this.episodeDuration = Integer.valueOf(s);
+        }
+        else {
+            this.episodeDuration = (Integer) object;
         }
     }
 

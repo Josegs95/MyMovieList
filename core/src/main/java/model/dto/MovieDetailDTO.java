@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class MovieDetailDTO extends MultimediaDetailDTO {
 
     @JsonProperty("runtime")
-    private String duration;
+    private Integer duration;
 
-    public String getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 }
