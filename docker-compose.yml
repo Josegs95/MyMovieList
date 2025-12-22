@@ -2,29 +2,41 @@ services:
   db:
     image: mysql:8.0.39
     container_name: mysql-db
-    restart: unless-stopped
+    restart: on-failure
     env_file:
       - .env
     environment:
       MYSQL_DATABASE: ${DB_NAME:-MyMovieList}
-      MYSQL_USER: user
-      MYSQL_PASSWORD: 123
+      MYSQL_USER: ${DB_USER:-user}
+      MYSQL_PASSWORD: ${DB_PASS:-123}
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "3307:3306"
+      - "3307:${DB_PORT:-3306}"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", "mysql -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} -e 'SELECT 1' $${MYSQL_DATABASE} || exit 1" ]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
 
   api:
     build: .
     container_name: server
-    restart: unless-stopped
+    restart: no
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file:
       - .env
     environment:
       DB_HOST: db
-      DB_USER: user
-      DB_PASS: 123
-      DB_PORT: 3306
+      DB_USER: ${DB_USER:-user}
+      DB_PASS: ${DB_PASS:-123}
+      DB_PORT: ${DB_PORT:-3306}
     ports:
       - "7776:7776"
+
+volumes:
+  db_data:

@@ -2,9 +2,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-README.md
 TO-DO.txt
-properties.txt
 *.sql
 .env
 

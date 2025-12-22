@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Small fix to translate the UI to spanish">
-      <change afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Changes in .gitignore and .env files">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/config/HibernateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/config/HibernateUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +75,7 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.externalResources&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.Client">
+  <component name="RunManager" selected="Application.Server">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client" />
       <module name="client" />
@@ -92,8 +92,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Client" />
         <item itemvalue="Application.Server" />
+        <item itemvalue="Application.Client" />
       </list>
     </recent_temporary>
   </component>
@@ -378,7 +378,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766260596838</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Changes in .gitignore and .env files">
+      <option name="closed" value="true" />
+      <created>1766433546762</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1766433546762</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -408,7 +416,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Rename list featured remade" />
     <MESSAGE value="Relocated some files and added some tweaks" />
     <MESSAGE value="Delete list item from list view" />
     <MESSAGE value="Modify list item and update UI with the changes" />
@@ -433,6 +440,7 @@
     <MESSAGE value="Translated all user side words to spanish" />
     <MESSAGE value="Translated all non-user side words to english" />
     <MESSAGE value="Small fix to translate the UI to spanish" />
-    <option name="LAST_COMMIT_MESSAGE" value="Small fix to translate the UI to spanish" />
+    <MESSAGE value="Changes in .gitignore and .env files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes in .gitignore and .env files" />
   </component>
 </project>

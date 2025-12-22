@@ -5,10 +5,16 @@ import init.EnvironmentVariables;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
 public class HibernateUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HibernateUtil.class);
+    private static final int TOTAL_ATTEMPTS = 10;
+    private static final long SECONDS_BETWEEN_ATTEMPTS = 3;
 
     private static SessionFactory SESSION_FACTORY;
     private static boolean built = false;
@@ -44,7 +50,17 @@ public class HibernateUtil {
             configuration.addAnnotatedClass(Multimedia.class);
             configuration.addAnnotatedClass(MultimediaListItem.class);
 
-            return configuration.buildSessionFactory();
+            int attempts = 0;
+            while(attempts < TOTAL_ATTEMPTS) {
+                try {
+                    return configuration.buildSessionFactory();
+                } catch (Exception e) {
+                    attempts++;
+                    LOGGER.warn("Waiting... database not ready yet (Attempt {}/10)", attempts);
+                    try { Thread.sleep(SECONDS_BETWEEN_ATTEMPTS * 1000); } catch (InterruptedException ignored) {}
+                }
+            }
+            throw new RuntimeException("Could not connect to DB after 10 attempts");
         } catch (HibernateException e) {
             System.err.println("Error inicializando la SessionFactory de Hibernate: " + e);
             throw new RuntimeException(e);
