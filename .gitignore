@@ -6,6 +6,7 @@ README.md
 TO-DO.txt
 properties.txt
 *.sql
+.env
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
