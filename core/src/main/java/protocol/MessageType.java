@@ -1,0 +1,18 @@
+package protocol;
+
+public enum MessageType {
+    TEST,
+    KNOCK,
+    LOGIN,
+    REGISTER,
+    GET_USER_LISTS,
+    CREATE_USER_LIST,
+    RENAME_USER_LIST,
+    DELETE_USER_LIST,
+    ADD_MULTIMEDIA,
+    MODIFY_MULTIMEDIA,
+    REMOVE_MULTIMEDIA,
+
+    API_SEARCH_MULTIMEDIA,
+    API_DETAIL_MULTIMEDIA
+}

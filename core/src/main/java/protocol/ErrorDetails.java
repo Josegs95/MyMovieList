@@ -1,0 +1,44 @@
+package protocol;
+
+import java.time.LocalDateTime;
+
+@SuppressWarnings("unused")
+public class ErrorDetails {
+
+    private ErrorType error;
+    private String message;
+    private LocalDateTime timestamp;
+
+    public ErrorDetails() {
+    }
+
+    public ErrorDetails(ErrorType error, String message) {
+        this.error = error;
+        this.message = message;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public ErrorType getError() {
+        return error;
+    }
+
+    public void setError(ErrorType error) {
+        this.error = error;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+}

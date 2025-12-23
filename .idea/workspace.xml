@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="Changes in config files for docker use">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package-info" />
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Exception" />
+        <option value="Class" />
+        <option value="Record" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Josegs95&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Josegs95/MyMovieList.git&quot;,
+    &quot;accountId&quot;: &quot;fad15074-872b-4dad-be62-63f2b0bd0594&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="34Ygok3gQOrVvvfFM0yuLu8fnB3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Client.executor": "Run",
+    "Application.Server.executor": "Run",
+    "Maven.MyMovieList [clean].executor": "Run",
+    "Maven.MyMovieList [install].executor": "Run",
+    "Maven.MyMovieList [package].executor": "Run",
+    "Maven.client [package].executor": "Run",
+    "Maven.server [clean].executor": "Run",
+    "Maven.server [deploy].executor": "Run",
+    "Maven.server [package].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "development",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Jose/Workplace/Java/Pruebas/CampoDePruebas",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.externalResources"
+  }
+}]]></component>
+  <component name="RunManager" selected="Application.Client">
+    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Client" />
+      <module name="client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Server" />
+      <module name="server" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Client" />
+        <item itemvalue="Application.Server" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fde10e86-d0be-429c-ae99-cbce6190610d" name="Changes" comment="" />
+      <created>1761396098081</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761396098081</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Jackson library for GSON, Docker and some file architecture improvement">
+      <option name="closed" value="true" />
+      <created>1761425346776</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1761425346776</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Fixed docker files to work both locally and with a container">
+      <option name="closed" value="true" />
+      <created>1761682828152</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1761682828152</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Model and Service creation on server side">
+      <option name="closed" value="true" />
+      <created>1762710217462</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1762710217462</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Register and login service reworked">
+      <option name="closed" value="true" />
+      <created>1762981330057</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1762981330057</updated>
+    </task>
+    <task id="LOCAL-00005" summary="API moved to server and some refactoring">
+      <option name="closed" value="true" />
+      <created>1764869794841</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1764869794841</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Deleted old classes and packages">
+      <option name="closed" value="true" />
+      <created>1764870087682</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1764870087682</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Deleted old classes and packages">
+      <option name="closed" value="true" />
+      <created>1764939497917</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1764939497917</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Fixed to not bring user lists when logged in">
+      <option name="closed" value="true" />
+      <created>1764940857100</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1764940857100</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Some code optimizations">
+      <option name="closed" value="true" />
+      <created>1764952461029</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1764952461029</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Rename list featured remade">
+      <option name="closed" value="true" />
+      <created>1764958868134</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1764958868134</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Relocated some files and added some tweaks">
+      <option name="closed" value="true" />
+      <created>1765225084313</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1765225084313</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Delete list item from list view">
+      <option name="closed" value="true" />
+      <created>1765228722645</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1765228722645</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Modify list item and update UI with the changes">
+      <option name="closed" value="true" />
+      <created>1765290376883</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1765290376883</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Added API cache for multi details in the client">
+      <option name="closed" value="true" />
+      <created>1765399073324</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1765399073324</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Details panel added to the list view">
+      <option name="closed" value="true" />
+      <created>1765460154653</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1765460154653</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Use of singleton for all client services">
+      <option name="closed" value="true" />
+      <created>1765460941301</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1765460941301</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Fixed an error with the initialization of the services">
+      <option name="closed" value="true" />
+      <created>1765473256266</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1765473256268</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Fixed an error about the behaviour of the collapsable panels">
+      <option name="closed" value="true" />
+      <created>1765474271484</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1765474271484</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Fixed an error about some dialogs not showing">
+      <option name="closed" value="true" />
+      <created>1765474696472</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1765474696472</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Changes in the message protocol">
+      <option name="closed" value="true" />
+      <created>1765551603116</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1765551603116</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Translated error to spanish">
+      <option name="closed" value="true" />
+      <created>1765551867602</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1765551867603</updated>
+    </task>
+    <task id="LOCAL-00022" summary="User sessions reworked">
+      <option name="closed" value="true" />
+      <created>1765905780690</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1765905780690</updated>
+    </task>
+    <task id="LOCAL-00023" summary="User sessions refresh added">
+      <option name="closed" value="true" />
+      <created>1765972733009</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1765972733009</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Some refactoring in server services">
+      <option name="closed" value="true" />
+      <created>1765974863996</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1765974863996</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Fixed an issue with the handshake protocol">
+      <option name="closed" value="true" />
+      <created>1765975930411</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1765975930411</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Suppressed all warning caused by reflection usage.">
+      <option name="closed" value="true" />
+      <created>1765978029962</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1765978029962</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Added more security at the client for passwords.">
+      <option name="closed" value="true" />
+      <created>1765980786453</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1765980786453</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Reworked the error display system in the client">
+      <option name="closed" value="true" />
+      <created>1766075369050</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1766075369050</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Added the AuthCredentials object to the communication protocol">
+      <option name="closed" value="true" />
+      <created>1766078041174</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1766078041174</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Fixed a bug caused when session expires">
+      <option name="closed" value="true" />
+      <created>1766078425754</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1766078425754</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Implemented logout protocol when session refresh is cancelled">
+      <option name="closed" value="true" />
+      <created>1766152231694</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1766152231694</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Translated all user side words to spanish">
+      <option name="closed" value="true" />
+      <created>1766177675644</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1766177675644</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Translated all non-user side words to english">
+      <option name="closed" value="true" />
+      <created>1766178116857</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1766178116857</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Small fix to translate the UI to spanish">
+      <option name="closed" value="true" />
+      <created>1766260596838</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1766260596838</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Changes in .gitignore and .env files">
+      <option name="closed" value="true" />
+      <created>1766433546762</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1766433546762</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Changes in config files for docker use">
+      <option name="closed" value="true" />
+      <created>1766446995551</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1766446995551</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="development" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Delete list item from list view" />
+    <MESSAGE value="Modify list item and update UI with the changes" />
+    <MESSAGE value="Added API cache for multi details in the client" />
+    <MESSAGE value="Details panel added to the list view" />
+    <MESSAGE value="Use of singleton for all client services" />
+    <MESSAGE value="Fixed an error with the initialization of the services" />
+    <MESSAGE value="Fixed an error about the behaviour of the collapsable panels" />
+    <MESSAGE value="Fixed an error about some dialogs not showing" />
+    <MESSAGE value="Changes in the message protocol" />
+    <MESSAGE value="Translated error to spanish" />
+    <MESSAGE value="User sessions reworked" />
+    <MESSAGE value="User sessions refresh added" />
+    <MESSAGE value="Some refactoring in server services" />
+    <MESSAGE value="Fixed an issue with the handshake protocol" />
+    <MESSAGE value="Suppressed all warning caused by reflection usage." />
+    <MESSAGE value="Added more security at the client for passwords." />
+    <MESSAGE value="Reworked the error display system in the client" />
+    <MESSAGE value="Added the AuthCredentials object to the communication protocol" />
+    <MESSAGE value="Fixed a bug caused when session expires" />
+    <MESSAGE value="Implemented logout protocol when session refresh is cancelled" />
+    <MESSAGE value="Translated all user side words to spanish" />
+    <MESSAGE value="Translated all non-user side words to english" />
+    <MESSAGE value="Small fix to translate the UI to spanish" />
+    <MESSAGE value="Changes in .gitignore and .env files" />
+    <MESSAGE value="Changes in config files for docker use" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes in config files for docker use" />
+  </component>
+</project>
